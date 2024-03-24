@@ -40,7 +40,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UInput v-model="state.password" type="password" />
         </UFormGroup>
 
-        <UButton type="submit" block> Login </UButton>
+        <UButton to="/company/dashboard/home" block> Login </UButton>
+        <!-- <UButton type="submit" block> Login </UButton> -->
       </UForm>
     </div>
     <template #footer>

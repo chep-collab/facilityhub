@@ -4,7 +4,9 @@
       <h1 class="w-12">Workspaces</h1>
       <div class="flex flex-row gap-4">
         <UButton color="white" variant="solid">Profile</UButton>
-        <UButton color="white" variant="solid">Logout</UButton>
+        <UButton to="/company/login" color="white" variant="solid"
+          >Logout</UButton
+        >
       </div>
     </div>
     <Navigation />
