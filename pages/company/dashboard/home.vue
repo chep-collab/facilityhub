@@ -15,25 +15,6 @@
             :trailing="false"
             @click="isAddModalOpen = true"
           />
-
-          <UButton
-            icon="i-heroicons-pencil-square"
-            size="sm"
-            color="blue"
-            variant="ghost"
-            label="Edit"
-            :trailing="false"
-          />
-
-          <UButton
-            icon="i-heroicons-trash"
-            size="sm"
-            color="red"
-            variant="ghost"
-            label="Delete"
-            :trailing="false"
-            @click="isConfirmationModalOpen = true"
-          />
         </div>
       </div>
 
@@ -46,7 +27,27 @@
         :rows="filteredRows"
         :columns="columns"
         @select="selected"
-      />
+      >
+        <template #name-data="{ row }">
+          <span
+            :class="[
+              selected.find((service) => service.id === row.id) &&
+                'text-primary-500 dark:text-primary-400',
+            ]"
+            >{{ row.name }}</span
+          >
+        </template>
+
+        <template #actions-data="{ row }">
+          <UDropdown :items="items(row)">
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-ellipsis-horizontal-20-solid"
+            />
+          </UDropdown>
+        </template>
+      </UTable>
     </div>
   </div>
   <div>
@@ -141,6 +142,45 @@
       </UCard>
     </UModal>
   </div>
+  <div>
+    <UModal v-model="isActivateDeactivateModalOpen" prevent-close>
+      <UCard
+        :ui="{
+          ring: '',
+          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+        }"
+      >
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h3
+              class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+            >
+              Please confirm
+            </h3>
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-x-mark-20-solid"
+              class="-my-1"
+              @click="isActivateDeactivateModalOpen = false"
+            />
+          </div>
+        </template>
+        <div>
+          <UForm
+            :schema="schema"
+            :state="state"
+            class="space-y-4"
+            @submit="onSubmitStatusChangeRequest"
+          >
+            <div>Are you sure you want to deactivate this service?</div>
+
+            <UButton type="submit"> Submit </UButton>
+          </UForm>
+        </div>
+      </UCard>
+    </UModal>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -178,9 +218,15 @@ async function onSubmitDeleteRequest(event: FormSubmitEvent<Schema>) {
   console.log(event.data);
 }
 
+async function onSubmitStatusChangeRequest(event: FormSubmitEvent<Schema>) {
+  // Do something with event.data
+  console.log(event.data);
+}
+
 const isAddModalOpen = ref(false);
 
 const isConfirmationModalOpen = ref(false);
+const isActivateDeactivateModalOpen = ref(false);
 
 definePageMeta({
   layout: "dashboard-layout",
@@ -210,6 +256,9 @@ const columns = [
   {
     key: "period",
     label: "Period",
+  },
+  {
+    key: "actions",
   },
 ];
 
@@ -255,6 +304,34 @@ const services = [
     period: "daily",
   },
 ];
+
+const items = (row) => [
+  [
+    {
+      label: "Edit",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => {
+        console.log("Edit", row.id);
+      },
+    },
+    {
+      label: "Delete",
+      icon: "i-heroicons-trash-20-solid",
+      click: () => {
+        console.log("Delete", row.id);
+        isConfirmationModalOpen.value = true;
+      },
+    },
+    {
+      label: "Deactivate",
+      icon: "i-heroicons-lock-closed",
+      click: () => {
+        console.log("Delete", row.id);
+        isActivateDeactivateModalOpen.value = true;
+      },
+    },
+  ],
+];
 const selected = ref([services[1]]);
 
 const q = ref("");
@@ -264,8 +341,8 @@ const filteredRows = computed(() => {
     return services;
   }
 
-  return services.filter((person) => {
-    return Object.values(person).some((value) => {
+  return services.filter((service) => {
+    return Object.values(service).some((value) => {
       return String(value).toLowerCase().includes(q.value.toLowerCase());
     });
   });
