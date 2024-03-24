@@ -6,19 +6,17 @@ const links = [
     {
       label: "Services",
       icon: "i-heroicons-cog-6-tooth",
-      to: "/getting-started/installation",
+      to: "/company/dashboard/home",
     },
     {
       label: "Subscriptions",
       icon: "i-heroicons-credit-card",
-      to: `${
-        route.path.startsWith("/dev") ? "/dev" : ""
-      }/components/horizontal-navigation`,
+      to: "/company/dashboard/subscriptions",
     },
     {
       label: "Users",
       icon: "i-heroicons-user",
-      to: "/components/command-palette",
+      to: "/company/dashboard/users",
     },
   ],
   //  [{
