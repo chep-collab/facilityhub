@@ -1,9 +1,11 @@
 <template>
-    <div>
-      <p>This is the header</p>
-      
-      <p>This is the dashboard tab</p>
-      <slot />
-      <p>This is the footer</p>
-    </div>
-  </template>
+  <div>
+    <body class="flex items-center justify-center h-screen">
+      <div class="text-center">
+        <slot />
+      </div>
+    </body>
+
+    <Footer />
+  </div>
+</template>
