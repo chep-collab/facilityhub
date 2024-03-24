@@ -53,4 +53,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </div>
     </template>
   </UCard>
+  <br />
+  <ULink to="/">Home</ULink>
 </template>
