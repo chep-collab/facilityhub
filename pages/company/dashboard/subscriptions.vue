@@ -5,34 +5,6 @@
         class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
       >
         <UInput v-model="q" placeholder="Filter subscriptions..." />
-        <div>
-          <UButton
-            icon="i-heroicons-plus"
-            size="sm"
-            color="blue"
-            variant="ghost"
-            label="Add"
-            :trailing="false"
-          />
-
-          <UButton
-            icon="i-heroicons-pencil-square"
-            size="sm"
-            color="blue"
-            variant="ghost"
-            label="Edit"
-            :trailing="false"
-          />
-
-          <UButton
-            icon="i-heroicons-trash"
-            size="sm"
-            color="red"
-            variant="ghost"
-            label="Delete"
-            :trailing="false"
-          />
-        </div>
       </div>
 
       <UTable
@@ -55,12 +27,98 @@
           <UAvatar :src="row.receiptUrl" alt="-" />
         </template>
         <template #startDate-data="{ row }">
-          {{ formatDate(row.startDate) }}</template
-        >
-        <template #endDate-data="{ row }"
-          >{{ formatDate(row.endDate) }}
+          <span>{{ formatDate(row.startDate) }}</span>
+          <br />to
+          <br />
+          <span>{{ formatDate(row.endDate) }}</span>
+        </template>
+
+        <template #actions-data="{ row }">
+          <UDropdown :items="items(row)">
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-ellipsis-horizontal-20-solid"
+            />
+          </UDropdown>
         </template>
       </UTable>
+
+      <div>
+        <UModal v-model="isActivateModalOpen" prevent-close>
+          <UCard
+            :ui="{
+              ring: '',
+              divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+            }"
+          >
+            <template #header>
+              <div class="flex items-center justify-between">
+                <h3
+                  class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+                >
+                  Please confirm
+                </h3>
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  icon="i-heroicons-x-mark-20-solid"
+                  class="-my-1"
+                  @click="isActivateModalOpen = false"
+                />
+              </div>
+            </template>
+            <div>
+              <UForm
+                :schema="schema"
+                :state="state"
+                class="space-y-4"
+                @submit="onSubmitSubscriptionActivationRequest"
+              >
+                <div>Are you sure you want to activate this subscription?</div>
+
+                <UButton type="submit"> Submit </UButton>
+              </UForm>
+            </div>
+          </UCard>
+        </UModal>
+      </div>
+
+      <div>
+        <UButton label="Open" @click="isReceiptUploadModalOpen = true" />
+
+        <UModal v-model="isReceiptUploadModalOpen" prevent-close>
+          <UCard
+            :ui="{
+              ring: '',
+              divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+            }"
+          >
+            <template #header>
+              <div class="flex items-center justify-between">
+                <h3
+                  class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+                >
+                  Upload receipt
+                </h3>
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  icon="i-heroicons-x-mark-20-solid"
+                  class="-my-1"
+                  @click="isReceiptUploadModalOpen = false"
+                />
+              </div>
+            </template>
+
+            <UFormGroup label="Selext receipt" name="receipt">
+              <UInput type="file" size="sm" model-value="" />
+            </UFormGroup>
+            <br />
+            <UButton type="submit" block> Upload </UButton>
+          </UCard>
+        </UModal>
+      </div>
     </div>
   </div>
 </template>
@@ -100,9 +158,12 @@ const columns = [
     key: "startDate",
     label: "Start Date",
   },
+  // {
+  //   key: "endDate",
+  //   label: "End Date",
+  // },
   {
-    key: "endDate",
-    label: "End Date",
+    key: "actions",
   },
 ];
 
@@ -177,4 +238,35 @@ const filteredRows = computed(() => {
     });
   });
 });
+
+const isActivateModalOpen = ref(false);
+const isReceiptUploadModalOpen = ref(false);
+
+const items = (row) => [
+  [
+    {
+      label: "Activate",
+      icon: "i-heroicons-lock-closed",
+      click: () => {
+        console.log("Delete", row.id);
+        isActivateModalOpen.value = true;
+      },
+    },
+    {
+      label: "Upload receipt",
+      icon: "i-heroicons-receipt-percent",
+      click: () => {
+        console.log("Upload", row.id);
+        isReceiptUploadModalOpen.value = true;
+      },
+    },
+  ],
+];
+
+const onSubmitSubscriptionActivationRequest = () => {
+  console.log(5555);
+};
+const onSubmitReceiptUploadRequest = () => {
+  console.log(5555);
+};
 </script>
