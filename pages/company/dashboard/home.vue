@@ -38,6 +38,33 @@
           >
         </template>
 
+        <template #status-data="{ row }">
+          <span :class="row.status ? 'text-green-500' : 'text-red-500'">
+            {{ row.status == true ? "Active" : "Inactive" }}
+          </span>
+        </template>
+
+        <template #description-data="{ row }">
+          <div class="flex flex-row">
+            <span>
+              {{ row.description.substring(0, 15) }}
+            </span>
+            <UPopover mode="hover">
+              <UButton
+                color="white"
+                variant="ghost"
+                trailing-icon="i-heroicons-chevron-down-20-solid"
+              />
+
+              <template #panel>
+                <div class="p-4">
+                  {{ row.description }}
+                </div>
+              </template>
+            </UPopover>
+          </div>
+        </template>
+
         <template #actions-data="{ row }">
           <UDropdown :items="items(row)">
             <UButton
@@ -267,7 +294,7 @@ const services = [
     id: 1,
     services: "Daily workspace",
     description: "Use the workspace from 9-5 for 1 day",
-    status: "active",
+    status: true,
     amount: 2000,
     period: "daily",
   },
@@ -275,7 +302,7 @@ const services = [
     id: 2,
     services: "Daily workspace",
     description: "Use the workspace from 9-5 for 1 day",
-    status: "active",
+    status: false,
     amount: 2000,
     period: "daily",
   },
@@ -283,7 +310,7 @@ const services = [
     id: 3,
     services: "Daily workspace",
     description: "Use the workspace from 9-5 for 1 day",
-    status: "active",
+    status: true,
     amount: 2000,
     period: "daily",
   },
@@ -291,7 +318,7 @@ const services = [
     id: 4,
     services: "Daily workspace",
     description: "Use the workspace from 9-5 for 1 day",
-    status: "active",
+    status: true,
     amount: 2000,
     period: "daily",
   },
@@ -299,7 +326,7 @@ const services = [
     id: 5,
     services: "Daily workspace",
     description: "Use the workspace from 9-5 for 1 day",
-    status: "active",
+    status: true,
     amount: 2000,
     period: "daily",
   },

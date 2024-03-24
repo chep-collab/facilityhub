@@ -4,7 +4,7 @@
       <div
         class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
       >
-        <UInput v-model="q" placeholder="Filter services..." />
+        <UInput v-model="q" placeholder="Filter subscriptions..." />
         <div>
           <UButton
             icon="i-heroicons-plus"
@@ -44,12 +44,29 @@
         :rows="filteredRows"
         :columns="columns"
         @select="selected"
-      />
+      >
+        <template #status-data="{ row }">
+          <span :class="row.status ? 'text-green-500' : 'text-red-500'">
+            {{ row.status == true ? "Active" : "Inactive" }}
+          </span>
+        </template>
+
+        <template #receiptUrl-data="{ row }">
+          <UAvatar :src="row.receiptUrl" alt="-" />
+        </template>
+        <template #startDate-data="{ row }">
+          {{ formatDate(row.startDate) }}</template
+        >
+        <template #endDate-data="{ row }"
+          >{{ formatDate(row.endDate) }}
+        </template>
+      </UTable>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { formatDate } from "../../../common/dataFormatter";
 definePageMeta({
   layout: "dashboard-layout",
 });
@@ -89,13 +106,13 @@ const columns = [
   },
 ];
 
-const services = [
+const subscriptions = [
   {
     id: 1,
     fullName: "Daniel Sumah",
     service: "Daily Workspace",
     amount: 2000,
-    status: "inactive",
+    status: true,
     receiptUrl:
       "https://firebasestorage.googleapis.com/v0/b/workspace-6cc0b.appspot.com/o/subscription-receipts%2Freceipt-deji-mailinator-com-2024-03-23-t-09-23-21-711-z?alt=media&token=214cb807-85a7-4519-b0bf-59802802eb24",
     startDate: "2024-03-22 15:58:39.247",
@@ -106,9 +123,8 @@ const services = [
     fullName: "Daniel Sumah",
     service: "Daily Workspace",
     amount: 2000,
-    status: "inactive",
-    receiptUrl:
-      "https://firebasestorage.googleapis.com/v0/b/workspace-6cc0b.appspot.com/o/subscription-receipts%2Freceipt-deji-mailinator-com-2024-03-23-t-09-23-21-711-z?alt=media&token=214cb807-85a7-4519-b0bf-59802802eb24",
+    status: false,
+    receiptUrl: null,
     startDate: "2024-03-22 15:58:39.247",
     endDate: "2024-03-22 15:58:39.247",
   },
@@ -117,7 +133,7 @@ const services = [
     fullName: "Daniel Sumah",
     service: "Daily Workspace",
     amount: 2000,
-    status: "inactive",
+    status: true,
     receiptUrl:
       "https://firebasestorage.googleapis.com/v0/b/workspace-6cc0b.appspot.com/o/subscription-receipts%2Freceipt-deji-mailinator-com-2024-03-23-t-09-23-21-711-z?alt=media&token=214cb807-85a7-4519-b0bf-59802802eb24",
     startDate: "2024-03-22 15:58:39.247",
@@ -128,7 +144,7 @@ const services = [
     fullName: "Daniel Sumah",
     service: "Daily Workspace",
     amount: 2000,
-    status: "inactive",
+    status: true,
     receiptUrl:
       "https://firebasestorage.googleapis.com/v0/b/workspace-6cc0b.appspot.com/o/subscription-receipts%2Freceipt-deji-mailinator-com-2024-03-23-t-09-23-21-711-z?alt=media&token=214cb807-85a7-4519-b0bf-59802802eb24",
     startDate: "2024-03-22 15:58:39.247",
@@ -139,23 +155,23 @@ const services = [
     fullName: "Daniel Sumah",
     service: "Daily Workspace",
     amount: 2000,
-    status: "inactive",
+    status: true,
     receiptUrl:
       "https://firebasestorage.googleapis.com/v0/b/workspace-6cc0b.appspot.com/o/subscription-receipts%2Freceipt-deji-mailinator-com-2024-03-23-t-09-23-21-711-z?alt=media&token=214cb807-85a7-4519-b0bf-59802802eb24",
     startDate: "2024-03-22 15:58:39.247",
     endDate: "2024-03-22 15:58:39.247",
   },
 ];
-const selected = ref([services[1]]);
+const selected = ref([subscriptions[1]]);
 
 const q = ref("");
 
 const filteredRows = computed(() => {
   if (!q.value) {
-    return services;
+    return subscriptions;
   }
 
-  return services.filter((person) => {
+  return subscriptions.filter((person) => {
     return Object.values(person).some((value) => {
       return String(value).toLowerCase().includes(q.value.toLowerCase());
     });
