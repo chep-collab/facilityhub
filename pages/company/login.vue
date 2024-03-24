@@ -46,7 +46,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     <template #footer>
       <div class="flex flex-row justify-around gap-8">
         <ULink to="/company/signup">Signup</ULink>
-        <ULink>Forgot Password</ULink>
+        <ULink to="/forgot-password">Forgot Password</ULink>
       </div>
     </template>
   </UCard>

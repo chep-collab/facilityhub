@@ -3,8 +3,10 @@ import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 
 const schema = object({
-  email: string().email("Invalid email").required("Required"),
   password: string()
+    .min(8, "Must be at least 8 characters")
+    .required("Required"),
+  confirmPassword: string()
     .min(8, "Must be at least 8 characters")
     .required("Required"),
 });
@@ -12,8 +14,8 @@ const schema = object({
 type Schema = InferType<typeof schema>;
 
 const state = reactive({
-  email: undefined,
   password: undefined,
+  confirmPassword: undefined,
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -24,7 +26,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
 <template>
   <UCard>
-    <template #header> User Login </template>
+    <template #header> Enter new password </template>
     <div>
       <UForm
         :schema="schema"
@@ -32,24 +34,22 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         class="space-y-4"
         @submit="onSubmit"
       >
-        <UFormGroup label="Email" name="email">
-          <UInput v-model="state.email" />
-        </UFormGroup>
-
         <UFormGroup label="Password" name="password">
           <UInput v-model="state.password" type="password" />
         </UFormGroup>
 
-        <UButton type="submit" block> Login </UButton>
+        <UFormGroup label="Password" name="password">
+          <UInput v-model="state.confirmPassword" type="password" />
+        </UFormGroup>
+
+        <UButton type="submit" block> Submit </UButton>
       </UForm>
     </div>
     <template #footer>
       <div class="flex flex-row justify-around gap-8">
-        <ULink to="/user/signup">Signup</ULink>
-        <ULink to="/forgot-password">Forgot Password</ULink>
+        <ULink to="/">Home</ULink>
       </div>
     </template>
   </UCard>
   <br />
-  <ULink to="/">Home</ULink>
 </template>
