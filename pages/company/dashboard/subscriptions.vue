@@ -85,8 +85,6 @@
       </div>
 
       <div>
-        <UButton label="Open" @click="isReceiptUploadModalOpen = true" />
-
         <UModal v-model="isReceiptUploadModalOpen" prevent-close>
           <UCard
             :ui="{
