@@ -1,8 +1,9 @@
 <template>
     <div>
-      <h1>Welcome to the homepage</h1>
+      <br>
       <AppAlert>
         This is an auto-imported component
-      </AppAlert>
+        <UButton color="primary" variant="solid">Button</UButton>
+        </AppAlert>
     </div>
   </template>
