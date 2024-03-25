@@ -3,6 +3,8 @@ import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 import { handleErrorMessages } from "../../common/errorHandlers";
 import { useRouter } from "vue-router";
+
+const activeUser = useActiveUser();
 const runtimeConfig = useRuntimeConfig();
 
 const router = useRouter();
@@ -35,6 +37,23 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     state.email = undefined;
     state.password = undefined;
     localStorage.setItem("accessToken", data.value.accessToken);
+
+    activeUser.value = "user";
+
+    //fetch user data
+    const { data: dataWithDetails, error: detailsError } = await useFetch(
+      "/user/me",
+      {
+        baseURL: runtimeConfig.public.apiUrl,
+        onRequest({ request, options }) {
+          options.headers = options.headers || {};
+          options.headers.authorization = "Bearer " + data.value.accessToken;
+        },
+      }
+    );
+
+    if (detailsError.value) throw detailsError.value.data.message;
+
     router.push("/user/dashboard/home");
   } catch (error: any) {
     if (error) {
