@@ -4,7 +4,7 @@ const accessToken = ref(localStorage.getItem("accessToken"));
 
 <template>
   <div>
-    <h1>Company Login</h1>
+    <h1>User Login</h1>
     <AppAlert>
       User token
       {{ accessToken }}

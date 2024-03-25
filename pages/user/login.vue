@@ -3,6 +3,7 @@ import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 import { handleErrorMessages } from "../../common/errorHandlers";
 import { useRouter } from "vue-router";
+const runtimeConfig = useRuntimeConfig();
 
 const router = useRouter();
 const toast = useToast();
@@ -28,7 +29,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     const { data, error } = await useFetch("/user/login", {
       method: "POST",
       body: { email: state.email, password: state.password },
-      baseURL: "http://localhost:5000",
+      baseURL: runtimeConfig.public.apiUrl,
     });
     if (error.value) throw error.value.data.message;
     state.email = undefined;
@@ -66,7 +67,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UInput v-model="state.password" type="password" />
         </UFormGroup>
 
-        <UButton type="submit" block>
+        <UButton :loading="pending" :disabled="pending" type="submit" block>
           {{ pending ? "Loding" : "Submit" }}
         </UButton>
       </UForm>
