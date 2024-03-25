@@ -122,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-import { formatDate } from "../../../common/dataFormatter";
+import { formatDate } from "../../common/dataFormatter";
 definePageMeta({
   layout: "dashboard-layout",
 });
