@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
+import { handleErrorMessages } from "../../common/errorHandlers";
+import { useRouter } from "vue-router";
+const runtimeConfig = useRuntimeConfig();
+
+const router = useRouter();
+const toast = useToast();
 
 const schema = object({
   email: string().email("Invalid email").required("Required"),
@@ -8,6 +14,8 @@ const schema = object({
     .min(8, "Must be at least 8 characters")
     .required("Required"),
 });
+
+const pending = ref(false);
 
 type Schema = InferType<typeof schema>;
 
@@ -17,8 +25,28 @@ const state = reactive({
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with event.data
-  console.log(event.data);
+  try {
+    pending.value = true;
+    const { data, error } = await useFetch("/company/login", {
+      method: "POST",
+      body: { email: state.email, password: state.password },
+      baseURL: runtimeConfig.public.apiUrl,
+    });
+    if (error.value) throw error.value.data.message;
+    state.email = undefined;
+    state.password = undefined;
+    localStorage.setItem("accessToken", data.value.accessToken);
+    router.push("/company/dashboard/home");
+  } catch (error: any) {
+    if (error) {
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  } finally {
+    pending.value = false;
+  }
 }
 </script>
 
@@ -40,8 +68,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UInput v-model="state.password" type="password" />
         </UFormGroup>
 
-        <UButton to="/company/dashboard/home" block> Login </UButton>
-        <!-- <UButton type="submit" block> Login </UButton> -->
+        <UButton type="submit" :loading="pending" :disabled="pending" block>
+          Login
+        </UButton>
       </UForm>
     </div>
     <template #footer>
