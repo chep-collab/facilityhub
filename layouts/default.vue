@@ -1,6 +1,6 @@
 <template>
   <div>
-    <body class="flex items-center justify-center h-screen">
+    <body class="flex items-center justify-center h-screen max-w-full">
       <div class="text-center">
         <slot />
       </div>

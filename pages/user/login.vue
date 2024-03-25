@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
+import { handleErrorMessages } from "../../common/errorHandlers";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const toast = useToast();
 
 const schema = object({
   email: string().email("Invalid email").required("Required"),
@@ -11,20 +16,41 @@ const schema = object({
 
 type Schema = InferType<typeof schema>;
 
+const pending = ref(false);
 const state = reactive({
   email: undefined,
   password: undefined,
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with event.data
-  console.log(event.data);
+  try {
+    pending.value = true;
+    const { data, error } = await useFetch("/user/login", {
+      method: "POST",
+      body: { email: state.email, password: state.password },
+      baseURL: "http://localhost:5000",
+    });
+    if (error.value) throw error.value.data.message;
+    state.email = undefined;
+    state.password = undefined;
+    localStorage.setItem("accessToken", data.value.accessToken);
+    router.push("/user/dashboard/home");
+  } catch (error: any) {
+    if (error) {
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  } finally {
+    pending.value = false;
+  }
 }
 </script>
 
 <template>
   <UCard>
-    <template #header> User Login </template>
+    <template #header> User Login</template>
     <div>
       <UForm
         :schema="schema"
@@ -40,7 +66,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UInput v-model="state.password" type="password" />
         </UFormGroup>
 
-        <UButton type="submit" block> Login </UButton>
+        <UButton type="submit" block>
+          {{ pending ? "Loding" : "Submit" }}
+        </UButton>
       </UForm>
     </div>
     <template #footer>
