@@ -1,6 +1,8 @@
 <script setup lang="ts">
-const route = useRoute();
-const activeUser = useActiveUser();
+import { storeToRefs } from "pinia";
+
+const activeUserStore = useActiveUserStore();
+const { userType } = storeToRefs(activeUserStore);
 
 const companyTabs = [
   {
@@ -33,9 +35,9 @@ const userTabs = [
   },
 ];
 const links =
-  activeUser === "company"
+  userType.value == "company"
     ? companyTabs
-    : activeUser === "user"
+    : userType.value == "user"
     ? userTabs
     : [];
 </script>

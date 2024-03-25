@@ -3,6 +3,10 @@ import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 import { handleErrorMessages } from "../../common/errorHandlers";
 import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
+
+const activeUserStore = useActiveUserStore();
+const { userType, userDetails } = storeToRefs(activeUserStore);
 
 const activeUser = useActiveUser();
 const runtimeConfig = useRuntimeConfig();
@@ -38,7 +42,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     state.password = undefined;
     localStorage.setItem("accessToken", data.value.accessToken);
 
-    activeUser.value = "user";
+    // activeUser.value = "user";
+    userType.value = "user";
 
     //fetch user data
     const { data: dataWithDetails, error: detailsError } = await useFetch(
@@ -53,7 +58,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     );
 
     if (detailsError.value) throw detailsError.value.data.message;
-
+    userDetails.value = dataWithDetails.value;
     router.push("/dashboard/home");
   } catch (error: any) {
     if (error) {
