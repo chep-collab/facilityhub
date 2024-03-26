@@ -17,7 +17,6 @@
           />
         </div>
       </div>
-
       <UTable
         v-model="selected"
         :empty-state="{
@@ -38,9 +37,15 @@
           >
         </template>
 
-        <template #status-data="{ row }">
-          <span :class="row.status ? 'text-green-500' : 'text-red-500'">
-            {{ row.status == true ? "Active" : "Inactive" }}
+        <template #amount-data="{ row }">
+          <span>{{ formatToNaira(row.amount) }} </span>
+        </template>
+
+        <template #isActive-data="{ row }">
+          <span
+            :class="row.isActive == true ? 'text-green-500' : 'text-red-500'"
+          >
+            {{ row.isActive == true ? "Active" : "Inactive" }}
           </span>
         </template>
 
@@ -211,9 +216,19 @@
 </template>
 
 <script setup lang="ts">
+import { formatToNaira } from "../../common/moneyConverter";
+
 //form validation
 import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
+
+//store import
+import { storeToRefs } from "pinia";
+const companyServiceStore = useCompanyServiceStore();
+const { services: companyServices, getCompanyServices } =
+  storeToRefs(companyServiceStore);
+
+await companyServiceStore.fetchCompanyServices();
 
 const schema = object({
   email: string().email("Invalid email").required("Required"),
@@ -236,17 +251,14 @@ const periods = ["daily", "weekly", "monthly"];
 const period = ref(periods[0]);
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with event.data
   console.log(event.data);
 }
 
 async function onSubmitDeleteRequest(event: FormSubmitEvent<Schema>) {
-  // Do something with event.data
   console.log(event.data);
 }
 
 async function onSubmitStatusChangeRequest(event: FormSubmitEvent<Schema>) {
-  // Do something with event.data
   console.log(event.data);
 }
 
@@ -265,7 +277,7 @@ const columns = [
     label: "ID",
   },
   {
-    key: "services",
+    key: "service",
     label: "Services",
   },
   {
@@ -273,7 +285,7 @@ const columns = [
     label: "Description",
   },
   {
-    key: "status",
+    key: "isActive",
     label: "Status",
   },
   {
@@ -286,49 +298,6 @@ const columns = [
   },
   {
     key: "actions",
-  },
-];
-
-const services = [
-  {
-    id: 1,
-    services: "Daily workspace",
-    description: "Use the workspace from 9-5 for 1 day",
-    status: true,
-    amount: 2000,
-    period: "daily",
-  },
-  {
-    id: 2,
-    services: "Daily workspace",
-    description: "Use the workspace from 9-5 for 1 day",
-    status: false,
-    amount: 2000,
-    period: "daily",
-  },
-  {
-    id: 3,
-    services: "Daily workspace",
-    description: "Use the workspace from 9-5 for 1 day",
-    status: true,
-    amount: 2000,
-    period: "daily",
-  },
-  {
-    id: 4,
-    services: "Daily workspace",
-    description: "Use the workspace from 9-5 for 1 day",
-    status: true,
-    amount: 2000,
-    period: "daily",
-  },
-  {
-    id: 5,
-    services: "Daily workspace",
-    description: "Use the workspace from 9-5 for 1 day",
-    status: true,
-    amount: 2000,
-    period: "daily",
   },
 ];
 
@@ -359,16 +328,16 @@ const items = (row) => [
     },
   ],
 ];
-const selected = ref([services[1]]);
+const selected = ref([]);
 
 const q = ref("");
 
 const filteredRows = computed(() => {
   if (!q.value) {
-    return services;
+    return getCompanyServices.value;
   }
 
-  return services.filter((service) => {
+  return getCompanyServices.value.filter((service) => {
     return Object.values(service).some((value) => {
       return String(value).toLowerCase().includes(q.value.toLowerCase());
     });

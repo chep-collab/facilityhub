@@ -20,4 +20,5 @@ export const useActiveUserStore = defineStore({
       return state.userDetails;
     },
   },
+  persist: true,
 });

@@ -8,9 +8,9 @@ const router = useRoute();
 <template>
   <div>
     <div class="py-3 px-3 flex flex-row justify-between">
-      <h1 class="w-12">
+      <h1 class="w-full">
         Workspaces
-
+        <br />
         <span v-if="userType == 'user'">{{
           `${getUserDetails.firstName} ${getUserDetails.lastName}`
         }}</span>
@@ -18,7 +18,10 @@ const router = useRoute();
       </h1>
       <div class="flex flex-row gap-4">
         <UButton color="white" variant="solid">Profile</UButton>
-        <UButton to="/company/login" color="white" variant="solid"
+        <UButton
+          :to="userType == 'company' ? '/company/login' : '/user/login'"
+          color="white"
+          variant="solid"
           >Logout</UButton
         >
       </div>

@@ -8,7 +8,7 @@ const companyTabs = [
   {
     label: "Services",
     icon: "i-heroicons-cog-6-tooth",
-    to: "/dashboard/home",
+    to: "/dashboard",
   },
   {
     label: "Subscriptions",
@@ -26,7 +26,7 @@ const userTabs = [
   {
     label: "My Subscriptions",
     icon: "i-heroicons-user",
-    to: "/dashboard/my-subscriptions",
+    to: "/dashboard",
   },
   {
     label: "My Centers",

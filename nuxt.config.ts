@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/ui",
     ["@pinia/nuxt", { autoImports: ["defineStore", "acceptHMRUpdate"] }],
+    "@pinia-plugin-persistedstate/nuxt",
   ],
   imports: {
     dirs: ["stores"],

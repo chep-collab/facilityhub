@@ -59,7 +59,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     if (detailsError.value) throw detailsError.value.data.message;
     userDetails.value = dataWithDetails.value;
-    router.push("/dashboard/home");
+    router.push("/dashboard");
   } catch (error: any) {
     if (error) {
       toast.add({
