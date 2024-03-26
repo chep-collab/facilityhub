@@ -17,7 +17,6 @@
           />
         </div>
       </div>
-      {{ getFetchingCompanyServicesLoadingState }}
       <UTable
         :loading="getFetchingCompanyServicesLoadingState"
         v-model="selected"
