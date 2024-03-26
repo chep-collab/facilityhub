@@ -17,7 +17,9 @@
           />
         </div>
       </div>
+      {{ getFetchingCompanyServicesLoadingState }}
       <UTable
+        :loading="getFetchingCompanyServicesLoadingState"
         v-model="selected"
         :empty-state="{
           icon: 'i-heroicons-circle-stack-20-solid',
@@ -225,8 +227,11 @@ import type { FormSubmitEvent } from "#ui/types";
 //store import
 import { storeToRefs } from "pinia";
 const companyServiceStore = useCompanyServiceStore();
-const { services: companyServices, getCompanyServices } =
-  storeToRefs(companyServiceStore);
+const {
+  services: companyServices,
+  getCompanyServices,
+  getFetchingCompanyServicesLoadingState,
+} = storeToRefs(companyServiceStore);
 
 await companyServiceStore.fetchCompanyServices();
 

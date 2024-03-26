@@ -13,8 +13,6 @@ export const useCompanyServiceStore = defineStore({
       try {
         this.fetchingServices = true;
         const { data, error } = await useFetch("/company-service", {
-          // method: "POST",
-          key: new Date().toISOString(),
           baseURL: runtimeConfig.public.apiUrl,
           onRequest({ request, options }) {
             options.headers = options.headers || {};
@@ -46,6 +44,9 @@ export const useCompanyServiceStore = defineStore({
   getters: {
     getCompanyServices: (state) => {
       return state.services;
+    },
+    getFetchingCompanyServicesLoadingState: (state) => {
+      return state.fetchingServices;
     },
   },
 });
