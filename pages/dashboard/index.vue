@@ -112,9 +112,9 @@
             :schema="schema"
             :state="state"
             class="space-y-4"
-            @submit="onSubmit"
+            @submit="createNewCompanyService"
           >
-            <UFormGroup label="Service Name" name="service">
+            <UFormGroup label="Service Name" name="name">
               <UInput v-model="state.name" />
             </UFormGroup>
 
@@ -127,10 +127,16 @@
             </UFormGroup>
 
             <UFormGroup label="Period" name="period">
-              <USelect v-model="period" :options="periods" />
+              <USelect v-model="state.period" :options="periods" />
             </UFormGroup>
 
-            <UButton type="submit"> Submit </UButton>
+            <UButton
+              :loading="getCreatingCompanyServicesLoadingState"
+              :disabled="getCreatingCompanyServicesLoadingState"
+              type="submit"
+            >
+              Submit
+            </UButton>
           </UForm>
         </div>
       </UCard>
@@ -220,7 +226,7 @@
 import { formatToNaira } from "../../common/moneyConverter";
 
 //form validation
-import { object, string, type InferType } from "yup";
+import { object, string, type InferType, number } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 
 //store import
@@ -230,32 +236,45 @@ const {
   services: companyServices,
   getCompanyServices,
   getFetchingCompanyServicesLoadingState,
+  getCreatingCompanyServicesLoadingState,
 } = storeToRefs(companyServiceStore);
 
 await companyServiceStore.fetchCompanyServices();
 
 const schema = object({
-  email: string().email("Invalid email").required("Required"),
-  password: string()
-    .min(8, "Must be at least 8 characters")
-    .required("Required"),
+  name: string().required("Required"),
+  description: string().required("Required"),
+  amount: number().required("Required"),
+  period: string().required("Required"),
 });
 
 type Schema = InferType<typeof schema>;
+
+const periods = ["daily", "weekly", "monthly"];
 
 const state = reactive({
   name: undefined,
   description: undefined,
   amount: undefined,
-  period: undefined,
+  period: periods[0],
 });
 
-const periods = ["daily", "weekly", "monthly"];
+// const period = ref();
 
-const period = ref(periods[0]);
+async function createNewCompanyService(event: FormSubmitEvent<Schema>) {
+  const payload = event.data;
+  await companyServiceStore.createNewService(
+    payload.name,
+    payload.description,
+    payload.amount,
+    payload.period
+  );
+  state.name = undefined;
+  state.description = undefined;
+  state.amount = undefined;
+  state.period = undefined;
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data);
+  isAddModalOpen.value = false;
 }
 
 async function onSubmitDeleteRequest(event: FormSubmitEvent<Schema>) {
