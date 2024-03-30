@@ -272,7 +272,7 @@ async function createNewCompanyService(event: FormSubmitEvent<Schema>) {
   state.name = undefined;
   state.description = undefined;
   state.amount = undefined;
-  state.period = undefined;
+  state.period = "daily";
 
   isAddModalOpen.value = false;
 }
