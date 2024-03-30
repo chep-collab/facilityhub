@@ -7,6 +7,8 @@ export const useCompanyServiceStore = defineStore({
       services: [] as any[],
       fetchingServices: false,
       creatingService: false,
+      subscriptionIdToUpdate: "",
+      isActivateModalOpen: false,
     };
   },
   actions: {

@@ -7,6 +7,7 @@ export const useSubscriptionStore = defineStore({
       subscriptions: [] as any[],
       fetchingSubscriptions: false,
       creatingASubscription: false,
+      changingSubscriptionStatus: false,
     };
   },
   actions: {
@@ -39,6 +40,23 @@ export const useSubscriptionStore = defineStore({
         this.fetchingSubscriptions = false;
       }
     },
+
+    async activateSubscription(subscriptionId: string, newStatus: boolean) {
+      try {
+        this.changingSubscriptionStatus = true;
+        const response = await useNuxtApp().$axios.patch(
+          `/subscription/${subscriptionId}`,
+          {
+            isActive: newStatus,
+          }
+        );
+        await this.fetchCompanySubscriptions();
+      } catch (error: any) {
+        throw error;
+      } finally {
+        this.changingSubscriptionStatus = false;
+      }
+    },
   },
   getters: {
     getSubscriptions: (state) => {
@@ -46,6 +64,9 @@ export const useSubscriptionStore = defineStore({
     },
     getSubscriptionsFetchingStatus: (state) => {
       return state.fetchingSubscriptions;
+    },
+    getSubscriptionsStatusChangingStatus: (state) => {
+      return state.changingSubscriptionStatus;
     },
   },
 });

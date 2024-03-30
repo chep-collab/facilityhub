@@ -1,9 +1,14 @@
 <script setup lang="ts">
-const subscriptionStore = useSubscriptionStore();
-const { getSubscriptions, getSubscriptionsFetchingStatus } =
-  storeToRefs(subscriptionStore);
-
+import { handleErrorMessages } from "~/common/errorHandlers";
 import { formatDate } from "../../common/dataFormatter";
+const subscriptionStore = useSubscriptionStore();
+const { getUserType } = useActiveUserStore();
+const {
+  getSubscriptions,
+  getSubscriptionsFetchingStatus,
+  getSubscriptionsStatusChangingStatus,
+} = storeToRefs(subscriptionStore);
+
 definePageMeta({
   layout: "dashboard-layout",
 });
@@ -61,29 +66,49 @@ const filteredRows = computed(() => {
 const isActivateModalOpen = ref(false);
 const isReceiptUploadModalOpen = ref(false);
 
-const items = (row) => [
+const companyMenus = (row) => [
   [
     {
       label: "Activate",
       icon: "i-heroicons-lock-closed",
       click: () => {
-        console.log("Delete", row.id);
+        subscriptionIdToUpdate.value = row.id;
         isActivateModalOpen.value = true;
       },
     },
+  ],
+];
+
+const userMenus = (row) => [
+  [
     {
       label: "Upload receipt",
       icon: "i-heroicons-receipt-percent",
       click: () => {
-        console.log("Upload", row.id);
         isReceiptUploadModalOpen.value = true;
       },
     },
   ],
 ];
 
-const onSubmitSubscriptionActivationRequest = () => {
-  console.log(5555);
+const items = getUserType === "company" ? companyMenus : userMenus;
+const subscriptionIdToUpdate = ref("");
+const onSubmitSubscriptionActivationRequest = async () => {
+  try {
+    await subscriptionStore.activateSubscription(
+      subscriptionIdToUpdate.value,
+      true
+    );
+    isActivateModalOpen.value = false;
+  } catch (error: any) {
+    if (error) {
+      const toast = useToast();
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  }
 };
 const onSubmitReceiptUploadRequest = () => {
   console.log(5555);
@@ -185,16 +210,16 @@ await subscriptionStore.fetchCompanySubscriptions();
               </div>
             </template>
             <div>
-              <UForm
-                :schema="schema"
-                :state="state"
-                class="space-y-4"
-                @submit="onSubmitSubscriptionActivationRequest"
-              >
+              <div class="space-y-4">
                 <div>Are you sure you want to activate this subscription?</div>
 
-                <UButton type="submit"> Submit </UButton>
-              </UForm>
+                <UButton
+                  :loading="getSubscriptionsStatusChangingStatus"
+                  @click="onSubmitSubscriptionActivationRequest"
+                >
+                  Submit
+                </UButton>
+              </div>
             </div>
           </UCard>
         </UModal>
