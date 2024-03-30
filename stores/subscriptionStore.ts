@@ -14,7 +14,13 @@ export const useSubscriptionStore = defineStore({
     async fetchCompanySubscriptions() {
       try {
         this.fetchingSubscriptions = true;
-        const response = await useNuxtApp().$axios.get("/subscription/users");
+        let response;
+        const { getUserType } = useActiveUserStore();
+        if (getUserType === "company") {
+          response = await this.getCompanySubscriptions();
+        } else {
+          response = await this.getAUsersSubscriptions();
+        }
         const res = [];
         for (let i = 0; i < response.data.length; i++) {
           const service = response.data[i];
@@ -39,6 +45,14 @@ export const useSubscriptionStore = defineStore({
       } finally {
         this.fetchingSubscriptions = false;
       }
+    },
+
+    async getCompanySubscriptions() {
+      return await useNuxtApp().$axios.get("/subscription/users");
+    },
+
+    async getAUsersSubscriptions() {
+      return await useNuxtApp().$axios.get("/subscription");
     },
 
     async activateSubscription(subscriptionId: string, newStatus: boolean) {
