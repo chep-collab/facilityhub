@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { handleErrorMessages } from "~/common/errorHandlers";
 import { formatDate } from "../../common/dataFormatter";
+import { mixed, object } from "yup";
 const subscriptionStore = useSubscriptionStore();
 const { getUserType } = useActiveUserStore();
 const {
@@ -49,6 +50,28 @@ const columns = [
 
 // const selected = ref([subscriptions[1]]);
 
+const state = reactive({
+  file: undefined,
+});
+
+const schema = object({
+  file: mixed().required("File is required"),
+  // .test(
+  //   "fileType",
+  //   "Invalid file format. Only PDF or image files are allowed",
+  //   (value) => {
+  //     if (!value) return true;
+  //     const validTypes = [
+  //       "application/pdf",
+  //       "image/jpeg",
+  //       "image/png",
+  //       "image/gif",
+  //     ];
+  //     return validTypes.includes(value.type);
+  //   }
+  // ),
+});
+
 const q = ref("");
 
 const filteredRows = computed(() => {
@@ -65,7 +88,9 @@ const filteredRows = computed(() => {
 
 const isActivateModalOpen = ref(false);
 const isReceiptUploadModalOpen = ref(false);
+const isImageSlideOverOpen = ref(false);
 
+const receiptUrl = ref("");
 const companyMenus = (row) => [
   [
     {
@@ -85,7 +110,16 @@ const userMenus = (row) => [
       label: "Upload receipt",
       icon: "i-heroicons-receipt-percent",
       click: () => {
+        subscriptionIdToUpdate.value = row.id;
         isReceiptUploadModalOpen.value = true;
+      },
+    },
+    {
+      label: "View receipt",
+      icon: "i-heroicons-receipt-percent",
+      click: () => {
+        receiptUrl.value = row.receipt.url;
+        isImageSlideOverOpen.value = true;
       },
     },
   ],
@@ -110,8 +144,28 @@ const onSubmitSubscriptionActivationRequest = async () => {
     }
   }
 };
-const onSubmitReceiptUploadRequest = () => {
-  console.log(5555);
+
+const handleFileUpload = (event: any) => {
+  state.file = event.target.files[0];
+};
+
+const uploadSubscriptionReceipt = async () => {
+  try {
+    const formData = new FormData();
+    formData.append("file", state.file, state.file.name);
+    await subscriptionStore.uploadSubscriptionReceipt(
+      subscriptionIdToUpdate.value,
+      formData
+    );
+  } catch (error: any) {
+    if (error) {
+      const toast = useToast();
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  }
 };
 await subscriptionStore.fetchCompanySubscriptions();
 </script>
@@ -170,9 +224,6 @@ await subscriptionStore.fetchCompanySubscriptions();
           </span>
         </template>
 
-        <template #receiptUrl-data="{ row }">
-          <UAvatar :src="row.receiptUrl" alt="-" />
-        </template>
         <template #startDate-data="{ row }">
           <span>{{ formatDate(row.startDate) }}</span>
           <br />to
@@ -256,13 +307,36 @@ await subscriptionStore.fetchCompanySubscriptions();
               </div>
             </template>
 
-            <UFormGroup label="Selext receipt" name="receipt">
-              <UInput type="file" size="sm" model-value="" />
-            </UFormGroup>
-            <br />
-            <UButton type="submit" block> Upload </UButton>
+            <UForm
+              :schema="schema"
+              :state="state"
+              class="space-y-4"
+              @submit="uploadSubscriptionReceipt"
+            >
+              <UFormGroup label="Select receipt" name="file">
+                <UInput type="file" size="sm" v-on:change="handleFileUpload" />
+              </UFormGroup>
+              <!-- <input type="file" v-on:change="" /> -->
+              <br />
+              <UButton type="submit" block> Upload </UButton>
+            </UForm>
           </UCard>
         </UModal>
+      </div>
+
+      <div>
+        <USlideover v-model="isImageSlideOverOpen">
+          <div class="p-4 flex-1 justify-end">
+            <UButton
+              color="primary"
+              variant="ghost"
+              @click="isImageSlideOverOpen = false"
+            >
+              Close Receipt
+            </UButton>
+          </div>
+          <img :src="receiptUrl" class="w-full h-full" />
+        </USlideover>
       </div>
     </div>
   </div>

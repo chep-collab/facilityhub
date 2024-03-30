@@ -8,6 +8,7 @@ export const useSubscriptionStore = defineStore({
       fetchingSubscriptions: false,
       creatingASubscription: false,
       changingSubscriptionStatus: false,
+      uploadingSubscriptionReceipt: false,
     };
   },
   actions: {
@@ -53,6 +54,24 @@ export const useSubscriptionStore = defineStore({
 
     async getAUsersSubscriptions() {
       return await useNuxtApp().$axios.get("/subscription");
+    },
+
+    async uploadSubscriptionReceipt(
+      subscriptionId: string,
+      formData: FormData
+    ) {
+      try {
+        this.uploadingSubscriptionReceipt = true;
+        const response = await useNuxtApp().$axios.post(
+          `/subscription/${subscriptionId}/upload-receipt`,
+          formData
+        );
+        await this.fetchCompanySubscriptions();
+      } catch (error) {
+        throw error;
+      } finally {
+        this.uploadingSubscriptionReceipt = false;
+      }
     },
 
     async activateSubscription(subscriptionId: string, newStatus: boolean) {
