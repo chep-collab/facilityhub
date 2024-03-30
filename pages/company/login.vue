@@ -8,9 +8,6 @@ import { storeToRefs } from "pinia";
 const activeUserStore = useActiveUserStore();
 const { userType, userDetails } = storeToRefs(activeUserStore);
 
-const activeUser = useActiveUser();
-const runtimeConfig = useRuntimeConfig();
-
 const router = useRouter();
 const toast = useToast();
 
@@ -33,39 +30,22 @@ const state = reactive({
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     pending.value = true;
-
-    //login
-    const { data, error } = await useFetch("/company/login", {
-      method: "POST",
-      body: { email: state.email, password: state.password },
-      baseURL: runtimeConfig.public.apiUrl,
+    const response = await useNuxtApp().$axios.post("/company/login", {
+      email: state.email,
+      password: state.password,
     });
-    if (error.value) throw error.value.data.message;
+    const accessToken = response.data.accessToken;
     state.email = undefined;
     state.password = undefined;
-    localStorage.setItem("accessToken", data.value.accessToken);
+    localStorage.setItem("accessToken", accessToken);
 
-    // activeUser.value = "company";
     userType.value = "company";
-    //fetch user data
-    const { data: dataWithDetails, error: detailsError } = await useFetch(
-      "/company/me",
-      {
-        baseURL: runtimeConfig.public.apiUrl,
-        onRequest({ request, options }) {
-          options.headers = options.headers || {};
-          options.headers.authorization = "Bearer " + data.value.accessToken;
-        },
-      }
-    );
 
-    if (detailsError.value) throw detailsError.value.data.message;
-    userDetails.value = dataWithDetails.value;
-    console.log({ message: dataWithDetails.value });
+    const userDetailsResponse = await useNuxtApp().$axios.get("/company/me");
+    userDetails.value = userDetailsResponse.data;
     router.push("/dashboard");
   } catch (error: any) {
     if (error) {
-      console.log(error);
       toast.add({
         title: handleErrorMessages(error),
         color: "red",
