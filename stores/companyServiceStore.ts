@@ -1,4 +1,4 @@
-const runtimeConfig = useRuntimeConfig();
+import { handleErrorMessages } from "~/common/errorHandlers";
 
 export const useCompanyServiceStore = defineStore({
   id: "companyServiceStore",
@@ -13,18 +13,10 @@ export const useCompanyServiceStore = defineStore({
     async fetchCompanyServices() {
       try {
         this.fetchingServices = true;
-        const { data, error } = await useFetch("/company-service", {
-          baseURL: runtimeConfig.public.apiUrl,
-          onRequest({ request, options }) {
-            options.headers = options.headers || {};
-            options.headers.authorization =
-              "Bearer " + localStorage.getItem("accessToken");
-          },
-        });
-        const response: any = data.value;
+        const response = await useNuxtApp().$axios.get("/company-service");
         const res = [];
-        for (let i = 0; i < response.length; i++) {
-          const service = response[i];
+        for (let i = 0; i < response.data.length; i++) {
+          const service = response.data[i];
           res.push({
             id: i + 1,
             service: service.name,
@@ -35,8 +27,14 @@ export const useCompanyServiceStore = defineStore({
           });
         }
         this.services = res;
-        if (error.value) throw error.value.data.message;
-      } catch (error) {
+      } catch (error: any) {
+        if (error) {
+          const toast = useToast();
+          toast.add({
+            title: handleErrorMessages(error),
+            color: "red",
+          });
+        }
       } finally {
         this.fetchingServices = false;
       }
@@ -48,43 +46,32 @@ export const useCompanyServiceStore = defineStore({
       period: string
     ) {
       try {
-        console.log({ name, description, amount, period });
         this.creatingService = true;
-        const { data, error } = await useFetch("/company-service", {
-          method: "POST",
-          body: {
+        const serviceResponse = await useNuxtApp().$axios.post(
+          "/company-service",
+          {
             name,
             description,
-          },
-          baseURL: runtimeConfig.public.apiUrl,
-          onRequest({ request, options }) {
-            options.headers = options.headers || {};
-            options.headers.authorization =
-              "Bearer " + localStorage.getItem("accessToken");
-          },
-        });
-        if (error.value) throw error.value.data.message;
-
-        const { data: data2, error: error2 } = await useFetch(
-          `/company-service-price`,
-          {
-            method: "POST",
-            baseURL: runtimeConfig.public.apiUrl,
-            body: {
-              serviceId: data.value.id,
-              amount,
-              period,
-            },
-            onRequest({ request, options }) {
-              options.headers = options.headers || {};
-              options.headers.authorization =
-                "Bearer " + localStorage.getItem("accessToken");
-            },
           }
         );
-        if (error2.value) throw error.value2.data.message;
+
+        const priceResponse = await useNuxtApp().$axios.post(
+          "/company-service-price",
+          {
+            serviceId: serviceResponse.data.id,
+            amount,
+            period,
+          }
+        );
         await this.fetchCompanyServices();
-      } catch (error) {
+      } catch (error: any) {
+        if (error) {
+          const toast = useToast();
+          toast.add({
+            title: handleErrorMessages(error),
+            color: "red",
+          });
+        }
       } finally {
         this.creatingService = false;
       }
