@@ -42,13 +42,13 @@ setInterval(() => {
 
     <br />
     <UButton
-      @click="router.push('offers')"
+      @click="router.push('facilities')"
       color="white"
       variant="solid"
       size="xl"
       block
     >
-      Find workspaces
+      Find facilities
     </UButton>
   </div>
 </template>

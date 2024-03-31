@@ -4,6 +4,7 @@ export const useCompanyStore = defineStore({
   id: "companyStore",
   state: () => {
     return {
+      companies: [] as any[],
       joinedCompanies: [] as any[],
       companyDetails: {},
       fetchingCompanies: false,
@@ -46,10 +47,33 @@ export const useCompanyStore = defineStore({
         this.fetchingCompanyDetails = false;
       }
     },
+    async fetchCompanies() {
+      try {
+        this.fetchingCompanies = true;
+        const response = await useNuxtApp().$axios.get(`/company`);
+        this.companies = response.data;
+      } catch (error: any) {
+        if (error) {
+          const toast = useToast();
+          toast.add({
+            title: handleErrorMessages(error),
+            color: "red",
+          });
+        }
+      } finally {
+        this.fetchingCompanies = false;
+      }
+    },
   },
   getters: {
     getCompaniesAUserJoined: (state) => {
       return state.joinedCompanies;
+    },
+    getCompanies: (state) => {
+      return state.companies;
+    },
+    getCompaniesFetchingStatus: (state) => {
+      return state.fetchingCompanies;
     },
   },
 });
