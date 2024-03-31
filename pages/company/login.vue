@@ -59,7 +59,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
 <template>
   <UCard>
-    <template #header> Admin Login </template>
+    <template #header> Facility Admin Login </template>
     <div>
       <UForm
         :schema="schema"

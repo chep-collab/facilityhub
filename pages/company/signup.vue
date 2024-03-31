@@ -64,9 +64,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
 <template>
   <UCard>
-    <template #header> Admin Signup </template>
+    <template #header> Sign up your facility </template>
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormGroup label="Company name" name="name">
+      <UFormGroup label="Company/Facility name" name="name">
         <UInput v-model="state.name" />
       </UFormGroup>
 
