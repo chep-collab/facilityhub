@@ -35,7 +35,7 @@ setInterval(() => {
       <div class="flex flex-row w-full">
         <div class="w-full text-right">Manage your &nbsp;</div>
         <div class="w-full text-left">
-          <span class="text-yellow-400">{{ displayedService }}</span>
+          <span class="text-green-400">{{ displayedService }}</span>
         </div>
       </div>
     </UButton>
