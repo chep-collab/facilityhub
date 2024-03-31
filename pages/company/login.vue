@@ -58,7 +58,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UCard>
+  <UCard class="w-full md:w-1/2 mx-auto">
     <template #header> Facility Admin Login </template>
     <div>
       <UForm

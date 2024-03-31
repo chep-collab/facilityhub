@@ -63,7 +63,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UCard>
+  <UCard class="w-full md:w-1/2 mx-auto">
     <template #header> Sign up your facility </template>
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
       <UFormGroup label="Company/Facility name" name="name">
