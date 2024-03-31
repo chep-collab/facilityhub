@@ -91,6 +91,7 @@ const isReceiptUploadModalOpen = ref(false);
 const isImageSlideOverOpen = ref(false);
 
 const receiptUrl = ref("");
+
 const companyMenus = (row) => [
   [
     {
@@ -100,6 +101,16 @@ const companyMenus = (row) => [
         subscriptionIdToUpdate.value = row.id;
         isActivateModalOpen.value = true;
       },
+      disabled: row.isActive ? true : false,
+    },
+    {
+      label: "View receipt",
+      icon: "i-heroicons-receipt-percent",
+      click: () => {
+        receiptUrl.value = row.receipt.url;
+        isImageSlideOverOpen.value = true;
+      },
+      disabled: row.receipt ? false : true,
     },
   ],
 ];
@@ -113,6 +124,7 @@ const userMenus = (row) => [
         subscriptionIdToUpdate.value = row.id;
         isReceiptUploadModalOpen.value = true;
       },
+      disabled: row.receipt ? true : false,
     },
     {
       label: "View receipt",
@@ -121,11 +133,14 @@ const userMenus = (row) => [
         receiptUrl.value = row.receipt.url;
         isImageSlideOverOpen.value = true;
       },
+      disabled: row.receipt ? false : true,
     },
   ],
+  ,
 ];
 
 const items = getUserType === "company" ? companyMenus : userMenus;
+
 const subscriptionIdToUpdate = ref("");
 const onSubmitSubscriptionActivationRequest = async () => {
   try {
@@ -213,8 +228,8 @@ await subscriptionStore.fetchCompanySubscriptions();
         </template>
 
         <template #status-data="{ row }">
-          <span :class="row.status ? 'text-green-500' : 'text-red-500'">
-            {{ row.status == true ? "Active" : "Inactive" }}
+          <span :class="row.isActive ? 'text-green-500' : 'text-red-500'">
+            {{ row.isActive == true ? "Active" : "Inactive" }}
           </span>
         </template>
 
