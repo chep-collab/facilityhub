@@ -9,6 +9,7 @@ export const useSubscriptionStore = defineStore({
       creatingASubscription: false,
       changingSubscriptionStatus: false,
       uploadingSubscriptionReceipt: false,
+      subscribingToAService: false,
     };
   },
   actions: {
@@ -74,6 +75,24 @@ export const useSubscriptionStore = defineStore({
       }
     },
 
+    async subscribeToACompanyService(
+      serviceId: string,
+      startDate: string,
+      endDate: string
+    ) {
+      try {
+        this.subscribingToAService = true;
+        return await useNuxtApp().$axios.post("/subscription", {
+          serviceId,
+          startDate,
+          endDate,
+        });
+      } catch (error) {
+        throw error;
+      } finally {
+        this.subscribingToAService = false;
+      }
+    },
     async activateSubscription(subscriptionId: string, newStatus: boolean) {
       try {
         this.changingSubscriptionStatus = true;
@@ -100,6 +119,9 @@ export const useSubscriptionStore = defineStore({
     },
     getSubscriptionsStatusChangingStatus: (state) => {
       return state.changingSubscriptionStatus;
+    },
+    getSubscriptionCreationStatus: (state) => {
+      return state.subscribingToAService;
     },
   },
 });
