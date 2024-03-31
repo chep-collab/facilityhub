@@ -38,7 +38,7 @@ await companyStore.fetchCompanies();
 <template>
   <div class="h-screen">
     <div class="flex flex-row gap-4 justify-end">
-      <UButton @click="router.push('user/login')" variant="solid" size="xl">
+      <UButton @click="router.push('/user/login')" variant="solid" size="xl">
         Facility user login
       </UButton>
     </div>
