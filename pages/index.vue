@@ -1,21 +1,54 @@
+<script setup lang="ts">
+import { ref } from "vue";
+const router = useRouter();
+
+const serviceTypes = [
+  "Coworking Space",
+  "Study Center",
+  "Private Offices",
+  "Training Halls",
+  "Meeting Halls",
+  "Conference Rooms",
+  "Classrooms",
+  "Labs",
+];
+const displayedService = ref(serviceTypes[0]);
+
+setInterval(() => {
+  const randomIndex = Math.floor(Math.random() * serviceTypes.length);
+  displayedService.value = serviceTypes[randomIndex];
+}, 1000);
+</script>
+
 <template>
-  <div>
-    <NuxtLink to="/company/login">
-      <UCard>
-        Workspace <span class="text-yellow-400">Admin</span>
-        <template #footer>
-          <div class="text-xs">You own a workspace or study center</div>
-        </template>
-      </UCard>
-    </NuxtLink>
+  <div class="w-full">
+    <h1 class="text-3xl">Workspaces</h1>
+
     <br />
-    <NuxtLink to="/user/login">
-      <UCard>
-        Workspace <span class="text-yellow-400">User</span>
-        <template #footer>
-          <div class="text-xs">Find and subscribe to workspaces</div>
-        </template>
-      </UCard>
-    </NuxtLink>
+    <UButton
+      @click="router.push('offers')"
+      color="white"
+      variant="solid"
+      size="xl"
+      block
+    >
+      <div class="flex flex-row w-full">
+        <div class="w-full text-right">Manage your &nbsp;</div>
+        <div class="w-full text-left">
+          <span class="text-yellow-400">{{ displayedService }}</span>
+        </div>
+      </div>
+    </UButton>
+
+    <br />
+    <UButton
+      @click="router.push('offers')"
+      color="white"
+      variant="solid"
+      size="xl"
+      block
+    >
+      Find workspaces
+    </UButton>
   </div>
 </template>
