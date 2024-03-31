@@ -121,6 +121,28 @@ watchEffect(() => {
 </script>
 <template>
   <div class="py-3 px-3">
+    <UAlert
+      v-if="getCompaniesAUserJoined.length > 0"
+      variant="ghost"
+      title="Facilities you have joined"
+      :actions="[
+        {
+          variant: 'ghost',
+          color: 'primary',
+          label: 'Other facilities',
+          click: () => router.push('/'),
+        },
+      ]"
+    />
+
+    <br />
+    <div class="text-center" v-if="getCompaniesAUserJoined.length === 0">
+      <p>You have not joined any facility</p>
+      <br />
+      <UButton color="cyan" variant="outline" @click="router.push('/')">
+        Browse facilities
+      </UButton>
+    </div>
     <UCard
       v-for="(company, index) in getCompaniesAUserJoined"
       :key="index"
