@@ -33,6 +33,23 @@ onMounted(() => {
     carouselRef.value.next();
   }, 3000);
 });
+
+const isServicesSlideoverOpen = ref(false);
+const selectedCompany = ref({});
+
+const setCompanyToJoin = (company: object) => {
+  selectedCompany.value = company;
+};
+const setCompanyToView = (company: object) => {
+  selectedCompany.value = company;
+  isServicesSlideoverOpen.value = true;
+};
+
+const closeServiceSlideover = () => {
+  console.log(888);
+  isServicesSlideoverOpen.value = false;
+  console.log(999);
+};
 await companyStore.fetchCompanies();
 </script>
 <template>
@@ -56,43 +73,21 @@ await companyStore.fetchCompanies();
       v-else
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center"
     >
-      <UCard class="mb-4" v-for="(company, index) in getCompanies">
-        <template #header>
-          <UCarousel
-            ref="carouselRef"
-            v-slot="{ item }"
-            :items="items"
-            :ui="{ item: 'basis-full' }"
-            class="rounded-lg overflow-hidden"
-            indicators
-          >
-            <img :src="item" class="w-full" draggable="false" />
-          </UCarousel>
-          <p class="text-center mt-2">{{ company.name }}</p>
-        </template>
-
-        <li><b>Address</b>: {{ company.address }}</li>
-        <li>
-          <b>Phone</b>:
-          <a :href="`tel:${company.phone}`">{{ company.phone }}</a>
-        </li>
-        <li>
-          <b>Status</b>:
-          <span :class="company.isActive ? 'text-green-500' : 'text-red-500'">
-            {{ company.isActive ? "Active" : "Inactive" }}</span
-          >
-        </li>
-        <div class="flex flex-row justify-end mt-2 gap-4">
-          <UButton variant="outline" @click="selectThisCompany(company.id)">
-            Join facility
-          </UButton>
-          <UButton variant="outline" @click="selectThisCompany(company.id)">
-            View Services
-          </UButton>
-        </div>
-      </UCard>
+      <CompanyCard
+        v-for="(company, index) in getCompanies"
+        :company="company"
+        :key="index"
+        @joinThisCompany="setCompanyToJoin"
+        @viewServices="setCompanyToView"
+      />
     </div>
 
     <br />
+    <CompanyServiceSlideover
+      v-if="isServicesSlideoverOpen"
+      :company="selectedCompany"
+      :is-open="isServicesSlideoverOpen"
+      @close="closeServiceSlideover"
+    />
   </div>
 </template>
