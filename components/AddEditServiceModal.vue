@@ -12,11 +12,20 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  mode: {
+    type: String,
+    required: true,
+    default: "add",
+  },
+  initialServiceData: {
+    type: Object,
+    required: false,
+  },
 });
 
 const emit = defineEmits(["close"]);
 
-const { isOpen } = props;
+const { mode, isOpen, initialServiceData } = props;
 
 const schema = object({
   name: string().required("Required"),
@@ -32,6 +41,13 @@ const state = reactive({
   amount: undefined,
   period: periods[0],
 });
+
+if (mode == "edit") {
+  state.name = initialServiceData.service;
+  state.description = initialServiceData.description;
+  state.amount = initialServiceData.amount;
+  state.period = initialServiceData.period;
+}
 
 async function createNewCompanyService(event: any) {
   const payload = event.data;
@@ -62,7 +78,7 @@ async function createNewCompanyService(event: any) {
           <h3
             class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
-            Add Service
+            {{ mode == "add" ? "Add" : "Edit" }} Service
           </h3>
           <UButton
             color="gray"

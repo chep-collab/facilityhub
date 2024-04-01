@@ -20,7 +20,8 @@ export const useCompanyServiceStore = defineStore({
         for (let i = 0; i < response.data.length; i++) {
           const service = response.data[i];
           res.push({
-            id: i + 1,
+            id: service.id,
+            index: i + 1,
             service: service.name,
             description: service.description,
             isActive: service.isActive,
