@@ -2,8 +2,16 @@
 const activeUserStore = useActiveUserStore();
 const { userType, getUserDetails } = storeToRefs(activeUserStore);
 
-const runtimeConfig = useRuntimeConfig();
-const router = useRoute();
+const router = useRouter();
+const logout = () => {
+  localStorage.clear();
+  activeUserStore.setAuthenticationState(false);
+  if (userType.value == "company") {
+    router.push({ name: "company-login" });
+  } else {
+    router.push({ name: "user-login" });
+  }
+};
 </script>
 <template>
   <div>
@@ -18,12 +26,7 @@ const router = useRoute();
       </h1>
       <div class="flex flex-row gap-4">
         <UButton color="white" variant="solid">Profile</UButton>
-        <UButton
-          :to="userType == 'company' ? '/company/login' : '/user/login'"
-          color="white"
-          variant="solid"
-          >Logout</UButton
-        >
+        <UButton @click="logout" color="white" variant="solid">Logout</UButton>
       </div>
     </div>
     <Navigation />
