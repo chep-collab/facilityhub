@@ -55,17 +55,19 @@ setInterval(() => {
         Get started
       </UButton>
     </div>
-    <div class="flex flex-col gap-5 md:text-7xl text-6xl h-[40%]">
+    <div
+      class="flex flex-col gap-5 md:text-7xl text-6xl h-[40%] w-full md:w-1/2 md:mx-auto"
+    >
       <p>Manage</p>
       <p>your</p>
       <p class="text-green-400">{{ displayedService }}</p>
-    </div>
-    <div class="md:w-1/2 w-full">
-      <h1 class="pt-4 text-lg">What do you get ?</h1>
-      <br />
-      <hr />
-      <br />
-      <UAccordion color="white" variant="outline" size="lg" :items="offers" />
+      <div class="">
+        <h1 class="pt-4 text-lg">What do you get ?</h1>
+
+        <hr class="my-4" />
+
+        <UAccordion color="white" variant="ghost" size="lg" :items="offers" />
+      </div>
     </div>
 
     <br />
