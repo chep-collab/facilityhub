@@ -43,6 +43,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     const userDetailsResponse = await useNuxtApp().$axios.get("/company/me");
     userDetails.value = userDetailsResponse.data;
+    activeUserStore.setAuthenticationState(true);
     router.push("/dashboard");
   } catch (error: any) {
     if (error) {

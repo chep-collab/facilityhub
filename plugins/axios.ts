@@ -2,6 +2,8 @@ import axios from "axios";
 
 export default defineNuxtPlugin(async () => {
   const runtimeConfig = useRuntimeConfig();
+  const activeUserStore = useActiveUserStore();
+  const router = useRouter();
 
   const $axios = axios.create({
     baseURL: runtimeConfig.public.apiUrl,
@@ -18,13 +20,13 @@ export default defineNuxtPlugin(async () => {
     (response) => response,
     (error) => {
       if (error.response && error.response.status === 401) {
-        console.log("Received 403 Forbidden error. Logging out user...");
-
-        alert("Session expired. Please log in again.");
-
         localStorage.clear();
-        const router = useRouter();
-        router.push("/");
+        activeUserStore.setAuthenticationState(false);
+        if (activeUserStore.getUserType == "company") {
+          router.push({ name: "company-login" });
+        } else {
+          router.push({ name: "user-login" });
+        }
       }
       return Promise.reject(error);
     }
