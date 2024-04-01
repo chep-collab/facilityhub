@@ -27,6 +27,8 @@ export const useCompanyServiceStore = defineStore({
             isActive: service.isActive,
             amount: service.companyServicePrice?.amount || "N/A",
             period: service.companyServicePrice?.period || "N/A",
+            serviceId: service.id,
+            servicePriceId: service.companyServicePrice?.id || null,
           });
         }
         this.services = res;
@@ -62,6 +64,41 @@ export const useCompanyServiceStore = defineStore({
           "/company-service-price",
           {
             serviceId: serviceResponse.data.id,
+            amount,
+            period,
+          }
+        );
+        await this.fetchCompanyServices();
+      } catch (error: any) {
+        if (error) {
+          const toast = useToast();
+          toast.add({
+            title: handleErrorMessages(error),
+            color: "red",
+          });
+        }
+      } finally {
+        this.creatingService = false;
+      }
+    },
+    async updateCompanyServiceAndPrice(
+      serviceId: string,
+      servicePriceId: string,
+      name: string,
+      description: string,
+      amount: number,
+      period: string
+    ) {
+      try {
+        this.creatingService = true;
+        await useNuxtApp().$axios.patch(`/company-service/${serviceId}`, {
+          name,
+          description,
+        });
+
+        await useNuxtApp().$axios.patch(
+          `/company-service-price/${servicePriceId}`,
+          {
             amount,
             period,
           }

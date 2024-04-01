@@ -126,6 +126,7 @@ const filteredRows = computed(() => {
 });
 
 const openAddEditServiceModal = () => {
+  addEditServiceMode.value = "add";
   isAddEditServiceModalOpen.value = true;
 };
 const closeAddEditServiceModal = () => {

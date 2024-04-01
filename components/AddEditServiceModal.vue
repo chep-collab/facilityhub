@@ -64,6 +64,32 @@ async function createNewCompanyService(event: any) {
 
   emit("close");
 }
+
+async function updateCompanyServiceAndPrice(event: any) {
+  const payload = event.data;
+  await companyServiceStore.updateCompanyServiceAndPrice(
+    initialServiceData.serviceId,
+    initialServiceData.servicePriceId,
+    payload.name,
+    payload.description,
+    parseFloat(payload.amount),
+    payload.period
+  );
+  state.name = undefined;
+  state.description = undefined;
+  state.amount = undefined;
+  state.period = "daily";
+
+  emit("close");
+}
+
+async function createOrEdit(event: any) {
+  if (mode == "add") {
+    await createNewCompanyService(event);
+  } else {
+    await updateCompanyServiceAndPrice(event);
+  }
+}
 </script>
 <template>
   <UModal v-model="isOpen">
@@ -94,7 +120,7 @@ async function createNewCompanyService(event: any) {
           :schema="schema"
           :state="state"
           class="space-y-4"
-          @submit="createNewCompanyService"
+          @submit="createOrEdit"
         >
           <UFormGroup label="Service Name" name="name">
             <UInput v-model="state.name" />
@@ -117,7 +143,7 @@ async function createNewCompanyService(event: any) {
             :disabled="getCreatingCompanyServicesLoadingState"
             type="submit"
           >
-            Submit
+            {{ mode == "add" ? "Add Service" : "Update Service" }}
           </UButton>
         </UForm>
       </div>
