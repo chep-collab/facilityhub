@@ -9,6 +9,7 @@ export const useCompanyServiceStore = defineStore({
       creatingService: false,
       subscriptionIdToUpdate: "",
       isActivateModalOpen: false,
+      updatingCompanyServiceStatus: false,
     };
   },
   actions: {
@@ -116,6 +117,25 @@ export const useCompanyServiceStore = defineStore({
         this.creatingService = false;
       }
     },
+    async updateCompanyServiceStatus(serviceId: string, isActive: boolean) {
+      try {
+        this.updatingCompanyServiceStatus = true;
+        await useNuxtApp().$axios.patch(`/company-service/${serviceId}`, {
+          isActive,
+        });
+        await this.fetchCompanyServices();
+      } catch (error: any) {
+        if (error) {
+          const toast = useToast();
+          toast.add({
+            title: handleErrorMessages(error),
+            color: "red",
+          });
+        }
+      } finally {
+        this.updatingCompanyServiceStatus = false;
+      }
+    },
   },
   getters: {
     getCompanyServices: (state) => {
@@ -126,6 +146,9 @@ export const useCompanyServiceStore = defineStore({
     },
     getCreatingCompanyServicesLoadingState: (state) => {
       return state.creatingService;
+    },
+    getCompanyServiceStatusUpdateState: (state) => {
+      return state.updatingCompanyServiceStatus;
     },
   },
 });

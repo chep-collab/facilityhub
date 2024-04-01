@@ -101,10 +101,11 @@ const items = (row) => [
       },
     },
     {
-      label: "Deactivate",
+      label: `${row.isActive ? "Deactivate" : "Activate"}`,
       icon: "i-heroicons-lock-closed",
       click: () => {
-        console.log("Delete", row.id);
+        console.log("Edit", row.id);
+        selectedService.value = row;
         isActivateDeactivateModalOpen.value = true;
       },
     },
@@ -124,13 +125,17 @@ const filteredRows = computed(() => {
     });
   });
 });
-
+const selectedService = ref({});
 const openAddEditServiceModal = () => {
   addEditServiceMode.value = "add";
   isAddEditServiceModalOpen.value = true;
 };
 const closeAddEditServiceModal = () => {
   isAddEditServiceModalOpen.value = false;
+};
+
+const closeActivateDeactiveModal = () => {
+  isActivateDeactivateModalOpen.value = false;
 };
 </script>
 
@@ -265,43 +270,10 @@ const closeAddEditServiceModal = () => {
       </UCard>
     </UModal>
   </div>
-  <div>
-    <UModal v-model="isActivateDeactivateModalOpen" prevent-close>
-      <UCard
-        :ui="{
-          ring: '',
-          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-        }"
-      >
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3
-              class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-            >
-              Please confirm
-            </h3>
-            <UButton
-              color="gray"
-              variant="ghost"
-              icon="i-heroicons-x-mark-20-solid"
-              class="-my-1"
-              @click="isActivateDeactivateModalOpen = false"
-            />
-          </div>
-        </template>
-        <div>
-          <UForm
-            :schema="schema"
-            :state="state"
-            class="space-y-4"
-            @submit="onSubmitStatusChangeRequest"
-          >
-            <div>Are you sure you want to deactivate this service?</div>
-
-            <UButton type="submit"> Submit </UButton>
-          </UForm>
-        </div>
-      </UCard>
-    </UModal>
-  </div>
+  <ServiceStatusUpdateModal
+    v-if="isActivateDeactivateModalOpen"
+    :selected-service="selectedService"
+    :is-open="isActivateDeactivateModalOpen"
+    @close="closeActivateDeactiveModal"
+  />
 </template>
