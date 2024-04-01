@@ -38,9 +38,9 @@ await companyStore.fetchCompanyDetail(company.id);
 <template>
   <div>
     <USlideover v-model="isOpen">
-      <div class="p-4 flex-row justify-end">
+      <div class="p-4 flex flex-row justify-end">
         <UButton color="primary" variant="ghost" @click="$emit('close')">
-          Close Services
+          Close
         </UButton>
       </div>
 
@@ -49,11 +49,11 @@ await companyStore.fetchCompanyDetail(company.id);
         <div class="p-4">Getting services</div>
       </div>
       <div v-else class="p-4 overflow-y-auto">
-        <h3>{{ companyDetails.name }}'s Services</h3>
-        <br />
+        <h3 class="text-lg">{{ companyDetails.name }}'s Services</h3>
         <p v-if="companyDetails.companyServices.length === 0">
           This facility has no active services at the moment
         </p>
+        <br />
         <UCard
           class="mb-4"
           v-for="(service, index) in companyDetails.companyServices"
