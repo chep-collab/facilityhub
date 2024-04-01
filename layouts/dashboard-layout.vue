@@ -25,7 +25,7 @@ const logout = () => {
         <span v-else>{{ `${getUserDetails.name}` }}</span>
       </h1>
       <div class="flex flex-row gap-4">
-        <UButton color="white" variant="solid">Profile</UButton>
+        <!-- <UButton color="white" variant="solid">Profile</UButton> -->
         <UButton @click="logout" color="white" variant="solid">Logout</UButton>
       </div>
     </div>
