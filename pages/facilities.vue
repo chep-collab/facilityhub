@@ -36,9 +36,11 @@ onMounted(() => {
 
 const isServicesSlideoverOpen = ref(false);
 const selectedCompany = ref({});
+const isJoiningModalOpen = ref(false);
 
 const setCompanyToJoin = (company: object) => {
   selectedCompany.value = company;
+  isJoiningModalOpen.value = true;
 };
 const setCompanyToView = (company: object) => {
   selectedCompany.value = company;
@@ -46,9 +48,10 @@ const setCompanyToView = (company: object) => {
 };
 
 const closeServiceSlideover = () => {
-  console.log(888);
   isServicesSlideoverOpen.value = false;
-  console.log(999);
+};
+const closeJoiningModal = () => {
+  isJoiningModalOpen.value = false;
 };
 await companyStore.fetchCompanies();
 </script>
@@ -88,6 +91,12 @@ await companyStore.fetchCompanies();
       :company="selectedCompany"
       :is-open="isServicesSlideoverOpen"
       @close="closeServiceSlideover"
+    />
+    <JoiningModal
+      v-if="isJoiningModalOpen"
+      :selected-company="selectedCompany"
+      :is-open="isJoiningModalOpen"
+      @close="closeJoiningModal"
     />
   </div>
 </template>

@@ -9,6 +9,7 @@ export const useCompanyStore = defineStore({
       companyDetails: {},
       fetchingCompanies: false,
       fetchingCompanyDetails: false,
+      joiningCompany: false,
       selectedCompanyId: "",
     };
   },
@@ -64,6 +65,16 @@ export const useCompanyStore = defineStore({
         this.fetchingCompanies = false;
       }
     },
+    async JoinACompnay(companyId: string) {
+      try {
+        this.joiningCompany = true;
+        return await useNuxtApp().$axios.get(`/company/${companyId}/join`);
+      } catch (error: any) {
+        throw error;
+      } finally {
+        this.joiningCompany = false;
+      }
+    },
   },
   getters: {
     getCompaniesAUserJoined: (state) => {
@@ -74,6 +85,9 @@ export const useCompanyStore = defineStore({
     },
     getCompaniesFetchingStatus: (state) => {
       return state.fetchingCompanies;
+    },
+    getJoiningCompanyStatus: (state) => {
+      return state.joiningCompany;
     },
   },
 });
