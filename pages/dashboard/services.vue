@@ -12,9 +12,9 @@
             size="sm"
             color="blue"
             variant="ghost"
-            label="Add"
+            label="Add Service"
             :trailing="false"
-            @click="isAddModalOpen = true"
+            @click="openAddEditServiceModal"
           />
         </div>
       </div>
@@ -84,65 +84,12 @@
       </UTable>
     </div>
   </div>
-  <div>
-    <UModal v-model="isAddModalOpen" prevent-close>
-      <UCard
-        :ui="{
-          ring: '',
-          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-        }"
-      >
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3
-              class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-            >
-              Add Service
-            </h3>
-            <UButton
-              color="gray"
-              variant="ghost"
-              icon="i-heroicons-x-mark-20-solid"
-              class="-my-1"
-              @click="isAddModalOpen = false"
-            />
-          </div>
-        </template>
-        <div>
-          <UForm
-            :schema="schema"
-            :state="state"
-            class="space-y-4"
-            @submit="createNewCompanyService"
-          >
-            <UFormGroup label="Service Name" name="name">
-              <UInput v-model="state.name" />
-            </UFormGroup>
+  <AddEditServiceModal
+    v-if="isAddEditServiceModalOpen"
+    :is-open="isAddEditServiceModalOpen"
+    @close="closeAddEditServiceModal"
+  />
 
-            <UFormGroup label="Description" name="description">
-              <UInput v-model="state.description" type="text" />
-            </UFormGroup>
-
-            <UFormGroup label="Amount" name="amount">
-              <UInput v-model="state.amount" type="number" />
-            </UFormGroup>
-
-            <UFormGroup label="Period" name="period">
-              <USelect v-model="state.period" :options="periods" />
-            </UFormGroup>
-
-            <UButton
-              :loading="getCreatingCompanyServicesLoadingState"
-              :disabled="getCreatingCompanyServicesLoadingState"
-              type="submit"
-            >
-              Submit
-            </UButton>
-          </UForm>
-        </div>
-      </UCard>
-    </UModal>
-  </div>
   <div>
     <UModal v-model="isConfirmationModalOpen" prevent-close>
       <UCard
@@ -276,7 +223,7 @@ async function createNewCompanyService(event: FormSubmitEvent<Schema>) {
   state.amount = undefined;
   state.period = "daily";
 
-  isAddModalOpen.value = false;
+  isAddEditServiceModalOpen.value = false;
 }
 
 async function onSubmitDeleteRequest(event: FormSubmitEvent<Schema>) {
@@ -287,7 +234,7 @@ async function onSubmitStatusChangeRequest(event: FormSubmitEvent<Schema>) {
   console.log(event.data);
 }
 
-const isAddModalOpen = ref(false);
+const isAddEditServiceModalOpen = ref(false);
 
 const isConfirmationModalOpen = ref(false);
 const isActivateDeactivateModalOpen = ref(false);
@@ -368,4 +315,11 @@ const filteredRows = computed(() => {
     });
   });
 });
+
+const openAddEditServiceModal = () => {
+  isAddEditServiceModalOpen.value = true;
+};
+const closeAddEditServiceModal = () => {
+  isAddEditServiceModalOpen.value = false;
+};
 </script>
