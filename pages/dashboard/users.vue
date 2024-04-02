@@ -1,12 +1,73 @@
 <script setup lang="ts">
+const workspaceUserStore = useWorkspaceUserStore();
+const { getFetchingWorkspaceUserState, getWorkspaceUsers } =
+  storeToRefs(workspaceUserStore);
+
+import { storeToRefs } from "pinia";
+
 definePageMeta({
   layout: "dashboard-layout",
 });
+
+const columns = [
+  {
+    key: "index",
+    label: "ID",
+  },
+  {
+    key: "fullName",
+    label: "Full Name",
+  },
+  {
+    key: "email",
+    label: "Email",
+  },
+  {
+    key: "phone",
+    label: "Phone Number",
+  },
+];
+
+const q = ref("");
+
+const filteredRows = computed(() => {
+  if (!q.value) {
+    return getWorkspaceUsers.value;
+  }
+
+  return getWorkspaceUsers.value.filter((user) => {
+    return Object.values(user).some((value) => {
+      return String(value).toLowerCase().includes(q.value.toLowerCase());
+    });
+  });
+});
+await workspaceUserStore.fetchWorkspaceUsers();
 </script>
 
 <template>
   <div>
-    <h1>Company Login</h1>
-    <AppAlert> This is an auto-imported component </AppAlert>
+    <div>
+      <div
+        class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
+      >
+        <UInput v-model="q" placeholder="Filter users..." />
+      </div>
+      <UTable
+        :loading="getFetchingWorkspaceUserState"
+        :empty-state="{
+          icon: 'i-heroicons-circle-stack-20-solid',
+          label: 'No user has joined your facility.',
+        }"
+        :rows="filteredRows"
+        :columns="columns"
+      >
+        <template #index-data="{ row, index }">
+          <span>{{ index + 1 }} </span>
+        </template>
+        <template #fullName-data="{ row }">
+          <span>{{ row.firstName }} {{ row.lastName }}</span>
+        </template>
+      </UTable>
+    </div>
   </div>
 </template>
