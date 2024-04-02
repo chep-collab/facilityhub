@@ -103,7 +103,11 @@ const setCompanyToView = (company: object) => {
     <div class="text-center" v-if="getCompaniesAUserJoined.length === 0">
       <p>You have not joined any facility</p>
       <br />
-      <UButton color="cyan" variant="outline" @click="router.push('/')">
+      <UButton
+        color="cyan"
+        variant="outline"
+        @click="router.push('/facilities')"
+      >
         Browse facilities
       </UButton>
     </div>
