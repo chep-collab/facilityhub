@@ -1,4 +1,5 @@
 import { handleErrorMessages } from "~/common/errorHandlers";
+const toast = useToast();
 
 export const useCompanyServiceStore = defineStore({
   id: "companyServiceStore",
@@ -10,6 +11,7 @@ export const useCompanyServiceStore = defineStore({
       subscriptionIdToUpdate: "",
       isActivateModalOpen: false,
       updatingCompanyServiceStatus: false,
+      deletingCompanyServiceStatus: false,
     };
   },
   actions: {
@@ -126,7 +128,6 @@ export const useCompanyServiceStore = defineStore({
         await this.fetchCompanyServices();
       } catch (error: any) {
         if (error) {
-          const toast = useToast();
           toast.add({
             title: handleErrorMessages(error),
             color: "red",
@@ -134,6 +135,23 @@ export const useCompanyServiceStore = defineStore({
         }
       } finally {
         this.updatingCompanyServiceStatus = false;
+      }
+    },
+    async deleteCompanyServiceStatus(serviceId: string) {
+      try {
+        this.deletingCompanyServiceStatus = true;
+        const response = await useNuxtApp().$axios.delete(
+          `/company-service/${serviceId}`
+        );
+        toast.add({
+          title: response.data.message || "service removed",
+          color: "red",
+        });
+        await this.fetchCompanyServices();
+      } catch (error: any) {
+        throw error;
+      } finally {
+        this.deletingCompanyServiceStatus = false;
       }
     },
   },
@@ -149,6 +167,9 @@ export const useCompanyServiceStore = defineStore({
     },
     getCompanyServiceStatusUpdateState: (state) => {
       return state.updatingCompanyServiceStatus;
+    },
+    getCompanyServiceDeletingState: (state) => {
+      return state.deletingCompanyServiceStatus;
     },
   },
 });

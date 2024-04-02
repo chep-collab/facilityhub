@@ -8,9 +8,13 @@ const { getUserType } = useActiveUserStore();
 
 //store import
 import { storeToRefs } from "pinia";
+import { handleErrorMessages } from "~/common/errorHandlers";
 const companyServiceStore = useCompanyServiceStore();
-const { getCompanyServices, getFetchingCompanyServicesLoadingState } =
-  storeToRefs(companyServiceStore);
+const {
+  getCompanyServices,
+  getFetchingCompanyServicesLoadingState,
+  getCompanyServiceDeletingState,
+} = storeToRefs(companyServiceStore);
 
 await companyServiceStore.fetchCompanyServices();
 
@@ -32,12 +36,21 @@ const state = reactive({
   period: periods[0],
 });
 
+const toast = useToast();
 async function onSubmitDeleteRequest(event: FormSubmitEvent<Schema>) {
-  console.log(event.data);
-}
-
-async function onSubmitStatusChangeRequest(event: FormSubmitEvent<Schema>) {
-  console.log(event.data);
+  try {
+    await companyServiceStore.deleteCompanyServiceStatus(
+      serviceDataToDelete.value.id
+    );
+    isConfirmationModalOpen.value = false;
+  } catch (error: any) {
+    if (error) {
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  }
 }
 
 const isAddEditServiceModalOpen = ref(false);
@@ -46,6 +59,7 @@ const isConfirmationModalOpen = ref(false);
 const isActivateDeactivateModalOpen = ref(false);
 const addEditServiceMode = ref("add");
 const serviceDataToEdit = ref({});
+const serviceDataToDelete = ref({});
 
 definePageMeta({
   layout: "dashboard-layout",
@@ -96,15 +110,14 @@ const items = (row) => [
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",
       click: () => {
-        console.log("Delete", row.id);
         isConfirmationModalOpen.value = true;
+        serviceDataToDelete.value = row;
       },
     },
     {
       label: `${row.isActive ? "Deactivate" : "Activate"}`,
       icon: "i-heroicons-lock-closed",
       click: () => {
-        console.log("Edit", row.id);
         selectedService.value = row;
         isActivateDeactivateModalOpen.value = true;
       },
@@ -256,16 +269,17 @@ const closeActivateDeactiveModal = () => {
           </div>
         </template>
         <div>
-          <UForm
-            :schema="schema"
-            :state="state"
-            class="space-y-4"
-            @submit="onSubmitDeleteRequest"
-          >
+          <div class="space-y-4">
             <div>Are you sure you want to delete this service?</div>
 
-            <UButton type="submit"> Submit </UButton>
-          </UForm>
+            <UButton
+              :loading="getCompanyServiceDeletingState"
+              @click="onSubmitDeleteRequest"
+              type="button"
+            >
+              Submit
+            </UButton>
+          </div>
         </div>
       </UCard>
     </UModal>

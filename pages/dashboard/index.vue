@@ -10,6 +10,8 @@ const {
   getSubscriptionsStatusChangingStatus,
 } = storeToRefs(subscriptionStore);
 
+const companyServiceStore = useCompanyServiceStore();
+const { getCompanyServices } = storeToRefs(companyServiceStore);
 definePageMeta({
   layout: "dashboard-layout",
 });
@@ -187,6 +189,17 @@ await subscriptionStore.fetchCompanySubscriptions();
 
 <template>
   <div>
+    <UAlert
+      v-if="getUserType === 'company' && getCompanyServices.length === 0"
+      class="my-4 mx-4"
+      :close-button="{
+        icon: 'i-heroicons-x-mark-20-solid',
+        color: 'gray',
+        variant: 'link',
+        padded: false,
+      }"
+      title="You need to create a service that users can subscribe to. Click 'Service' then 'Add Service' to add a new service."
+    />
     <div>
       <div
         class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
