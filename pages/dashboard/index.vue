@@ -226,6 +226,8 @@ await subscriptionStore.fetchCompanySubscriptions();
             {{ row.user.firstName }}
             {{ row.user.lastName }}
           </span>
+          <br />
+          {{ row.user.email }}
         </template>
 
         <template #service-data="{ row }">
@@ -238,6 +240,8 @@ await subscriptionStore.fetchCompanySubscriptions();
           <span>
             {{ row.actualSubscriptionAmount }}
           </span>
+          <br />
+          <span>{{ row.actualSubscriptionPeriod }}</span>
         </template>
 
         <template #status-data="{ row }">

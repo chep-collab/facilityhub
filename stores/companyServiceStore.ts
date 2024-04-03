@@ -145,7 +145,7 @@ export const useCompanyServiceStore = defineStore({
         );
         toast.add({
           title: response.data.message || "service removed",
-          color: "red",
+          color: "green",
         });
         await this.fetchCompanyServices();
       } catch (error: any) {
