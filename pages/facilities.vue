@@ -53,7 +53,7 @@ const closeServiceSlideover = () => {
 const closeJoiningModal = () => {
   isJoiningModalOpen.value = false;
 };
-await companyStore.fetchCompanies();
+companyStore.fetchCompanies();
 </script>
 <template>
   <div class="h-screen">
