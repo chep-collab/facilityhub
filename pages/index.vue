@@ -22,7 +22,7 @@ setInterval(() => {
 
 <template>
   <div class="w-full">
-    <h1 class="text-3xl">Workspaces</h1>
+    <h1 class="text-3xl">Workspace</h1>
 
     <br />
     <UButton

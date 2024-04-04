@@ -13,7 +13,7 @@
       <UCard>
         Workspace <span class="text-yellow-400">User</span>
         <template #footer>
-          <div class="text-xs">Find and subscribe to workspaces</div>
+          <div class="text-xs">Find and subscribe to Workspace</div>
         </template>
       </UCard>
     </NuxtLink>
