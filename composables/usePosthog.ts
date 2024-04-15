@@ -14,6 +14,10 @@ export const usePosthog = () => {
     FETCH_COMPANY_DETAIL = "Fetched Company Details",
     FETCH_COMPANIES = "Fetched Companies",
     JOINED_A_COMPANY = "Joined A Company",
+    FETCHED_SUBSCRIPTIONS = "Fetched Subscriptions",
+    UPLOADED_SUBSCRIPTION_RECEIPT = "Uploaded Subscription Receipt",
+    SUBSCRIBED_TO_A_SERVICE = "Subscribed To A Service",
+    ACTIVATED_A_SUBSCRIPTION = "Activated A Subscription",
   }
   const { $posthog } = useNuxtApp();
   const posthog = $posthog();
