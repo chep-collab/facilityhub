@@ -20,9 +20,13 @@ export const usePosthog = () => {
     ACTIVATED_A_SUBSCRIPTION = "Activated A Subscription",
 
     FETCHED_FACILITY_USERS = "Fetched Facility Users",
+
+    REQUESTED_PASSWORD_RESET = "Requested Password Reset",
   }
   const { $posthog } = useNuxtApp();
-  const posthog = $posthog();
+  if ($posthog) {
+    const posthog = $posthog();
+  }
 
   const identifyUser = (user: {
     type: string;
