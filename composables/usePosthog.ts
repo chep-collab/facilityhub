@@ -4,6 +4,11 @@ export const usePosthog = () => {
   enum ALLOWED_EVENT_NAMES {
     SIGNUP = "signup",
     LOGIN = "login",
+    FETCH_COMPANY_SERVICES = "Fetch Company Services",
+    COMPANY_CREATE_SERVICE = "Company Create Service",
+    COMPANY_UPDATE_SERVICE = "Company Update Service",
+    COMPANY_UPDATE_SERVICE_STATUS = "Company Update Service Status",
+    COMPANY_DELETE_SERVICE_STATUS = "Company Delete Service",
   }
   const { $posthog } = useNuxtApp();
   const posthog = $posthog();

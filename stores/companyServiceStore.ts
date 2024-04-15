@@ -1,5 +1,8 @@
 import { handleErrorMessages } from "~/common/errorHandlers";
 const toast = useToast();
+const {
+  posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+} = usePosthog();
 
 export const useCompanyServiceStore = defineStore({
   id: "companyServiceStore",
@@ -34,6 +37,7 @@ export const useCompanyServiceStore = defineStore({
             servicePriceId: service.companyServicePrice?.id || null,
           });
         }
+        captureEvent(ALLOWED_EVENT_NAMES.FETCH_COMPANY_SERVICES, {});
         this.services = res;
       } catch (error: any) {
         if (error) {
@@ -71,6 +75,10 @@ export const useCompanyServiceStore = defineStore({
             period,
           }
         );
+        captureEvent(ALLOWED_EVENT_NAMES.COMPANY_CREATE_SERVICE, {
+          ...serviceResponse.data,
+          ...priceResponse.data,
+        });
         await this.fetchCompanyServices();
       } catch (error: any) {
         if (error) {
@@ -106,6 +114,7 @@ export const useCompanyServiceStore = defineStore({
             period,
           }
         );
+        captureEvent(ALLOWED_EVENT_NAMES.COMPANY_UPDATE_SERVICE, {});
         await this.fetchCompanyServices();
       } catch (error: any) {
         if (error) {
@@ -124,6 +133,9 @@ export const useCompanyServiceStore = defineStore({
         this.updatingCompanyServiceStatus = true;
         await useNuxtApp().$axios.patch(`/company-service/${serviceId}`, {
           isActive,
+        });
+        captureEvent(ALLOWED_EVENT_NAMES.COMPANY_UPDATE_SERVICE_STATUS, {
+          status: isActive,
         });
         await this.fetchCompanyServices();
       } catch (error: any) {
@@ -147,6 +159,7 @@ export const useCompanyServiceStore = defineStore({
           title: response.data.message || "service removed",
           color: "green",
         });
+        captureEvent(ALLOWED_EVENT_NAMES.COMPANY_DELETE_SERVICE_STATUS, {});
         await this.fetchCompanyServices();
       } catch (error: any) {
         throw error;
