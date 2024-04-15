@@ -1,4 +1,7 @@
 import { handleErrorMessages } from "~/common/errorHandlers";
+const {
+  posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+} = usePosthog();
 
 export const useSubscriptionStore = defineStore({
   id: "subscriptionStore",
@@ -50,11 +53,15 @@ export const useSubscriptionStore = defineStore({
     },
 
     async getCompanySubscriptions() {
-      return await useNuxtApp().$axios.get("/subscription/users");
+      const response = await useNuxtApp().$axios.get("/subscription/users");
+      captureEvent(ALLOWED_EVENT_NAMES.FETCHED_SUBSCRIPTIONS, {});
+      return response;
     },
 
     async getAUsersSubscriptions() {
-      return await useNuxtApp().$axios.get("/subscription");
+      const response = await useNuxtApp().$axios.get("/subscription");
+      captureEvent(ALLOWED_EVENT_NAMES.FETCHED_SUBSCRIPTIONS, {});
+      return response;
     },
 
     async uploadSubscriptionReceipt(
@@ -67,6 +74,7 @@ export const useSubscriptionStore = defineStore({
           `/subscription/${subscriptionId}/upload-receipt`,
           formData
         );
+        captureEvent(ALLOWED_EVENT_NAMES.UPLOADED_SUBSCRIPTION_RECEIPT, {});
         await this.fetchCompanySubscriptions();
       } catch (error) {
         throw error;
@@ -82,11 +90,13 @@ export const useSubscriptionStore = defineStore({
     ) {
       try {
         this.subscribingToAService = true;
-        return await useNuxtApp().$axios.post("/subscription", {
+        const response = await useNuxtApp().$axios.post("/subscription", {
           serviceId,
           startDate,
           endDate,
         });
+        captureEvent(ALLOWED_EVENT_NAMES.SUBSCRIBED_TO_A_SERVICE, {});
+        return response;
       } catch (error) {
         throw error;
       } finally {
@@ -102,6 +112,7 @@ export const useSubscriptionStore = defineStore({
             isActive: newStatus,
           }
         );
+        captureEvent(ALLOWED_EVENT_NAMES.ACTIVATED_A_SUBSCRIPTION, {});
         await this.fetchCompanySubscriptions();
       } catch (error: any) {
         throw error;

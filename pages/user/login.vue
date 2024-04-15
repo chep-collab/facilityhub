@@ -43,6 +43,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     const userDetailsResponse = await useNuxtApp().$axios.get("/user/me");
     userDetails.value = userDetailsResponse.data;
     activeUserStore.setAuthenticationState(true);
+    const { posthog } = usePosthog();
+    posthog.identifyUser({
+      type: "user",
+      email: userDetails.value.email,
+      full_name: `${userDetails.value.firstName} ${userDetails.value.lastName}`,
+    });
     router.push("/dashboard");
   } catch (error: any) {
     if (error) {
