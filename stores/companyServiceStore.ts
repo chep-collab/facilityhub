@@ -159,7 +159,7 @@ export const useCompanyServiceStore = defineStore({
           title: response.data.message || "service removed",
           color: "green",
         });
-        captureEvent(ALLOWED_EVENT_NAMES.COMPANY_DELETE_SERVICE_STATUS, {});
+        captureEvent(ALLOWED_EVENT_NAMES.COMPANY_DELETE_SERVICE, {});
         await this.fetchCompanyServices();
       } catch (error: any) {
         throw error;
