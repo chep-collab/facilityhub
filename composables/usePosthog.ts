@@ -18,6 +18,8 @@ export const usePosthog = () => {
     UPLOADED_SUBSCRIPTION_RECEIPT = "Uploaded Subscription Receipt",
     SUBSCRIBED_TO_A_SERVICE = "Subscribed To A Service",
     ACTIVATED_A_SUBSCRIPTION = "Activated A Subscription",
+
+    FETCHED_FACILITY_USERS = "Fetched Facility Users",
   }
   const { $posthog } = useNuxtApp();
   const posthog = $posthog();
