@@ -44,6 +44,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     toast.add({
       title: "Account created. You will be taken to login",
     });
+    const { posthog } = usePosthog();
+    posthog.captureEvent(posthog.ALLOWED_EVENT_NAMES.SIGNUP, {
+      user_type: "user",
+    });
     setTimeout(() => {
       router.push("/user/login");
     }, 1500);
