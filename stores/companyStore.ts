@@ -1,4 +1,7 @@
 import { handleErrorMessages } from "~/common/errorHandlers";
+const {
+  posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+} = usePosthog();
 
 export const useCompanyStore = defineStore({
   id: "companyStore",
@@ -19,6 +22,7 @@ export const useCompanyStore = defineStore({
         this.fetchingCompanies = true;
         const response = await useNuxtApp().$axios.get("/user/companies");
         this.joinedCompanies = response.data;
+        captureEvent(ALLOWED_EVENT_NAMES.FETCH_JOINED_COMPANIES, {});
       } catch (error: any) {
         if (error) {
           const toast = useToast();
@@ -36,6 +40,7 @@ export const useCompanyStore = defineStore({
         this.fetchingCompanyDetails = true;
         const response = await useNuxtApp().$axios.get(`/company/${companyId}`);
         this.companyDetails = response.data;
+        captureEvent(ALLOWED_EVENT_NAMES.FETCH_COMPANY_DETAIL, {});
       } catch (error: any) {
         if (error) {
           const toast = useToast();
@@ -53,6 +58,7 @@ export const useCompanyStore = defineStore({
         this.fetchingCompanies = true;
         const response = await useNuxtApp().$axios.get(`/company`);
         this.companies = response.data;
+        captureEvent(ALLOWED_EVENT_NAMES.FETCH_COMPANIES, {});
       } catch (error: any) {
         if (error) {
           const toast = useToast();
@@ -68,7 +74,11 @@ export const useCompanyStore = defineStore({
     async JoinACompnay(companyId: string) {
       try {
         this.joiningCompany = true;
-        return await useNuxtApp().$axios.get(`/company/${companyId}/join`);
+        const response = await useNuxtApp().$axios.get(
+          `/company/${companyId}/join`
+        );
+        captureEvent(ALLOWED_EVENT_NAMES.JOINED_A_COMPANY, {});
+        return response;
       } catch (error: any) {
         throw error;
       } finally {

@@ -9,6 +9,11 @@ export const usePosthog = () => {
     COMPANY_UPDATE_SERVICE = "Company Update Service",
     COMPANY_UPDATE_SERVICE_STATUS = "Company Update Service Status",
     COMPANY_DELETE_SERVICE_STATUS = "Company Delete Service",
+
+    FETCH_JOINED_COMPANIES = "Fetched Joined Companies",
+    FETCH_COMPANY_DETAIL = "Fetched Company Details",
+    FETCH_COMPANIES = "Fetched Companies",
+    JOINED_A_COMPANY = "Joined A Company",
   }
   const { $posthog } = useNuxtApp();
   const posthog = $posthog();
