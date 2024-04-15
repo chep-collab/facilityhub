@@ -2,6 +2,9 @@
 import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 import { handleErrorMessages } from "~/common/errorHandlers";
+const {
+  posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+} = usePosthog();
 
 const schema = object({
   email: string().email("Invalid email").required("Required"),
@@ -25,6 +28,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       title: response.data.message || "Please, check your mail",
       color: "green",
     });
+    captureEvent(ALLOWED_EVENT_NAMES.REQUESTED_PASSWORD_RESET, {});
   } catch (error: any) {
     toast.add({
       title: handleErrorMessages(error),
