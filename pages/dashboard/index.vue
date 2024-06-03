@@ -8,6 +8,7 @@ const {
   getSubscriptions,
   getSubscriptionsFetchingStatus,
   getSubscriptionsStatusChangingStatus,
+  uploadingSubscriptionReceipt,
 } = storeToRefs(subscriptionStore);
 
 const companyServiceStore = useCompanyServiceStore();
@@ -50,28 +51,12 @@ const columns = [
   },
 ];
 
-// const selected = ref([subscriptions[1]]);
-
 const state = reactive({
   file: undefined,
 });
 
 const schema = object({
   file: mixed().required("File is required"),
-  // .test(
-  //   "fileType",
-  //   "Invalid file format. Only PDF or image files are allowed",
-  //   (value) => {
-  //     if (!value) return true;
-  //     const validTypes = [
-  //       "application/pdf",
-  //       "image/jpeg",
-  //       "image/png",
-  //       "image/gif",
-  //     ];
-  //     return validTypes.includes(value.type);
-  //   }
-  // ),
 });
 
 const q = ref("");
@@ -162,8 +147,8 @@ const onSubmitSubscriptionActivationRequest = async () => {
   }
 };
 
-const handleFileUpload = (event: any) => {
-  state.file = event.target.files[0];
+const handleFileUpload = (file: any) => {
+  state.file = file;
 };
 
 const uploadSubscriptionReceipt = async () => {
@@ -345,12 +330,15 @@ await subscriptionStore.fetchCompanySubscriptions();
               class="space-y-4"
               @submit="uploadSubscriptionReceipt"
             >
-              <UFormGroup label="Select receipt" name="file">
-                <UInput type="file" size="sm" v-on:change="handleFileUpload" />
-              </UFormGroup>
-              <!-- <input type="file" v-on:change="" /> -->
+              <ImageUploadInput @fileStaged="handleFileUpload" />
               <br />
-              <UButton type="submit" block> Upload </UButton>
+              <UButton
+                type="submit"
+                block
+                :loading="uploadingSubscriptionReceipt"
+              >
+                Upload
+              </UButton>
             </UForm>
           </UCard>
         </UModal>
