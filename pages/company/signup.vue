@@ -26,20 +26,31 @@ const state = reactive({
   password: undefined,
   phone: undefined,
   address: undefined,
+  avatar: undefined,
 });
 
+const handleFileUpload = (file) => {
+  state.avatar = file;
+};
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     pending.value = true;
+    const formData = new FormData();
+    formData.append("name", state.name);
+    formData.append("phone", state.phone);
+    formData.append("address", state.address);
+    formData.append("email", state.email);
+    formData.append("password", state.password);
+    if (!state.avatar) {
+      return toast.add({
+        title: handleErrorMessages("Company image is required"),
+        color: "amber",
+      });
+    }
+    formData.append("avatar", state.avatar);
     const { data, error } = await useFetch("/company/signup", {
       method: "POST",
-      body: {
-        name: state.name,
-        phone: state.phone,
-        address: state.address,
-        email: state.email,
-        password: state.password,
-      },
+      body: formData,
       baseURL: runtimeConfig.public.apiUrl,
     });
     if (error.value) throw error.value.data.message;
@@ -73,6 +84,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       <UFormGroup label="Company/Facility name" name="name">
         <UInput v-model="state.name" />
       </UFormGroup>
+
+      <ImageUploadInput
+        @fileStaged="handleFileUpload"
+        :label="`Upload Company Image`"
+      />
 
       <UFormGroup label="Email" name="email">
         <UInput v-model="state.email" />
