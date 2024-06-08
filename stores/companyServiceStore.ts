@@ -132,7 +132,7 @@ export const useCompanyServiceStore = defineStore({
       try {
         this.updatingCompanyServiceStatus = true;
         await useNuxtApp().$axios.patch(`/company-service/${serviceId}`, {
-          isActive,
+          isActive: `${isActive}`,
         });
         captureEvent(ALLOWED_EVENT_NAMES.COMPANY_UPDATE_SERVICE_STATUS, {
           status: isActive,
