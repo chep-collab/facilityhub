@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { number, object, string } from "yup";
 import { storeToRefs } from "pinia";
+import { handleErrorMessages } from "~/common/errorHandlers";
 const companyServiceStore = useCompanyServiceStore();
 const { getCreatingCompanyServicesLoadingState } =
   storeToRefs(companyServiceStore);
@@ -40,6 +41,7 @@ const state = reactive({
   description: undefined,
   amount: undefined,
   period: periods[0],
+  avatar: undefined,
 });
 
 if (mode == "edit") {
@@ -49,20 +51,35 @@ if (mode == "edit") {
   state.period = initialServiceData.period;
 }
 
-async function createNewCompanyService(event: any) {
-  const payload = event.data;
-  await companyServiceStore.createNewService(
-    payload.name,
-    payload.description,
-    payload.amount,
-    payload.period
-  );
-  state.name = undefined;
-  state.description = undefined;
-  state.amount = undefined;
-  state.period = "daily";
+const handleFileUpload = (file: any) => {
+  state.avatar = file;
+};
 
-  emit("close");
+async function createNewCompanyService(event: any) {
+  try {
+    const payload = event.data;
+    await companyServiceStore.createNewService(
+      payload.name,
+      payload.description,
+      payload.amount,
+      payload.period,
+      payload.avatar
+    );
+    state.name = undefined;
+    state.description = undefined;
+    state.amount = undefined;
+    state.avatar = undefined;
+    state.period = "daily";
+    emit("close");
+  } catch (error) {
+    if (error) {
+      const toast = useToast();
+      toast.add({
+        title: handleErrorMessages(error.message || error),
+        color: "red",
+      });
+    }
+  }
 }
 
 async function updateCompanyServiceAndPrice(event: any) {
@@ -125,6 +142,11 @@ async function createOrEdit(event: any) {
           <UFormGroup label="Service Name" name="name">
             <UInput v-model="state.name" />
           </UFormGroup>
+
+          <ImageUploadInput
+            @fileStaged="handleFileUpload"
+            :label="`Upload Service Image`"
+          />
 
           <UFormGroup label="Description" name="description">
             <UInput v-model="state.description" type="text" />

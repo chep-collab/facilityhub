@@ -55,16 +55,22 @@ export const useCompanyServiceStore = defineStore({
       name: string,
       description: string,
       amount: number,
-      period: string
+      period: string,
+      avatar: File
     ) {
       try {
         this.creatingService = true;
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+        if (!avatar) {
+          throw new Error("An image must be uploaded to showcase your service");
+        }
+        formData.append("avatar", avatar, avatar.name);
+        ``;
         const serviceResponse = await useNuxtApp().$axios.post(
           "/company-service",
-          {
-            name,
-            description,
-          }
+          formData
         );
 
         const priceResponse = await useNuxtApp().$axios.post(
@@ -81,13 +87,7 @@ export const useCompanyServiceStore = defineStore({
         });
         await this.fetchCompanyServices();
       } catch (error: any) {
-        if (error) {
-          const toast = useToast();
-          toast.add({
-            title: handleErrorMessages(error),
-            color: "red",
-          });
-        }
+        throw error;
       } finally {
         this.creatingService = false;
       }
