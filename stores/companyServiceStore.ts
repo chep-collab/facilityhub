@@ -35,6 +35,7 @@ export const useCompanyServiceStore = defineStore({
             period: service.companyServicePrice?.period || "N/A",
             serviceId: service.id,
             servicePriceId: service.companyServicePrice?.id || null,
+            avatarUrl: service.avatarUrl || "",
           });
         }
         captureEvent(ALLOWED_EVENT_NAMES.FETCH_COMPANY_SERVICES, {});
@@ -67,7 +68,6 @@ export const useCompanyServiceStore = defineStore({
           throw new Error("An image must be uploaded to showcase your service");
         }
         formData.append("avatar", avatar, avatar.name);
-        ``;
         const serviceResponse = await useNuxtApp().$axios.post(
           "/company-service",
           formData
@@ -98,14 +98,22 @@ export const useCompanyServiceStore = defineStore({
       name: string,
       description: string,
       amount: number,
-      period: string
+      period: string,
+      avatar: File
     ) {
       try {
         this.creatingService = true;
-        await useNuxtApp().$axios.patch(`/company-service/${serviceId}`, {
-          name,
-          description,
-        });
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+        if (!avatar) {
+          throw new Error("An image must be uploaded to showcase your service");
+        }
+        formData.append("avatar", avatar, avatar.name);
+        await useNuxtApp().$axios.patch(
+          `/company-service/${serviceId}`,
+          formData
+        );
 
         await useNuxtApp().$axios.patch(
           `/company-service-price/${servicePriceId}`,
@@ -117,13 +125,7 @@ export const useCompanyServiceStore = defineStore({
         captureEvent(ALLOWED_EVENT_NAMES.COMPANY_UPDATE_SERVICE, {});
         await this.fetchCompanyServices();
       } catch (error: any) {
-        if (error) {
-          const toast = useToast();
-          toast.add({
-            title: handleErrorMessages(error),
-            color: "red",
-          });
-        }
+        throw error;
       } finally {
         this.creatingService = false;
       }
