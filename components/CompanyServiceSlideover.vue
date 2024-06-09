@@ -32,6 +32,9 @@ const state = reactive({
 const closeSubscriptionForm = () => {
   isSubscriptionFormOpen.value = false;
 };
+
+const items = ["https://placehold.co/600x400"];
+
 await companyStore.fetchCompanyDetail(company.id);
 </script>
 
@@ -58,6 +61,20 @@ await companyStore.fetchCompanyDetail(company.id);
           class="mb-4"
           v-for="(service, index) in companyDetails.companyServices"
         >
+          <UCarousel
+            ref="carouselRef"
+            v-slot="{ item }"
+            :items="items"
+            :ui="{ item: 'basis-full' }"
+            class="rounded-lg overflow-hidden"
+            indicators
+          >
+            <img
+              :src="service.avatarUrl || item"
+              class="w-full"
+              draggable="false"
+            />
+          </UCarousel>
           <div class="flex flex-row justify-between">
             <div class="w-1/2">
               {{ service.name }} <br />

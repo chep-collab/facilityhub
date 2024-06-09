@@ -30,7 +30,11 @@ const items = [
           class="rounded-lg overflow-hidden"
           indicators
         >
-          <img :src="item" class="w-full" draggable="false" />
+          <img
+            :src="company.avatarUrl || item"
+            class="w-full"
+            draggable="false"
+          />
         </UCarousel>
         <p class="text-center mt-2">{{ company.name }}</p>
       </template>
