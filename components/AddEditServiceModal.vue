@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { number, object, string } from "yup";
 import { storeToRefs } from "pinia";
+import { handleErrorMessages } from "~/common/errorHandlers";
 const companyServiceStore = useCompanyServiceStore();
 const { getCreatingCompanyServicesLoadingState } =
   storeToRefs(companyServiceStore);
@@ -40,6 +41,7 @@ const state = reactive({
   description: undefined,
   amount: undefined,
   period: periods[0],
+  avatar: undefined,
 });
 
 if (mode == "edit") {
@@ -47,40 +49,68 @@ if (mode == "edit") {
   state.description = initialServiceData.description;
   state.amount = initialServiceData.amount;
   state.period = initialServiceData.period;
+  state.avatarUrl = initialServiceData.avatarUrl;
 }
 
-async function createNewCompanyService(event: any) {
-  const payload = event.data;
-  await companyServiceStore.createNewService(
-    payload.name,
-    payload.description,
-    payload.amount,
-    payload.period
-  );
-  state.name = undefined;
-  state.description = undefined;
-  state.amount = undefined;
-  state.period = "daily";
+const handleFileUpload = (file: any) => {
+  state.avatar = file;
+};
 
-  emit("close");
+async function createNewCompanyService(event: any) {
+  try {
+    const payload = event.data;
+    await companyServiceStore.createNewService(
+      payload.name,
+      payload.description,
+      payload.amount,
+      payload.period,
+      payload.avatar
+    );
+    state.name = undefined;
+    state.description = undefined;
+    state.amount = undefined;
+    state.avatar = undefined;
+    state.period = "daily";
+    emit("close");
+  } catch (error: any) {
+    if (error) {
+      const toast = useToast();
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  }
 }
 
 async function updateCompanyServiceAndPrice(event: any) {
-  const payload = event.data;
-  await companyServiceStore.updateCompanyServiceAndPrice(
-    initialServiceData.serviceId,
-    initialServiceData.servicePriceId,
-    payload.name,
-    payload.description,
-    parseFloat(payload.amount),
-    payload.period
-  );
-  state.name = undefined;
-  state.description = undefined;
-  state.amount = undefined;
-  state.period = "daily";
+  try {
+    const payload = event.data;
+    await companyServiceStore.updateCompanyServiceAndPrice(
+      initialServiceData.serviceId,
+      initialServiceData.servicePriceId,
+      payload.name,
+      payload.description,
+      parseFloat(payload.amount),
+      payload.period,
+      payload.avatar
+    );
+    state.name = undefined;
+    state.description = undefined;
+    state.amount = undefined;
+    state.period = "daily";
+    state.avatar = undefined;
 
-  emit("close");
+    emit("close");
+  } catch (error) {
+    if (error) {
+      const toast = useToast();
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  }
 }
 
 async function createOrEdit(event: any) {
@@ -90,6 +120,13 @@ async function createOrEdit(event: any) {
     await updateCompanyServiceAndPrice(event);
   }
 }
+
+const items = ["https://placehold.co/600x400"];
+
+const changeImageStatus = ref(false);
+const toggleChangeImageStatus = () => {
+  changeImageStatus.value = !changeImageStatus.value;
+};
 </script>
 <template>
   <UModal v-model="isOpen">
@@ -122,6 +159,42 @@ async function createOrEdit(event: any) {
           class="space-y-4"
           @submit="createOrEdit"
         >
+          <div v-if="state.avatarUrl && !changeImageStatus">
+            <UCarousel
+              ref="carouselRef"
+              v-slot="{ item }"
+              :items="items"
+              :ui="{ item: 'basis-full' }"
+              class="rounded-lg overflow-hidden"
+              indicators
+            >
+              <img
+                :src="state.avatarUrl || item"
+                class="w-full"
+                draggable="false"
+              />
+            </UCarousel>
+          </div>
+
+          <ImageUploadInput
+            v-if="(mode == 'edit' && changeImageStatus) || mode == 'add'"
+            @fileStaged="handleFileUpload"
+            :label="
+              mode == 'add'
+                ? `Upload Service Image`
+                : `Upload New Service Image`
+            "
+          />
+          <div class="flex justify-end">
+            <UButton
+              v-if="mode == 'edit'"
+              variant="outline"
+              :color="changeImageStatus ? 'red' : ''"
+              @click="toggleChangeImageStatus"
+            >
+              {{ changeImageStatus ? "Cancel Image Change" : "Change Image" }}
+            </UButton>
+          </div>
           <UFormGroup label="Service Name" name="name">
             <UInput v-model="state.name" />
           </UFormGroup>
