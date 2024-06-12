@@ -159,6 +159,7 @@ const uploadSubscriptionReceipt = async () => {
       subscriptionIdToUpdate.value,
       formData
     );
+    isReceiptUploadModalOpen.value = false;
   } catch (error: any) {
     if (error) {
       const toast = useToast();
