@@ -45,6 +45,7 @@
   <TrustedBy/>
   <Features/>
   <BookADemo/>
+  <WhoWeAre/>
 </template>
 
 <script setup>
