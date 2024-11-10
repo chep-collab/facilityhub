@@ -42,6 +42,7 @@
     </div>
   </nav>
   <Hero/>
+  <TrustedBy/>
 </template>
 
 <script setup>
