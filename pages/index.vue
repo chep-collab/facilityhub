@@ -44,6 +44,7 @@
   <Hero/>
   <TrustedBy/>
   <Features/>
+  <BookADemo/>
 </template>
 
 <script setup>
