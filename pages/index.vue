@@ -1,6 +1,6 @@
 <template>
-  <nav class="bg-white p-4">
-    <div class="container mx-auto flex items-center justify-between">
+  <nav class="bg-white p-8 lg:px-20">
+    <div class="mx-auto flex items-center justify-between">
       <!-- Logo -->
       <div class="text-grey-800 text-lg font-semibold">
         <a href="/">Facility Hub</a>
@@ -32,7 +32,7 @@
     <!-- Mobile Menu (only visible when isOpen is true) -->
     <div v-if="isOpen" class="md:hidden mt-4 p-4">
       <ul class="space-y-4 text-grey-800 text-center">
-        <li><a href="#home" class="hover:text-grey-400">Home</a></li>
+        <!-- <li><a href="#home" class="hover:text-grey-400">Home</a></li> -->
         <li><a href="#about" class="hover:text-grey-400">About</a></li>
         <li><a href="#services" class="hover:text-grey-400">Services</a></li>
         <li><a href="#contact" class="hover:text-grey-400">Contact</a></li>
@@ -41,15 +41,13 @@
       </ul>
     </div>
   </nav>
+  <Hero/>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 const router = useRouter();
 const isOpen = ref(false)
-const dothis = () => {
-  console.log(1)
-}
 </script>
 
 <style scoped>
