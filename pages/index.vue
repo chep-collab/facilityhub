@@ -43,6 +43,7 @@
   </nav>
   <Hero/>
   <TrustedBy/>
+  <Features/>
 </template>
 
 <script setup>
