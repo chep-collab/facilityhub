@@ -47,6 +47,7 @@
   <BookADemo/>
   <WhoWeAre/>
   <Partners/>
+  <Testimonials/>
 </template>
 
 <script setup>
