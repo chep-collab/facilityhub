@@ -4,7 +4,7 @@
         <!-- First Box: Trust by Box -->
         <div class="flex flex-col justify-center items-center p-6 bg-gray-100 rounded-lg relative h-[150px]">
           <p class="text-2xl font-medium text-center">Trust by</p>
-          <img src="" alt="Star Image" class="absolute bottom-4 right-4 w-8 h-8"/>
+          <img src="../assets/landing-page/star.png" alt="Star Image" class="absolute bottom-4 right-4 w-12 h-12"/>
         </div>
   
         <!-- Second Box-->
