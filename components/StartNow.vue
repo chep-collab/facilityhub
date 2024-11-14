@@ -9,7 +9,9 @@
             <h1 class="text-white text-3xl md:text-5xl font-bold mb-4">
                 Start Managing Your Workspace Now
             </h1>
+            <br>
             <button
+                @click="router.push('company/signup')"
                 class="bg-black text-white px-6 py-3 rounded-lg text-lg md:text-xl font-semibold hover:bg-yellow-600 transition duration-300">
                 Start Now
             </button>
@@ -23,3 +25,9 @@
     background-size: cover;
 }
 </style>
+
+<script setup>
+import { ref } from 'vue'
+const router = useRouter();
+const isOpen = ref(false)
+</script>

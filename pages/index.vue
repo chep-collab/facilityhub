@@ -49,7 +49,7 @@
   <Partners/>
   <Testimonials/>
   <StartNow/>
-  <Footer/>
+  <WebsiteFooter/>
 </template>
 
 <script setup>
