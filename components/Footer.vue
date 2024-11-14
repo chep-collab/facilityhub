@@ -1,15 +1,12 @@
 <template>
-  <footer class="py-4">
-    <div class="container mx-auto text-center text-white">
-      <p>&copy; 2024 Workspace.</p>
-    </div>
+  <footer class="w-full py-4 bg-white text-center border-t border-gray-300">
+    <p class="text-gray-600">© Copyright 2024, All Rights Reserved by FacilityHub</p>
   </footer>
 </template>
 
 <style scoped>
+/* Styling for the footer */
 footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+  font-size: 14px; /* Smaller text */
 }
 </style>

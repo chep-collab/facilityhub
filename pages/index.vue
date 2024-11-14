@@ -48,6 +48,8 @@
   <WhoWeAre/>
   <Partners/>
   <Testimonials/>
+  <StartNow/>
+  <Footer/>
 </template>
 
 <script setup>
