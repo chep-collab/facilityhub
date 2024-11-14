@@ -20,7 +20,7 @@
 
         <!-- Right Side: Image Section -->
         <div class="md:w-1/2 mt-6 md:mt-0 flex justify-center">
-            <img src="../assets/landing-page/hero.jpeg" alt="Hero Image"
+            <img src="../assets/landing-page/main-hero.png" alt="Hero Image"
                 class="w-full md:w-[500px] md:h-[500px] lg:w-[800px] lg:h-[600px] rounded-lg shadow-lg object-cover" />
         </div>
     </section>
