@@ -57,6 +57,22 @@ const items = [{
   name: 'Anthony Fu',
   feedback: 'Nuxt’s flexibility is unmatched in the industry.',
   avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu' }
+},{
+  name: 'Sébastien Chopin',
+  feedback: 'Nuxt has transformed my development experience!',
+  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/atinux' }
+}, {
+  name: 'Pooya Parsa',
+  feedback: 'I love how Nuxt simplifies complex tasks!',
+  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/pi0' }
+}, {
+  name: 'Daniel Roe',
+  feedback: 'Nuxt makes building applications so much easier!',
+  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/danielroe' }
+}, {
+  name: 'Anthony Fu',
+  feedback: 'Nuxt’s flexibility is unmatched in the industry.',
+  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu' }
 }]
 </script>
 
