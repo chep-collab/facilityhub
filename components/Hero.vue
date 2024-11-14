@@ -5,6 +5,7 @@
             <h1 class="text-4xl lg:text-7xl font-bold text-gray-800">
                 Effortless <br> Workspace Management
             </h1>
+            <img src="../assets/landing-page/curved-line.png" class="h-4 w-12">
             <p class="text-lg lg:text-xl text-gray-600">
                 Manage your workspace, users, subscriptions, and services in one place.
             </p>
