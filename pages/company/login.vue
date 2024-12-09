@@ -7,7 +7,7 @@ import { storeToRefs } from "pinia";
 
 // This sets out the layout to use the 'auth' layout
 definePageMeta({
-  layouts: 'auth', 
+  layouts: "auth",
 });
 
 const activeUserStore = useActiveUserStore();
@@ -72,22 +72,26 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 <template>
   <UCard class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
     <template #header>
-      <h2 class="text-2xl font-semibold text-center text-gray-900">Facility Admin Login</h2>
+      <h2 class="text-2xl font-semibold text-center text-gray-900">
+        Facility Admin Login
+      </h2>
     </template>
-    
+
     <div>
-      <UForm
-        :schema="schema"
-        :state="state"
-        class="space-y-6"
-        @submit="onSubmit"
-      >
+      <UForm :schema="schema" :state="state" class="space-y-6" @submit="onSubmit">
         <UFormGroup label="Email" name="email">
-          <UInput v-model="state.email" class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+          <UInput
+            v-model="state.email"
+            class="w-full px-0 py-0 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
         </UFormGroup>
 
         <UFormGroup label="Password" name="password">
-          <UInput v-model="state.password" type="password" class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+          <UInput
+            v-model="state.password"
+            type="password"
+            class="w-full px-0 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
         </UFormGroup>
 
         <UButton
@@ -104,16 +108,21 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     <template #footer>
       <div class="flex justify-between items-center mt-6">
-        <ULink to="/company/signup" class="text-green-500 hover:text-green-700">Signup</ULink>
-        <ULink to="/forgot-password" class="text-green-500 hover:text-green-700">Forgot Password</ULink>
+        <ULink to="/company/signup" class="text-green-500 hover:text-green-700">
+          Signup
+        </ULink>
+        <ULink to="/forgot-password" class="text-green-500 hover:text-green-700">
+          Forgot Password
+        </ULink>
       </div>
     </template>
   </UCard>
 
   <br />
-  <UButton 
-    to="/" 
-    class="mt-2 text-green-500 border-2 border-green-500 py-2 px-4 w-32 rounded-md bg-white hover:bg-green-100 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 mx-auto block">
+  <UButton
+    to="/"
+    class="mt-2 text-green-500 border-2 border-green-500 py-2 px-4 w-32 rounded-md bg-white hover:bg-green-100 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 mx-auto block"
+  >
     Back to Home
   </UButton>
 </template>

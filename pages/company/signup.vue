@@ -90,14 +90,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <UInput
           v-model="state.name"
           placeholder="Enter your facility name"
-          class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </UFormGroup>
 
       <UFormGroup label="Upload Company Image">
         <ImageUploadInput
           @fileStaged="handleFileUpload"
-          class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </UFormGroup>
 
@@ -106,7 +106,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           v-model="state.email"
           type="email"
           placeholder="example@company.com"
-          class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </UFormGroup>
 
@@ -114,7 +114,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <UInput
           v-model="state.address"
           placeholder="Enter your business address"
-          class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </UFormGroup>
 
@@ -123,7 +123,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           v-model="state.phone"
           type="tel"
           placeholder="Enter your phone number"
-          class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </UFormGroup>
 
@@ -132,7 +132,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           v-model="state.password"
           type="password"
           placeholder="Create a secure password"
-          class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </UFormGroup>
 

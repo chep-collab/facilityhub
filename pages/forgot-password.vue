@@ -56,7 +56,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <UFormGroup label="Email" name="email">
           <UInput
             v-model="state.email"
-            class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </UFormGroup>
 
