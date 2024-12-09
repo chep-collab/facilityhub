@@ -25,31 +25,41 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UCard>
-    <template #header> Enter new password </template>
+  <UCard class="w-full md:w-1/2 mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
+    <template #header>
+      <h2 class="text-2xl font-semibold text-center text-gray-900">Enter New Password</h2>
+    </template>
     <div>
       <UForm
         :schema="schema"
         :state="state"
-        class="space-y-4"
+        class="space-y-6"
         @submit="onSubmit"
       >
         <UFormGroup label="Password" name="password">
-          <UInput v-model="state.password" type="password" />
+          <UInput v-model="state.password" type="password" class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
         </UFormGroup>
 
-        <UFormGroup label="Password" name="password">
-          <UInput v-model="state.confirmPassword" type="password" />
+        <UFormGroup label="Confirm Password" name="confirmPassword">
+          <UInput v-model="state.confirmPassword" type="password" class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
         </UFormGroup>
 
-        <UButton type="submit" block> Submit </UButton>
+        <UButton type="submit" block class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+          Submit
+        </UButton>
       </UForm>
     </div>
     <template #footer>
-      <div class="flex flex-row justify-around gap-8">
-        <ULink to="/">Home</ULink>
+      <div class="flex justify-between items-center mt-6">
+        <ULink to="/" class="text-green-500 hover:text-green-700">Home</ULink>
       </div>
     </template>
   </UCard>
+
   <br />
+  <UButton 
+    to="/" 
+    class="mt-2 text-green-500 border-2 border-green-500 py-2 px-4 w-32 rounded-md bg-white hover:bg-green-100 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 mx-auto block">
+    Back to Home
+  </UButton>
 </template>
