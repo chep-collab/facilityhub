@@ -41,7 +41,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UInput
             v-model="state.password"
             type="password"
-            class="w-full px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </UFormGroup>
 
@@ -49,7 +49,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UInput
             v-model="state.confirmPassword"
             type="password"
-            class="w-full px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </UFormGroup>
 
