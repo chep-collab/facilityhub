@@ -64,35 +64,39 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UCard class="w-full md:w-1/2 mx-auto">
-    <template #header> User Login</template>
+  <UCard class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
+    <template #header>
+      <h2 class="text-2xl font-semibold text-center text-gray-900">User Login</h2>
+    </template>
     <div>
       <UForm
         :schema="schema"
         :state="state"
-        class="space-y-4"
+        class="space-y-6"
         @submit="onSubmit"
       >
         <UFormGroup label="Email" name="email">
-          <UInput v-model="state.email" />
+          <UInput v-model="state.email" class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
         </UFormGroup>
 
         <UFormGroup label="Password" name="password">
-          <UInput v-model="state.password" type="password" />
+          <UInput v-model="state.password" type="password" class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
         </UFormGroup>
 
-        <UButton :loading="pending" :disabled="pending" type="submit" block>
-          {{ pending ? "Loding" : "Submit" }}
+        <UButton :loading="pending" :disabled="pending" type="submit" block class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+          {{ pending ? "Loading" : "Submit" }}
         </UButton>
       </UForm>
     </div>
+
     <template #footer>
-      <div class="flex flex-row justify-around gap-8">
-        <ULink to="/user/signup">Signup</ULink>
-        <ULink to="/forgot-password">Forgot Password</ULink>
+      <div class="flex justify-between mt-6">
+        <ULink to="/user/signup" class="text-green-500 hover:text-green-700">Signup</ULink>
+        <ULink to="/forgot-password" class="text-green-500 hover:text-green-700">Forgot Password</ULink>
       </div>
     </template>
   </UCard>
+
   <br />
-  <ULink to="/">Home</ULink>
+  <ULink to="/" class="text-green-500 hover:text-green-700 mx-auto block text-center">Home</ULink>
 </template>
