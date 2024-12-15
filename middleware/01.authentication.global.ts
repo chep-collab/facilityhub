@@ -2,6 +2,18 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const activeUserStore = useActiveUserStore();
   const toast = useToast();
   const router = useRouter();
+  const runtimeConfig = useRuntimeConfig(); // Referencing the runtime configuration
+  const activateComingSoon = runtimeConfig.public.activateComingSoon; //targets the variable here
+
+    console.log("ACTIVATE_COMING_SOON value:", activateComingSoon); 
+
+
+   // This check if Coming Soon is active, then it will redirect to coming soon page 
+   if (activateComingSoon === "yes" && (to.name as string).includes("login") || (to.name as string).includes("signup")) {
+    console.log("Redirecting to coming-soon page...");
+    return navigateTo({ name: "coming-soon" });  
+  }
+
 
   const { getAuthenticationState } = storeToRefs(activeUserStore);
   const destinationName = to.name as string;
