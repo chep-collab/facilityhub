@@ -177,7 +177,7 @@ await subscriptionStore.fetchCompanySubscriptions();
   <div>
     <UAlert
       v-if="getUserType === 'company' && getCompanyServices.length === 0"
-      class="my-4 mx-4"
+      class="my-4 mx-4 border border-orange-500"
       :close-button="{
         icon: 'i-heroicons-x-mark-20-solid',
         color: 'gray',
