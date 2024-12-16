@@ -1,11 +1,10 @@
 <template>
-    <div class="flex items-center justify-center h-screen bg-gray-100 text-center">
+    <div class="flex items-center justify-center h-screen bg-coming-soon bg-cover bg-center text-center">
       
       <div>
-        
-        <h1 class="text-4xl font-bold text-black animate-fade-in">Coming Soon...</h1>
-        <p class="mt-4 text-lg text-green-700 animate-fade-in delay-900">We are working hard to bring you this feature. Stay tuned!</p>
-        <p class="mt-4 text-sm text-gray-700 animate-fade-in delay-900">© 2024 Facility Hub</p>
+        <h1 class="text-2xl sm:text-4xl font-bold text-black animate-fade-in animate-glistening">Coming Soon...</h1>
+        <p class="mt-4 text-lg sm:text-base md:text-lg text-green-700 animate-fade-in delay-200">We are working hard to bring you this feature. Stay tuned!</p>
+        <p class="mt-4 text-sm text-gray-700 animate-fade-in delay-400">© Copyright 2024, All Rights Reserved by FacilityHub</p>
       </div>
     </div>
   </template>

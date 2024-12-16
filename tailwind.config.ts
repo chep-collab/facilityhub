@@ -44,8 +44,13 @@ module.exports = {
           '100%': { 
             textShadow: '0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.6)' 
           },
-        }
-      }
+        },
+      },
+
+      // Added a custom background image
+      backgroundImage: {
+        'coming-soon': "url('/assets/landing-page/coming-soon-bg-img.svg')", 
+            },
     },
   },
   plugins: [],
