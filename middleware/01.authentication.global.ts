@@ -9,7 +9,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
 
    // This check if Coming Soon is active, then it will redirect to coming soon page 
-   if (activateComingSoon === "yes" && (to.name as string).includes("login") || (to.name as string).includes("signup")) {
+   if (activateComingSoon === "yes" && ((to.name as string).includes("login") || (to.name as string).includes("signup"))) {
     console.log("Redirecting to coming-soon page...");
     return navigateTo({ name: "coming-soon" });  
   }
