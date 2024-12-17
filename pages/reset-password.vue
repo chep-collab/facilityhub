@@ -19,37 +19,56 @@ const state = reactive({
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Do something with event.data
+  // Handle form submission
   console.log(event.data);
 }
 </script>
 
 <template>
-  <UCard>
-    <template #header> Enter new password </template>
+  <UCard class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
+    <template #header>
+      <h2 class="text-2xl font-semibold text-center text-gray-900">Enter New Password</h2>
+    </template>
+
     <div>
       <UForm
         :schema="schema"
         :state="state"
-        class="space-y-4"
+        class="space-y-6"
         @submit="onSubmit"
       >
         <UFormGroup label="Password" name="password">
-          <UInput v-model="state.password" type="password" />
+          <UInput
+            v-model="state.password"
+            type="password"
+            class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
         </UFormGroup>
 
-        <UFormGroup label="Password" name="password">
-          <UInput v-model="state.confirmPassword" type="password" />
+        <UFormGroup label="Confirm Password" name="confirmPassword">
+          <UInput
+            v-model="state.confirmPassword"
+            type="password"
+            class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
         </UFormGroup>
 
-        <UButton type="submit" block> Submit </UButton>
+        <UButton
+          type="submit"
+          block
+          class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          Submit
+        </UButton>
       </UForm>
     </div>
+
     <template #footer>
-      <div class="flex flex-row justify-around gap-8">
-        <ULink to="/">Home</ULink>
+      <div class="flex justify-center mt-6">
+        <ULink to="/" class="text-green-500 hover:text-green-700">
+          Back to Home
+        </ULink>
       </div>
     </template>
   </UCard>
-  <br />
 </template>

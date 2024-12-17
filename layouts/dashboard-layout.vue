@@ -16,7 +16,7 @@ const logout = () => {
 <template>
   <div>
     <div class="py-3 px-3 flex flex-row justify-between">
-      <h1 class="w-full">
+      <h1 class="w-full font-bold">
         Workspace <span> {{ userType == "user" ? "User" : "Admin" }}</span>
         <br />
         <span v-if="userType == 'user'">{{

@@ -24,6 +24,7 @@ export default defineNuxtConfig({
       appId: process.env.FIREBASE_APP_ID,
       posthogPublicKey: process.env.POSTHOG_PUBLIC_KEY,
       posthogHost: process.env.POSTHOG_HOST,
+      activateComingSoon:process.env.ACTIVATE_COMING_SOON,
     },
   },
 });
