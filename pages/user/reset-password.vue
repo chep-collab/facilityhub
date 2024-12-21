@@ -1,0 +1,118 @@
+<script setup lang="ts">
+import { object, string, type InferType } from "yup";
+import type { FormSubmitEvent } from "#ui/types";
+
+const schema = object({
+  password: string()
+    .min(8, "Must be at least 8 characters")
+    .required("Required"),
+  confirmPassword: string()
+    .min(8, "Must be at least 8 characters")
+    .required("Required"),
+});
+
+type Schema = InferType<typeof schema>;
+
+const state = reactive({
+  password: undefined,
+  confirmPassword: undefined,
+});
+
+const route = useRoute();
+const token = route.query.token as string; // Retrieve token from URL query parameters
+
+if (!token) {
+  console.error("Token is missing in the URL query parameters.");
+}
+
+const toast = useToast();
+const sendingResetPasswordRequest = ref(false);
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  try {
+    sendingResetPasswordRequest.value = true;
+
+    const response = await useNuxtApp().$axios.post("/user/reset-password", {
+      token,
+      password: state.password,
+      confirmPassword: state.confirmPassword,
+    });
+
+    toast.add({
+      title:
+        response.data.message ||
+        "Your password has been successfully reset.",
+      color: "green",
+    });
+  } catch (error: any) {
+    toast.add({
+      title: handleErrorMessages(error),
+      color: "red",
+    });
+  } finally {
+    sendingResetPasswordRequest.value = false;
+  }
+}
+// Handle error messages from the API or server
+function handleErrorMessages(error: any): string {
+  if (error.response) {
+    // API error response handling
+    return error.response.data.message || "Something went wrong. Please try again.";
+  } else if (error.request) {
+    // No response from the server
+    return "No response from the server. Please check your connection.";
+  } else {
+    // General error
+    return "An unknown error occurred.";
+  }
+}
+</script>
+
+<template>
+  <UCard class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
+    <template #header>
+      <h2 class="text-2xl font-semibold text-center text-gray-900">Enter New Password</h2>
+    </template>
+
+    <div>
+      <UForm
+        :schema="schema"
+        :state="state"
+        class="space-y-6"
+        @submit="onSubmit"
+      >
+        <UFormGroup label="New password" name="password">
+          <UInput
+            v-model="state.password"
+            type="password"
+            class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </UFormGroup>
+
+        <UFormGroup label="Confirm Password" name="confirmPassword">
+          <UInput
+            v-model="state.confirmPassword"
+            type="password"
+            class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </UFormGroup>
+
+        <UButton
+          type="submit"
+          block
+          class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          Submit
+        </UButton>
+      </UForm>
+    </div>
+
+    <template #footer>
+      <div class="flex justify-center mt-6">
+        <ULink to="/" class="text-green-500 hover:text-green-700">
+          Back to Home
+        </ULink>
+      </div>
+    </template>
+  </UCard>
+</template>

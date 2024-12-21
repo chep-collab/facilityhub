@@ -21,11 +21,15 @@ const toast = useToast();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     sendingResetPasswordRequest.value = true;
-    const response = await useNuxtApp().$axios.post("/user/forgot-password", {
+     // This sends the POST request to the user reset password endpoint
+     const response = await useNuxtApp().$axios.post("/user/forgot-password", {
       email: state.email,
     });
+    // This shows the message from the backend and or a fallback message
     toast.add({
-      title: response.data.message || "Please, check your mail",
+      title:
+        response.data.message ||
+        "Reset password instructions will be sent to your email address if an account exists with the email you provided.",
       color: "green",
     });
     captureEvent(ALLOWED_EVENT_NAMES.REQUESTED_PASSWORD_RESET, {});

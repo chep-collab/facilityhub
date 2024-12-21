@@ -92,7 +92,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     <template #footer>
       <div class="flex justify-between mt-6">
         <ULink to="/user/signup" class="text-green-500 hover:text-green-700">Signup</ULink>
-        <ULink to="/forgot-password" class="text-green-500 hover:text-green-700">Forgot Password</ULink>
+        <ULink to="/user/forgot-password" class="text-green-500 hover:text-green-700">Forgot Password</ULink>
       </div>
     </template>
   </UCard>

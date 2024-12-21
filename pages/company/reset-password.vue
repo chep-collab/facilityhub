@@ -18,9 +18,53 @@ const state = reactive({
   confirmPassword: undefined,
 });
 
+const route = useRoute();
+const token = route.query.token as string; // Retrieve token from URL query parameters
+
+if (!token) {
+  console.error("Token is missing in the URL query parameters.");
+}
+
+const toast = useToast();
+const sendingResetPasswordRequest = ref(false);
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  // Handle form submission
-  console.log(event.data);
+  try {
+    sendingResetPasswordRequest.value = true;
+
+    const response = await useNuxtApp().$axios.post("/company/reset-password", {
+      token,
+      password: state.password,
+      confirmPassword: state.confirmPassword,
+    });
+
+    toast.add({
+      title:
+        response.data.message ||
+        "Your password has been successfully reset.",
+      color: "green",
+    });
+  } catch (error: any) {
+    toast.add({
+      title: handleErrorMessages(error),
+      color: "red",
+    });
+  } finally {
+    sendingResetPasswordRequest.value = false;
+  }
+}
+// Handle error messages from the API or server
+function handleErrorMessages(error: any): string {
+  if (error.response) {
+    // API error response handling
+    return error.response.data.message || "Something went wrong. Please try again.";
+  } else if (error.request) {
+    // No response from the server
+    return "No response from the server. Please check your connection.";
+  } else {
+    // General error
+    return "An unknown error occurred.";
+  }
 }
 </script>
 
