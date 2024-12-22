@@ -46,24 +46,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     });
   } catch (error: any) {
     toast.add({
-      title: handleErrorMessages(error),
+      title: error.userFriendlyMessage || "An error occurred. Please try again.",
       color: "red",
     });
   } finally {
     sendingResetPasswordRequest.value = false;
-  }
-}
-// Handle error messages from the API or server
-function handleErrorMessages(error: any): string {
-  if (error.response) {
-    // API error response handling
-    return error.response.data.message || "Something went wrong. Please try again.";
-  } else if (error.request) {
-    // No response from the server
-    return "No response from the server. Please check your connection.";
-  } else {
-    // General error
-    return "An unknown error occurred.";
   }
 }
 </script>

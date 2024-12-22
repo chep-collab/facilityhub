@@ -111,7 +111,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <ULink to="/company/signup" class="text-green-500 hover:text-green-700">
           Signup
         </ULink>
-        <ULink to="/user/forgot-password" class="text-green-500 hover:text-green-700">
+        <ULink to="/company/forgot-password" class="text-green-500 hover:text-green-700">
           Forgot Password
         </ULink>
       </div>
