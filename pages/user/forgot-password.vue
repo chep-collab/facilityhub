@@ -32,11 +32,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         "Reset password instructions will be sent to your email address if an account exists with the email you provided.",
       color: "green",
     });
-    captureEvent(ALLOWED_EVENT_NAMES.REQUESTED_PASSWORD_RESET, {});
-  } catch (error: any) {
+    // Capture successful password reset event
+    captureEvent(ALLOWED_EVENT_NAMES.FORGOT_PASSWORD_SUCCESS, {
+      email: state.email, // Include email for better tracking
+    });
+
+     } catch (error: any) {
     toast.add({
       title: handleErrorMessages(error),
       color: "red",
+    });
+    // Capture failed password reset event
+    captureEvent(ALLOWED_EVENT_NAMES.FORGOT_PASSWORD_ERROR, {
+      email: state.email, // Track the email for errors as well
+      error: handleErrorMessages(error), // Log the error message for insights
     });
   } finally {
     sendingResetPasswordRequest.value = false;

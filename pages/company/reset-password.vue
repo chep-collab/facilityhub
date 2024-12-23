@@ -2,6 +2,10 @@
 import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 
+const {
+  posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+} = usePosthog(); // Import captureEvent and ALLOWED_EVENT_NAMES
+
 const schema = object({
   password: string()
     .min(8, "Must be at least 8 characters")
@@ -44,11 +48,17 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         "Your password has been successfully reset.",
       color: "green",
     });
+    // Capture successful password reset event
+    captureEvent(ALLOWED_EVENT_NAMES.PASSWORD_RESET_SUCCESS, { userType: "company", email: state.email });
+
   } catch (error: any) {
     toast.add({
       title: error.userFriendlyMessage || "An error occurred. Please try again.",
       color: "red",
     });
+    // Capture password reset error event
+    captureEvent(ALLOWED_EVENT_NAMES.PASSWORD_RESET_ERROR, { userType: "company", error: error.message });
+
   } finally {
     sendingResetPasswordRequest.value = false;
   }

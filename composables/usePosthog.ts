@@ -20,8 +20,12 @@ export const usePosthog = () => {
     ACTIVATED_A_SUBSCRIPTION = "Activated A Subscription",
 
     FETCHED_FACILITY_USERS = "Fetched Facility Users",
-
     REQUESTED_PASSWORD_RESET = "Requested Password Reset",
+    PASSWORD_RESET_SUCCESS = "Password Reset Success",
+    PASSWORD_RESET_ERROR = "Password Reset Error",
+    REQUEST_FORGOT_PASSWORD = "Requested Forgot Password",
+    FORGOT_PASSWORD_SUCCESS = "Forgot Password Success", // Add success event
+    FORGOT_PASSWORD_ERROR = "Forgot Password Error",
   }
   const { $posthog } = useNuxtApp();
   if ($posthog) {
