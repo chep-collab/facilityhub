@@ -32,9 +32,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         "Reset password instructions will be sent to your email address if an account exists with the email you provided.",
       color: "green",
     });
-    // Capture successful password reset event
-    captureEvent(ALLOWED_EVENT_NAMES.FORGOT_PASSWORD_SUCCESS, {
-      email: state.email, // Include email for better tracking
+    // To only capture event if request is successful
+    captureEvent(ALLOWED_EVENT_NAMES.USER_REQUESTED_PASSWORD_RESET, {
+      email: state.email,
+      user_type: "user",
     });
 
      } catch (error: any) {
@@ -42,11 +43,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       title: handleErrorMessages(error),
       color: "red",
     });
-    // Capture failed password reset event
-    captureEvent(ALLOWED_EVENT_NAMES.FORGOT_PASSWORD_ERROR, {
-      email: state.email, // Track the email for errors as well
-      error: handleErrorMessages(error), // Log the error message for insights
-    });
+    
   } finally {
     sendingResetPasswordRequest.value = false;
   }

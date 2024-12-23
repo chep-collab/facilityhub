@@ -4,7 +4,7 @@ import type { FormSubmitEvent } from "#ui/types";
 
 const {
   posthog: { captureEvent, ALLOWED_EVENT_NAMES },
-} = usePosthog(); // Import captureEvent and ALLOWED_EVENT_NAMES
+} = usePosthog(); 
 
 const schema = object({
   password: string()
@@ -20,6 +20,7 @@ type Schema = InferType<typeof schema>;
 const state = reactive({
   password: undefined,
   confirmPassword: undefined,
+  email: undefined,
 });
 
 const route = useRoute();
@@ -48,8 +49,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         "Your password has been successfully reset.",
       color: "green",
     });
-    // Capture successful password reset event
-    captureEvent(ALLOWED_EVENT_NAMES.PASSWORD_RESET_SUCCESS, { userType: "user", email: state.email });
+
+    captureEvent(ALLOWED_EVENT_NAMES.USER_CHANGED_PASSWORD, {
+      email: state.email,
+      user_type: "user",
+    });
 
   
   } catch (error: any) {
@@ -57,9 +61,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       title: error.userFriendlyMessage || "An error occurred. Please try again.",
       color: "red",
     });
-  // Capture password reset error event
-  captureEvent(ALLOWED_EVENT_NAMES.PASSWORD_RESET_ERROR, { userType: "user", error: error.message });
-
   } finally {
     sendingResetPasswordRequest.value = false;
   }
