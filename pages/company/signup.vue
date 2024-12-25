@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { object, string, number, type InferType } from "yup";
+import { object, string, number, type InferType, boolean } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 import { handleErrorMessages } from "../../common/errorHandlers";
 
@@ -15,6 +15,9 @@ const schema = object({
   password: string()
     .min(8, "Password must be at least 8 characters")
     .required("Password is required"),
+  isRegistered: boolean().required("Company registration status must be provided"),
+  registrationNumber: string(),
+  facilityTypeId: string().required("Select your facility type")
 });
 
 type Schema = InferType<typeof schema>;
@@ -26,32 +29,30 @@ const state = reactive({
   password: undefined,
   phone: undefined,
   address: undefined,
-  avatar: undefined,
+  isRegistered: false,
+  registrationNumber: undefined,
+  facilityTypeId: undefined
 });
 
-const handleFileUpload = (file: File) => {
-  state.avatar = file;
-};
+const fetchingActiveFacilityTypes = ref(false);
+const activeFacilityTypes = ref([])
+const selectableFacilityTypeNames = ref([])
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     pending.value = true;
-    const formData = new FormData();
-    formData.append("name", state.name);
-    formData.append("phone", state.phone);
-    formData.append("address", state.address);
-    formData.append("email", state.email);
-    formData.append("password", state.password);
-    if (!state.avatar) {
-      return toast.add({
-        title: "Company image is required",
-        color: "amber",
-      });
-    }
-    formData.append("avatar", state.avatar);
     const { data, error } = await useFetch("/company/signup", {
       method: "POST",
-      body: formData,
+      body: {
+        name: state.name,
+        email: state.email,
+        password: state.password,
+        phone: state.phone,
+        address: state.address,
+        isRegistered: state.isRegistered,
+        registrationNumber: state.registrationNumber,
+        facilityTypesIds: state.facilityTypeId ? [state.facilityTypeId] : []
+      },
       baseURL: runtimeConfig.public.apiUrl,
     });
     if (error.value) throw error.value.data.message;
@@ -72,6 +73,28 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     pending.value = false;
   }
 }
+
+async function getActiveFacilityTypes() {
+  try {
+    fetchingActiveFacilityTypes.value = true;
+    const response = await useNuxtApp().$axios.get("/facility-types");
+    activeFacilityTypes.value = response.data
+    selectableFacilityTypeNames.value = activeFacilityTypes.value.map(ft => `${ft.name} - ${ft.description}`)
+    console.log({selectableFacilityTypeNames})
+  } catch (error: any) {
+    if (error) {
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  } finally {
+    fetchingActiveFacilityTypes.value = false;
+  }
+}
+
+getActiveFacilityTypes()
+
 </script>
 
 <template>
@@ -87,62 +110,45 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     <UForm :schema="schema" :state="state" class="space-y-6 mt-1" @submit="onSubmit">
       <UFormGroup label="Company/Facility Name" name="name">
-        <UInput
-          v-model="state.name"
-          placeholder="Enter your facility name"
-          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+        <UInput v-model="state.name" placeholder="Enter your facility name"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
       </UFormGroup>
 
-      <UFormGroup label="Upload Company Image">
-        <ImageUploadInput
-          @fileStaged="handleFileUpload"
-          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+      <UCheckbox v-model="state.isRegistered" name="isRegistered" label="My company is registered" />
+
+      <UFormGroup v-if="state.isRegistered" label="Registration Number (This can be used to validate your company)"
+        name="registrationNumber">
+        <UInput v-model="state.registrationNumber" placeholder=""
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </UFormGroup>
+
+      <UFormGroup label="Select facility Type" name="facilityTypeId">
+          <USelect :loading="fetchingActiveFacilityTypes" icon="i-heroicons-magnifying-glass-20-solid" color="white" size="sm"
+          v-model="state.facilityTypeId" :options="activeFacilityTypes" option-attribute="name" value-attribute="id" placeholder="Search..." />
       </UFormGroup>
 
       <UFormGroup label="Email Address" name="email">
-        <UInput
-          v-model="state.email"
-          type="email"
-          placeholder="example@company.com"
-          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+        <UInput v-model="state.email" type="email" placeholder="example@company.com"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
       </UFormGroup>
 
       <UFormGroup label="Business Address" name="address">
-        <UInput
-          v-model="state.address"
-          placeholder="Enter your business address"
-          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+        <UInput v-model="state.address" placeholder="Enter your business address"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
       </UFormGroup>
 
       <UFormGroup label="Phone Number" name="phone">
-        <UInput
-          v-model="state.phone"
-          type="tel"
-          placeholder="Enter your phone number"
-          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+        <UInput v-model="state.phone" type="tel" placeholder="Enter your phone number"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
       </UFormGroup>
 
       <UFormGroup label="Password" name="password">
-        <UInput
-          v-model="state.password"
-          type="password"
-          placeholder="Create a secure password"
-          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+        <UInput v-model="state.password" type="password" placeholder="Create a secure password"
+          class="w-full px-0 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
       </UFormGroup>
 
-      <UButton
-        type="submit"
-        :loading="pending"
-        :disabled="pending"
-        block
-        class="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-      >
+      <UButton type="submit" :loading="pending" :disabled="pending" block
+        class="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
         Signup
       </UButton>
     </UForm>
