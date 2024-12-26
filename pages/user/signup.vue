@@ -97,7 +97,7 @@ if(invitationCode){
 <template>
   <UCard class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
     <template #header>
-      <h2 class="text-2xl font-semibold text-center text-gray-900">{{ invitationCode ? `Signup to join ${invitingCompanyName} and use their services.` : `Sign up`}}</h2>
+      <h2 class="text-2xl font-semibold text-center text-gray-900">{{ invitationCode ? `Signup to join ${invitingCompanyName} and use their services.` : `Facility User Sign up`}}</h2>
     </template>
     <div>
       <UForm :schema="schema" :state="state" class="space-y-6" @submit="onSubmit">
