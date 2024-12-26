@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { handleErrorMessages } from "~/common/errorHandlers";
-import { formatDate } from "../../common/dataFormatter";
 import { mixed, object } from "yup";
 
 import greenPlusPath from "~/assets/icons/green-plus.png"
@@ -10,9 +9,6 @@ const subscriptionStore = useSubscriptionStore();
 const { getUserType } = useActiveUserStore();
 const {
   getSubscriptions,
-  getSubscriptionsFetchingStatus,
-  getSubscriptionsStatusChangingStatus,
-  uploadingSubscriptionReceipt,
 } = storeToRefs(subscriptionStore);
 
 const companyServiceStore = useCompanyServiceStore();
@@ -180,22 +176,46 @@ await subscriptionStore.fetchCompanySubscriptions();
 
 <template>
   <div class="px-3 py-3.5">
-    <section class="mb-10">
-      <h2 class="text-lg font-semibold mb-2">Analytics</h2>
-      <div class="flex flex-col lg:flex-row gap-2">
-        <SummaryCard title="Total users" value="45" />
-        <SummaryCard title="Active Subscriptions" value="20" />
-        <SummaryCard title="Available Services" value="2" />
-      </div>
-    </section>
+    <div v-if="getUserType === 'company'">
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold mb-2">Analytics</h2>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <SummaryCard title="Total users" value="45" />
+          <SummaryCard title="Active Subscriptions" value="20" />
+          <SummaryCard title="Available Services" value="2" />
+        </div>
+      </section>
 
-    <section class="mb-10">
-      <h2 class="text-lg font-semibold mb-5">Quick Access</h2>
-      <div class="flex flex-rownjustify-between gap-4">
-        <QuickAction title="Invite Users" :icon="greenPlusPath" :action="() => navigateTo('/dashboard/users?openInviteForm=yes')"/>
-        <QuickAction title="View Services" :icon="orangeBagPath" :action="() => navigateTo('/dashboard/services')"/>
-        <QuickAction title="View Subscriptions" :icon="purpleCashPath" :action="() => navigateTo('/dashboard/subscriptions')"/>
-      </div>
-    </section>
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold mb-5">Quick Access</h2>
+        <div class="flex flex-rownjustify-between gap-4">
+          <QuickAction title="Invite Users" :icon="greenPlusPath"
+            :action="() => navigateTo('/dashboard/users?openInviteForm=yes')" />
+          <QuickAction title="View Services" :icon="orangeBagPath" :action="() => navigateTo('/dashboard/services')" />
+          <QuickAction title="View Subscriptions" :icon="purpleCashPath"
+            :action="() => navigateTo('/dashboard/subscriptions')" />
+        </div>
+      </section>
+    </div>
+
+    <div v-if="getUserType === 'user'">
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold mb-2">Active Subscriptions</h2>
+        <div v-if="true">
+          <div class="flex flex-col lg:flex-row gap-2 mb-2">
+            <ActiveSubscriptionCard v-for="item in [1, 2, 3]" company-name="Total users" service-name="Coworking"
+              start-date="11-11-2024" end-date="11-11-2024" />
+          </div>
+        </div>
+
+        <div v-else class="text-center" >
+          <p>You do not have an active subscription</p>
+          <br />
+          <UButton color="cyan" variant="outline" @click="navigateTo('/dashboard/joined-centers')">
+            View facilities and subscribe
+          </UButton>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
