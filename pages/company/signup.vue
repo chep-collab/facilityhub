@@ -98,6 +98,11 @@ getActiveFacilityTypes()
 </script>
 
 <template>
+  <UAlert
+    :actions="[{ variant: 'outline', label: 'Click here to signup', click: () => navigateTo('/user/signup') }]"
+    title="Are you a facility user?"
+    class="w-full max-w-md mx-auto p-4 rounded-xl bg-white mt-12"
+  />
   <UCard class="w-full max-w-lg mx-auto p-8 rounded-xl shadow-xl bg-white mt-5">
     <template #header>
       <h2 class="text-2xl font-bold text-center text-gray-800">
