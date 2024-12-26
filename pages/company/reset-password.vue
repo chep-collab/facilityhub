@@ -18,9 +18,9 @@ const schema = object({
 type Schema = InferType<typeof schema>;
 
 const state = reactive({
-  password: undefined,
-  confirmPassword: undefined,
-  email: undefined,  
+  password: "",
+  confirmPassword: "",
+  email: "",  
 });
 
 const route = useRoute();
@@ -37,12 +37,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     sendingResetPasswordRequest.value = true;
 
-    const response = await useNuxtApp().$axios.post("/company/reset-password", {
-      token,
-      password: state.password,
-      confirmPassword: state.confirmPassword,
-    });
-
+ 
     toast.add({
       title:
         response.data.message ||

@@ -37,11 +37,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     sendingResetPasswordRequest.value = true;
 
-    const response = await useNuxtApp().$axios.post("/user/reset-password", {
-      token,
-      password: state.password,
-      confirmPassword: state.confirmPassword,
-    });
+    const response = await useNuxtApp().$axios.post("/company/reset-password", {
+  token,
+  newPassword: state.password,
+  confirmNewPassword: state.confirmPassword,
+});
 
     toast.add({
       title:
