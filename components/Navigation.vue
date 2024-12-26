@@ -6,9 +6,14 @@ const { userType } = storeToRefs(activeUserStore);
 
 const companyTabs = [
   {
+    label: "",
+    icon: "i-heroicons-home",
+    to: "/dashboard",
+  },
+  {
     label: "Subscriptions",
     icon: "i-heroicons-cog-6-tooth",
-    to: "/dashboard",
+    to: "/dashboard/subscriptions",
   },
   {
     label: "Services",
@@ -24,9 +29,14 @@ const companyTabs = [
 
 const userTabs = [
   {
+    label: "",
+    icon: "i-heroicons-home",
+    to: "/dashboard",
+  },
+  {
     label: "My Subscriptions",
     icon: "i-heroicons-user",
-    to: "/dashboard",
+    to: "/dashboard/subscriptions",
   },
   {
     label: "My Centers",

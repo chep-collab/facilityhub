@@ -8,6 +8,12 @@ import { storeToRefs } from "pinia";
 
 const isInvitationModalOpen = ref(false);
 
+const route = useRoute();
+const openInviteForm = route.query.openInviteForm as string;
+if(openInviteForm == "yes"){
+  isInvitationModalOpen.value = true
+}
+
 const openUserInvitationModal = () => {
   isInvitationModalOpen.value = true
 }

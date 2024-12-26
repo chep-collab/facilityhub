@@ -2,6 +2,10 @@
 import { handleErrorMessages } from "~/common/errorHandlers";
 import { formatDate } from "../../common/dataFormatter";
 import { mixed, object } from "yup";
+
+import greenPlusPath from "~/assets/icons/green-plus.png"
+import orangeBagPath from "~/assets/icons/orange-bag.png"
+import purpleCashPath from "~/assets/icons/purple-cash.png"
 const subscriptionStore = useSubscriptionStore();
 const { getUserType } = useActiveUserStore();
 const {
@@ -171,194 +175,27 @@ const uploadSubscriptionReceipt = async () => {
   }
 };
 await subscriptionStore.fetchCompanySubscriptions();
+
 </script>
 
 <template>
-  <div>
-    <UAlert
-      v-if="getUserType === 'company' && getCompanyServices.length === 0"
-      class="my-4 mx-4 border border-orange-500"
-      :close-button="{
-        icon: 'i-heroicons-x-mark-20-solid',
-        color: 'gray',
-        variant: 'link',
-        padded: false,
-      }"
-      title="You need to create a service that users can subscribe to. Click 'Service' then 'Add Service' to add a new service."
-    />
-    <div>
-      <div
-        class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
-      >
-        <UInput v-model="q" placeholder="Filter subscriptions..." />
+  <div class="px-3 py-3.5">
+    <section class="mb-10">
+      <h2 class="text-lg font-semibold mb-2">Analytics</h2>
+      <div class="flex flex-col lg:flex-row gap-2">
+        <SummaryCard title="Total users" value="45" />
+        <SummaryCard title="Active Subscriptions" value="20" />
+        <SummaryCard title="Available Services" value="2" />
       </div>
-      <UTable
-        :empty-state="{
-          icon: 'i-heroicons-circle-stack-20-solid',
-          label: 'No items.',
-        }"
-        :rows="filteredRows"
-        :columns="columns"
-        :loading="getSubscriptionsFetchingStatus"
-      >
-        <template #id-data="{ row, index }">
-          <span>
-            {{ index + 1 }}
-          </span>
-        </template>
+    </section>
 
-        <template #fullName-data="{ row }">
-          <span>
-            {{ row.user.firstName }}
-            {{ row.user.lastName }}
-          </span>
-          <br />
-          {{ row.user.email }}
-        </template>
-
-        <template #service-data="{ row }">
-          <span>
-            {{ row.actualSubscriptionName }}
-          </span>
-        </template>
-
-        <template #amount-data="{ row }">
-          <span>
-            {{ row.actualSubscriptionAmount }}
-          </span>
-          <br />
-          <span>{{ row.actualSubscriptionPeriod }}</span>
-        </template>
-
-        <template #status-data="{ row }">
-          <span :class="row.isActive ? 'text-green-500' : 'text-red-500'">
-            {{ row.isActive == true ? "Active" : "Inactive" }}
-          </span>
-        </template>
-
-        <template #company-data="{ row }">
-          <span>
-            {{ row.company.name }}
-          </span>
-        </template>
-
-        <template #startDate-data="{ row }">
-          <span>{{ formatDate(row.startDate) }}</span>
-          <br />to
-          <br />
-          <span>{{ formatDate(row.endDate) }}</span>
-        </template>
-
-        <template #actions-data="{ row }">
-          <UDropdown :items="items(row)">
-            <UButton
-              color="gray"
-              variant="ghost"
-              icon="i-heroicons-ellipsis-horizontal-20-solid"
-            />
-          </UDropdown>
-        </template>
-      </UTable>
-
-      <div>
-        <UModal v-model="isActivateModalOpen" prevent-close>
-          <UCard
-            :ui="{
-              ring: '',
-              divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-            }"
-          >
-            <template #header>
-              <div class="flex items-center justify-between">
-                <h3
-                  class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-                >
-                  Please confirm
-                </h3>
-                <UButton
-                  color="gray"
-                  variant="ghost"
-                  icon="i-heroicons-x-mark-20-solid"
-                  class="-my-1"
-                  @click="isActivateModalOpen = false"
-                />
-              </div>
-            </template>
-            <div>
-              <div class="space-y-4">
-                <div>Are you sure you want to activate this subscription?</div>
-
-                <UButton
-                  :loading="getSubscriptionsStatusChangingStatus"
-                  @click="onSubmitSubscriptionActivationRequest"
-                >
-                  Submit
-                </UButton>
-              </div>
-            </div>
-          </UCard>
-        </UModal>
+    <section class="mb-10">
+      <h2 class="text-lg font-semibold mb-5">Quick Access</h2>
+      <div class="flex flex-rownjustify-between gap-4">
+        <QuickAction title="Invite Users" :icon="greenPlusPath" :action="() => navigateTo('/dashboard/users?openInviteForm=yes')"/>
+        <QuickAction title="View Services" :icon="orangeBagPath" :action="() => navigateTo('/dashboard/services')"/>
+        <QuickAction title="View Subscriptions" :icon="purpleCashPath" :action="() => navigateTo('/dashboard/subscriptions')"/>
       </div>
-
-      <div>
-        <UModal v-model="isReceiptUploadModalOpen" prevent-close>
-          <UCard
-            :ui="{
-              ring: '',
-              divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-            }"
-          >
-            <template #header>
-              <div class="flex items-center justify-between">
-                <h3
-                  class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-                >
-                  Upload receipt
-                </h3>
-                <UButton
-                  color="gray"
-                  variant="ghost"
-                  icon="i-heroicons-x-mark-20-solid"
-                  class="-my-1"
-                  @click="isReceiptUploadModalOpen = false"
-                />
-              </div>
-            </template>
-
-            <UForm
-              :schema="schema"
-              :state="state"
-              class="space-y-4"
-              @submit="uploadSubscriptionReceipt"
-            >
-              <ImageUploadInput @fileStaged="handleFileUpload" />
-              <br />
-              <UButton
-                type="submit"
-                block
-                :loading="uploadingSubscriptionReceipt"
-              >
-                Upload
-              </UButton>
-            </UForm>
-          </UCard>
-        </UModal>
-      </div>
-
-      <div>
-        <USlideover v-model="isImageSlideOverOpen">
-          <div class="p-4 flex-1 justify-end">
-            <UButton
-              color="primary"
-              variant="ghost"
-              @click="isImageSlideOverOpen = false"
-            >
-              Close Receipt
-            </UButton>
-          </div>
-          <img :src="receiptUrl" class="w-full h-full" />
-        </USlideover>
-      </div>
-    </div>
+    </section>
   </div>
 </template>
