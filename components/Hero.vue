@@ -3,7 +3,7 @@
         <!-- Left Side: Text Section -->
         <div class="md:w-1/2 space-y-6 md:pr-8">
             <h1 class="text-4xl lg:text-7xl font-bold text-gray-800">
-                Effortless <br> Facility Management
+                Effortless <br> {{ facilities[currentIndex] }} <span class="inline"><br></span> Management
             </h1>
             <img src="../assets/landing-page/curved-line.png" class="h-4 w-12">
             <p class="text-lg lg:text-xl text-gray-600">
@@ -29,9 +29,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 const router = useRouter();
 const isOpen = ref(false)
+
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const currentIndex = ref(0)
+const facilities = ['Facility', 'Gym', 'Co-workspace', 'Training Center', "Sports Complex"]
+let interval
+
+onMounted(() => {
+  interval = setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % facilities.length
+  }, 1500)
+})
+
+onUnmounted(() => {
+  clearInterval(interval)
+})
 </script>
 
 <style scoped>
