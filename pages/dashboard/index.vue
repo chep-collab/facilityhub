@@ -1,177 +1,74 @@
 <script setup lang="ts">
 import { handleErrorMessages } from "~/common/errorHandlers";
-import { mixed, object } from "yup";
 
 import greenPlusPath from "~/assets/icons/green-plus.png"
 import orangeBagPath from "~/assets/icons/orange-bag.png"
 import purpleCashPath from "~/assets/icons/purple-cash.png"
+import { formatDateAddDay } from "~/common/dataFormatter";
 const subscriptionStore = useSubscriptionStore();
 const { getUserType } = useActiveUserStore();
-const {
-  getSubscriptions,
-} = storeToRefs(subscriptionStore);
 
-const companyServiceStore = useCompanyServiceStore();
-const { getCompanyServices } = storeToRefs(companyServiceStore);
+const toast = useToast();
+
 definePageMeta({
   layout: "dashboard-layout",
 });
 
-const columns = [
-  {
-    key: "id",
-    label: "ID",
-  },
-  {
-    key: "fullName",
-    label: "Full Name",
-  },
-  {
-    key: "service",
-    label: "Service",
-  },
-  {
-    key: "amount",
-    label: "Amount",
-  },
-  {
-    key: "status",
-    label: "Status",
-  },
-  {
-    key: "company",
-    label: "CompanyName",
-  },
-  {
-    key: "startDate",
-    label: "Period",
-  },
-  {
-    key: "actions",
-  },
-];
-
-const state = reactive({
-  file: undefined,
-});
-
-const schema = object({
-  file: mixed().required("File is required"),
-});
-
 const q = ref("");
 
-const filteredRows = computed(() => {
-  if (!q.value) {
-    return getSubscriptions.value;
-  }
-
-  return getSubscriptions.value.filter((subscription) => {
-    return Object.values(subscription).some((value) => {
-      return String(value).toLowerCase().includes(q.value.toLowerCase());
-    });
-  });
-});
-
-const isActivateModalOpen = ref(false);
-const isReceiptUploadModalOpen = ref(false);
-const isImageSlideOverOpen = ref(false);
-
-const receiptUrl = ref("");
-
-const companyMenus = (row) => [
-  [
-    {
-      label: "Activate",
-      icon: "i-heroicons-lock-closed",
-      click: () => {
-        subscriptionIdToUpdate.value = row.id;
-        isActivateModalOpen.value = true;
-      },
-      disabled: row.isActive ? true : false,
-    },
-    {
-      label: "View receipt",
-      icon: "i-heroicons-receipt-percent",
-      click: () => {
-        receiptUrl.value = row.receipt.url;
-        isImageSlideOverOpen.value = true;
-      },
-      disabled: row.receipt ? false : true,
-    },
-  ],
-];
-
-const userMenus = (row) => [
-  [
-    {
-      label: "Upload receipt",
-      icon: "i-heroicons-receipt-percent",
-      click: () => {
-        subscriptionIdToUpdate.value = row.id;
-        isReceiptUploadModalOpen.value = true;
-      },
-      disabled: row.receipt ? true : false,
-    },
-    {
-      label: "View receipt",
-      icon: "i-heroicons-receipt-percent",
-      click: () => {
-        receiptUrl.value = row.receipt.url;
-        isImageSlideOverOpen.value = true;
-      },
-      disabled: row.receipt ? false : true,
-    },
-  ],
-  ,
-];
-
-const items = getUserType === "company" ? companyMenus : userMenus;
-
-const subscriptionIdToUpdate = ref("");
-const onSubmitSubscriptionActivationRequest = async () => {
-  try {
-    await subscriptionStore.activateSubscription(
-      subscriptionIdToUpdate.value,
-      true
-    );
-    isActivateModalOpen.value = false;
-  } catch (error: any) {
-    if (error) {
-      const toast = useToast();
-      toast.add({
-        title: handleErrorMessages(error),
-        color: "red",
-      });
-    }
-  }
-};
-
-const handleFileUpload = (file: any) => {
-  state.file = file;
-};
-
-const uploadSubscriptionReceipt = async () => {
-  try {
-    const formData = new FormData();
-    formData.append("file", state.file, state.file.name);
-    await subscriptionStore.uploadSubscriptionReceipt(
-      subscriptionIdToUpdate.value,
-      formData
-    );
-    isReceiptUploadModalOpen.value = false;
-  } catch (error: any) {
-    if (error) {
-      const toast = useToast();
-      toast.add({
-        title: handleErrorMessages(error),
-        color: "red",
-      });
-    }
-  }
-};
 await subscriptionStore.fetchCompanySubscriptions();
 
+const fetchingDashboardSummary = ref(false);
+const companySummary = ref({
+  totalUsers: 0,
+  totalActiveSubscriptions: 0,
+  totalServiceCount: 0
+})
+
+async function getCompanyDashboardSummary() {
+  try {
+    fetchingDashboardSummary.value = true;
+    const response = await useNuxtApp().$axios.get(`/company/dashboard-summary/`);
+    companySummary.value = {
+      totalUsers: response.data.totalUsers,
+      totalActiveSubscriptions: response.data.totalActiveSubscriptions,
+      totalServiceCount: response.data.totalServiceCount
+    }
+  } catch (error: any) {
+    if (error) {
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  } finally {
+    fetchingDashboardSummary.value = false;
+  }
+}
+
+const userSubscriptionList = ref([])
+async function getActiveSubscriptionsForUser() {
+  try {
+    fetchingDashboardSummary.value = true;
+    const response = await useNuxtApp().$axios.get(`/subscription?status=active`);
+    userSubscriptionList.value = response.data
+  } catch (error: any) {
+    if (error) {
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  } finally {
+    fetchingDashboardSummary.value = false;
+  }
+}
+
+if(getUserType == 'company'){
+  getCompanyDashboardSummary()
+} else {
+  getActiveSubscriptionsForUser()
+}
 </script>
 
 <template>
@@ -180,9 +77,9 @@ await subscriptionStore.fetchCompanySubscriptions();
       <section class="mb-10">
         <h2 class="text-lg font-semibold mb-2">Analytics</h2>
         <div class="flex flex-col lg:flex-row gap-2">
-          <SummaryCard title="Total users" value="45" />
-          <SummaryCard title="Active Subscriptions" value="20" />
-          <SummaryCard title="Available Services" value="2" />
+          <SummaryCard title="Total users" :value="companySummary.totalUsers" />
+          <SummaryCard title="Active Subscriptions" :value="companySummary.totalActiveSubscriptions" />
+          <SummaryCard title="Available Services" :value="companySummary.totalServiceCount" />
         </div>
       </section>
 
@@ -201,14 +98,14 @@ await subscriptionStore.fetchCompanySubscriptions();
     <div v-if="getUserType === 'user'">
       <section class="mb-10">
         <h2 class="text-lg font-semibold mb-2">Active Subscriptions</h2>
-        <div v-if="true">
+        <div v-if="userSubscriptionList.length > 0">
           <div class="flex flex-col lg:flex-row gap-2 mb-2">
-            <ActiveSubscriptionCard v-for="item in [1, 2, 3]" company-name="Total users" service-name="Coworking"
-              start-date="11-11-2024" end-date="11-11-2024" />
+            <ActiveSubscriptionCard v-for="sub in userSubscriptionList" :company-name="sub.company.name" :service-name="sub.actualSubscriptionName"
+              :start-date="formatDateAddDay(sub.startDate)" :end-date="formatDateAddDay(sub.endDate)" />
           </div>
         </div>
 
-        <div v-else class="text-center" >
+        <div v-else class="text-center">
           <p>You do not have an active subscription</p>
           <br />
           <UButton color="cyan" variant="outline" @click="navigateTo('/dashboard/joined-centers')">
