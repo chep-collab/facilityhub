@@ -42,7 +42,7 @@
     </div>
   </nav>
   <Hero/>
-  <TrustedBy/>
+  <!-- <TrustedBy/> -->
   <Features/>
   <BookADemo/>
   <WhoWeAre/>
