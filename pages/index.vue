@@ -42,12 +42,12 @@
     </div>
   </nav>
   <Hero/>
-  <TrustedBy/>
+  <!-- <TrustedBy/> -->
   <Features/>
   <BookADemo/>
   <WhoWeAre/>
-  <Partners/>
-  <Testimonials/>
+  <!-- <Partners/> -->
+  <!-- <Testimonials/> -->
   <StartNow/>
   <WebsiteFooter/>
 </template>
