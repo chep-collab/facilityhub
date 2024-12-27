@@ -30,7 +30,7 @@ const { mode, isOpen, initialServiceData } = props;
 
 const schema = object({
   name: string().required("Required"),
-  description: string().required("Required"),
+  description: string().optional(),
   amount: number().required("Required"),
   period: string().required("Required"),
 });
@@ -175,14 +175,29 @@ const toggleChangeImageStatus = () => {
               />
             </UCarousel>
           </div>
+          <UFormGroup label="Service Name" name="name">
+            <UInput v-model="state.name" />
+          </UFormGroup>
+          
+          <UFormGroup label="Amount" name="amount">
+            <UInput v-model="state.amount" type="number" />
+          </UFormGroup>
+          
+          <UFormGroup label="Period" name="period">
+            <USelect v-model="state.period" :options="periods" />
+          </UFormGroup>
+          
+          <UFormGroup label="Describe your service (optional)" name="description">
+            <UTextarea v-model="state.description" type="text" />
+          </UFormGroup>
 
           <ImageUploadInput
             v-if="(mode == 'edit' && changeImageStatus) || mode == 'add'"
             @fileStaged="handleFileUpload"
             :label="
               mode == 'add'
-                ? `Upload Service Image`
-                : `Upload New Service Image`
+                ? `Upload Service Image(optional)`
+                : `Upload New Service Image(optional)`
             "
           />
           <div class="flex justify-end">
@@ -195,21 +210,6 @@ const toggleChangeImageStatus = () => {
               {{ changeImageStatus ? "Cancel Image Change" : "Change Image" }}
             </UButton>
           </div>
-          <UFormGroup label="Service Name" name="name">
-            <UInput v-model="state.name" />
-          </UFormGroup>
-
-          <UFormGroup label="Description" name="description">
-            <UInput v-model="state.description" type="text" />
-          </UFormGroup>
-
-          <UFormGroup label="Amount" name="amount">
-            <UInput v-model="state.amount" type="number" />
-          </UFormGroup>
-
-          <UFormGroup label="Period" name="period">
-            <USelect v-model="state.period" :options="periods" />
-          </UFormGroup>
 
           <UButton
             :loading="getCreatingCompanyServicesLoadingState"
