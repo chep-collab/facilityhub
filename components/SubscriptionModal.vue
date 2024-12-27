@@ -41,7 +41,7 @@ const subscribeToThisService = async () => {
       color: "green",
     });
     emit("close");
-    router.push("/dashboard");
+    router.push("/dashboard/subscriptions");
   } catch (error: any) {
     if (error) {
       toast.add({
