@@ -7,6 +7,7 @@
                 <p class="text-[#667185] text-base">{{ feature.description }}</p>
             </div>
         </div>
+        <UBadge v-if="feature.comingSoon" size="sm" label="Coming Soon" variant="outline" />
     </UCard>
 </template>
 
