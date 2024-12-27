@@ -1,364 +1,118 @@
 <script setup lang="ts">
 import { handleErrorMessages } from "~/common/errorHandlers";
-import { formatDate } from "../../common/dataFormatter";
-import { mixed, object } from "yup";
+
+import greenPlusPath from "~/assets/icons/green-plus.png"
+import orangeBagPath from "~/assets/icons/orange-bag.png"
+import purpleCashPath from "~/assets/icons/purple-cash.png"
+import { formatDateAddDay } from "~/common/dataFormatter";
 const subscriptionStore = useSubscriptionStore();
 const { getUserType } = useActiveUserStore();
-const {
-  getSubscriptions,
-  getSubscriptionsFetchingStatus,
-  getSubscriptionsStatusChangingStatus,
-  uploadingSubscriptionReceipt,
-} = storeToRefs(subscriptionStore);
 
-const companyServiceStore = useCompanyServiceStore();
-const { getCompanyServices } = storeToRefs(companyServiceStore);
+const toast = useToast();
+
 definePageMeta({
   layout: "dashboard-layout",
 });
 
-const columns = [
-  {
-    key: "id",
-    label: "ID",
-  },
-  {
-    key: "fullName",
-    label: "Full Name",
-  },
-  {
-    key: "service",
-    label: "Service",
-  },
-  {
-    key: "amount",
-    label: "Amount",
-  },
-  {
-    key: "status",
-    label: "Status",
-  },
-  {
-    key: "company",
-    label: "CompanyName",
-  },
-  {
-    key: "startDate",
-    label: "Period",
-  },
-  {
-    key: "actions",
-  },
-];
-
-const state = reactive({
-  file: undefined,
-});
-
-const schema = object({
-  file: mixed().required("File is required"),
-});
-
 const q = ref("");
 
-const filteredRows = computed(() => {
-  if (!q.value) {
-    return getSubscriptions.value;
-  }
-
-  return getSubscriptions.value.filter((subscription) => {
-    return Object.values(subscription).some((value) => {
-      return String(value).toLowerCase().includes(q.value.toLowerCase());
-    });
-  });
-});
-
-const isActivateModalOpen = ref(false);
-const isReceiptUploadModalOpen = ref(false);
-const isImageSlideOverOpen = ref(false);
-
-const receiptUrl = ref("");
-
-const companyMenus = (row) => [
-  [
-    {
-      label: "Activate",
-      icon: "i-heroicons-lock-closed",
-      click: () => {
-        subscriptionIdToUpdate.value = row.id;
-        isActivateModalOpen.value = true;
-      },
-      disabled: row.isActive ? true : false,
-    },
-    {
-      label: "View receipt",
-      icon: "i-heroicons-receipt-percent",
-      click: () => {
-        receiptUrl.value = row.receipt.url;
-        isImageSlideOverOpen.value = true;
-      },
-      disabled: row.receipt ? false : true,
-    },
-  ],
-];
-
-const userMenus = (row) => [
-  [
-    {
-      label: "Upload receipt",
-      icon: "i-heroicons-receipt-percent",
-      click: () => {
-        subscriptionIdToUpdate.value = row.id;
-        isReceiptUploadModalOpen.value = true;
-      },
-      disabled: row.receipt ? true : false,
-    },
-    {
-      label: "View receipt",
-      icon: "i-heroicons-receipt-percent",
-      click: () => {
-        receiptUrl.value = row.receipt.url;
-        isImageSlideOverOpen.value = true;
-      },
-      disabled: row.receipt ? false : true,
-    },
-  ],
-  ,
-];
-
-const items = getUserType === "company" ? companyMenus : userMenus;
-
-const subscriptionIdToUpdate = ref("");
-const onSubmitSubscriptionActivationRequest = async () => {
-  try {
-    await subscriptionStore.activateSubscription(
-      subscriptionIdToUpdate.value,
-      true
-    );
-    isActivateModalOpen.value = false;
-  } catch (error: any) {
-    if (error) {
-      const toast = useToast();
-      toast.add({
-        title: handleErrorMessages(error),
-        color: "red",
-      });
-    }
-  }
-};
-
-const handleFileUpload = (file: any) => {
-  state.file = file;
-};
-
-const uploadSubscriptionReceipt = async () => {
-  try {
-    const formData = new FormData();
-    formData.append("file", state.file, state.file.name);
-    await subscriptionStore.uploadSubscriptionReceipt(
-      subscriptionIdToUpdate.value,
-      formData
-    );
-    isReceiptUploadModalOpen.value = false;
-  } catch (error: any) {
-    if (error) {
-      const toast = useToast();
-      toast.add({
-        title: handleErrorMessages(error),
-        color: "red",
-      });
-    }
-  }
-};
 await subscriptionStore.fetchCompanySubscriptions();
+
+const fetchingDashboardSummary = ref(false);
+const companySummary = ref({
+  totalUsers: 0,
+  totalActiveSubscriptions: 0,
+  totalServiceCount: 0
+})
+
+async function getCompanyDashboardSummary() {
+  try {
+    fetchingDashboardSummary.value = true;
+    const response = await useNuxtApp().$axios.get(`/company/dashboard-summary/`);
+    companySummary.value = {
+      totalUsers: response.data.totalUsers,
+      totalActiveSubscriptions: response.data.totalActiveSubscriptions,
+      totalServiceCount: response.data.totalServiceCount
+    }
+  } catch (error: any) {
+    if (error) {
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  } finally {
+    fetchingDashboardSummary.value = false;
+  }
+}
+
+const userSubscriptionList = ref([])
+async function getActiveSubscriptionsForUser() {
+  try {
+    fetchingDashboardSummary.value = true;
+    const response = await useNuxtApp().$axios.get(`/subscription?status=active`);
+    userSubscriptionList.value = response.data
+  } catch (error: any) {
+    if (error) {
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  } finally {
+    fetchingDashboardSummary.value = false;
+  }
+}
+
+if(getUserType == 'company'){
+  getCompanyDashboardSummary()
+} else {
+  getActiveSubscriptionsForUser()
+}
 </script>
 
 <template>
-  <div>
-    <UAlert
-      v-if="getUserType === 'company' && getCompanyServices.length === 0"
-      class="my-4 mx-4 border border-orange-500"
-      :close-button="{
-        icon: 'i-heroicons-x-mark-20-solid',
-        color: 'gray',
-        variant: 'link',
-        padded: false,
-      }"
-      title="You need to create a service that users can subscribe to. Click 'Service' then 'Add Service' to add a new service."
-    />
-    <div>
-      <div
-        class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
-      >
-        <UInput v-model="q" placeholder="Filter subscriptions..." />
-      </div>
-      <UTable
-        :empty-state="{
-          icon: 'i-heroicons-circle-stack-20-solid',
-          label: 'No items.',
-        }"
-        :rows="filteredRows"
-        :columns="columns"
-        :loading="getSubscriptionsFetchingStatus"
-      >
-        <template #id-data="{ row, index }">
-          <span>
-            {{ index + 1 }}
-          </span>
-        </template>
+  <div class="px-3 py-3.5">
+    <div v-if="getUserType === 'company'">
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold mb-2">Analytics</h2>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <SummaryCard title="Total users" :value="companySummary.totalUsers" />
+          <SummaryCard title="Active Subscriptions" :value="companySummary.totalActiveSubscriptions" />
+          <SummaryCard title="Available Services" :value="companySummary.totalServiceCount" />
+        </div>
+      </section>
 
-        <template #fullName-data="{ row }">
-          <span>
-            {{ row.user.firstName }}
-            {{ row.user.lastName }}
-          </span>
-          <br />
-          {{ row.user.email }}
-        </template>
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold mb-5">Quick Access</h2>
+        <div class="flex flex-rownjustify-between gap-4">
+          <QuickAction title="Invite Users" :icon="greenPlusPath"
+            :action="() => navigateTo('/dashboard/users?openInviteForm=yes')" />
+          <QuickAction title="View Services" :icon="orangeBagPath" :action="() => navigateTo('/dashboard/services')" />
+          <QuickAction title="View Subscriptions" :icon="purpleCashPath"
+            :action="() => navigateTo('/dashboard/subscriptions')" />
+        </div>
+      </section>
+    </div>
 
-        <template #service-data="{ row }">
-          <span>
-            {{ row.actualSubscriptionName }}
-          </span>
-        </template>
-
-        <template #amount-data="{ row }">
-          <span>
-            {{ row.actualSubscriptionAmount }}
-          </span>
-          <br />
-          <span>{{ row.actualSubscriptionPeriod }}</span>
-        </template>
-
-        <template #status-data="{ row }">
-          <span :class="row.isActive ? 'text-green-500' : 'text-red-500'">
-            {{ row.isActive == true ? "Active" : "Inactive" }}
-          </span>
-        </template>
-
-        <template #company-data="{ row }">
-          <span>
-            {{ row.company.name }}
-          </span>
-        </template>
-
-        <template #startDate-data="{ row }">
-          <span>{{ formatDate(row.startDate) }}</span>
-          <br />to
-          <br />
-          <span>{{ formatDate(row.endDate) }}</span>
-        </template>
-
-        <template #actions-data="{ row }">
-          <UDropdown :items="items(row)">
-            <UButton
-              color="gray"
-              variant="ghost"
-              icon="i-heroicons-ellipsis-horizontal-20-solid"
-            />
-          </UDropdown>
-        </template>
-      </UTable>
-
-      <div>
-        <UModal v-model="isActivateModalOpen" prevent-close>
-          <UCard
-            :ui="{
-              ring: '',
-              divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-            }"
-          >
-            <template #header>
-              <div class="flex items-center justify-between">
-                <h3
-                  class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-                >
-                  Please confirm
-                </h3>
-                <UButton
-                  color="gray"
-                  variant="ghost"
-                  icon="i-heroicons-x-mark-20-solid"
-                  class="-my-1"
-                  @click="isActivateModalOpen = false"
-                />
-              </div>
-            </template>
-            <div>
-              <div class="space-y-4">
-                <div>Are you sure you want to activate this subscription?</div>
-
-                <UButton
-                  :loading="getSubscriptionsStatusChangingStatus"
-                  @click="onSubmitSubscriptionActivationRequest"
-                >
-                  Submit
-                </UButton>
-              </div>
-            </div>
-          </UCard>
-        </UModal>
-      </div>
-
-      <div>
-        <UModal v-model="isReceiptUploadModalOpen" prevent-close>
-          <UCard
-            :ui="{
-              ring: '',
-              divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-            }"
-          >
-            <template #header>
-              <div class="flex items-center justify-between">
-                <h3
-                  class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-                >
-                  Upload receipt
-                </h3>
-                <UButton
-                  color="gray"
-                  variant="ghost"
-                  icon="i-heroicons-x-mark-20-solid"
-                  class="-my-1"
-                  @click="isReceiptUploadModalOpen = false"
-                />
-              </div>
-            </template>
-
-            <UForm
-              :schema="schema"
-              :state="state"
-              class="space-y-4"
-              @submit="uploadSubscriptionReceipt"
-            >
-              <ImageUploadInput @fileStaged="handleFileUpload" />
-              <br />
-              <UButton
-                type="submit"
-                block
-                :loading="uploadingSubscriptionReceipt"
-              >
-                Upload
-              </UButton>
-            </UForm>
-          </UCard>
-        </UModal>
-      </div>
-
-      <div>
-        <USlideover v-model="isImageSlideOverOpen">
-          <div class="p-4 flex-1 justify-end">
-            <UButton
-              color="primary"
-              variant="ghost"
-              @click="isImageSlideOverOpen = false"
-            >
-              Close Receipt
-            </UButton>
+    <div v-if="getUserType === 'user'">
+      <section class="mb-10">
+        <h2 class="text-lg font-semibold mb-2">Active Subscriptions</h2>
+        <div v-if="userSubscriptionList.length > 0">
+          <div class="flex flex-col lg:flex-row gap-2 mb-2">
+            <ActiveSubscriptionCard v-for="sub in userSubscriptionList" :company-name="sub.company.name" :service-name="sub.actualSubscriptionName"
+              :start-date="formatDateAddDay(sub.startDate)" :end-date="formatDateAddDay(sub.endDate)" />
           </div>
-          <img :src="receiptUrl" class="w-full h-full" />
-        </USlideover>
-      </div>
+        </div>
+
+        <div v-else class="text-center">
+          <p>You do not have an active subscription</p>
+          <br />
+          <UButton color="cyan" variant="outline" @click="navigateTo('/dashboard/joined-centers')">
+            View facilities and subscribe
+          </UButton>
+        </div>
+      </section>
     </div>
   </div>
 </template>

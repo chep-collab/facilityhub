@@ -58,8 +58,8 @@ export const useSubscriptionStore = defineStore({
       return response;
     },
 
-    async getAUsersSubscriptions() {
-      const response = await useNuxtApp().$axios.get("/subscription");
+    async getAUsersSubscriptions(status?: "active" | "inactive") {
+      const response = await useNuxtApp().$axios.get(`/subscription${status ? `?status=${status}` : ''}`);
       captureEvent(ALLOWED_EVENT_NAMES.FETCHED_SUBSCRIPTIONS, {});
       return response;
     },

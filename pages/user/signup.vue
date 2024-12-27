@@ -14,6 +14,7 @@ const schema = object({
   password: string()
     .min(8, "Must be at least 8 characters")
     .required("Required"),
+  companyInvitationCode : string().optional()
 });
 
 type Schema = InferType<typeof schema>;
@@ -24,8 +25,10 @@ const state = reactive({
   email: undefined,
   phone: undefined,
   password: undefined,
+  companyInvitationCode: ""
 });
 const pending = ref(false);
+const fetchingCompanyName = ref(false)
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     pending.value = true;
@@ -37,6 +40,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         phone: state.phone,
         email: state.email,
         password: state.password,
+        companyInvitationCode: state.companyInvitationCode
       },
       baseURL: runtimeConfig.public.apiUrl,
     });
@@ -62,12 +66,38 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     pending.value = false;
   }
 }
+
+const invitingCompanyName = ref("")
+
+async function getCompanyNameViaInvitationCode(invitationCode: string) {
+  try {
+    fetchingCompanyName.value = true;
+    const response = await useNuxtApp().$axios.get(`/company/get-name/${invitationCode}`);
+    invitingCompanyName.value = response.data.name
+  } catch (error: any) {
+    if (error) {
+      toast.add({
+        title: handleErrorMessages(error),
+        color: "red",
+      });
+    }
+  } finally {
+    fetchingCompanyName.value = false;
+  }
+}
+
+const route = useRoute();
+const invitationCode = route.query.invitationCode as string;
+if(invitationCode){
+  state.companyInvitationCode = invitationCode
+  getCompanyNameViaInvitationCode(invitationCode)
+}
 </script>
 
 <template>
   <UCard class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
     <template #header>
-      <h2 class="text-2xl font-semibold text-center text-gray-900">User Signup</h2>
+      <h2 class="text-2xl font-semibold text-center text-gray-900">{{ invitationCode ? `Signup to join ${invitingCompanyName} and use their services.` : `Facility User Sign up`}}</h2>
     </template>
     <div>
       <UForm :schema="schema" :state="state" class="space-y-6" @submit="onSubmit">

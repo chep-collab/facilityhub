@@ -1,5 +1,17 @@
 import axios from "axios";
 
+// A function to handle error messages globally
+function handleErrorMessages(error: any): string {
+  if (error.response) {
+    return error.response.data.message || "Something went wrong. Please try again.";
+  } else if (error.request) {
+    return "No response from the server. Please check your connection.";
+  } else {
+    return "An unknown error occurred.";
+  }
+}
+
+
 export default defineNuxtPlugin(async () => {
   const runtimeConfig = useRuntimeConfig();
   const activeUserStore = useActiveUserStore();
@@ -28,6 +40,8 @@ export default defineNuxtPlugin(async () => {
           router.push({ name: "user-login" });
         }
       }
+      
+      const userFriendlyMessage = handleErrorMessages(error);
       return Promise.reject(error);
     }
   );
