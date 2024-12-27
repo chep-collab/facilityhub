@@ -212,7 +212,7 @@ await subscriptionStore.fetchCompanySubscriptions();
       <div
         class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
       >
-        <UInput v-model="q" placeholder="Filter subscriptions..." />
+        <UInput v-model="q" placeholder="Search subscriptions..." />
       </div>
       <UTable
         :empty-state="{

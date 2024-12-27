@@ -72,7 +72,7 @@ const filteredRows = computed(() => {
 <template>
   <div>
     <div class="flex px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
-      <UInput v-model="q" placeholder="Filter people..." />
+      <UInput v-model="q" placeholder="Search people..." />
     </div>
 
     <UTable :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No items.' }" :rows="filteredRows" :columns="columns" />

@@ -66,7 +66,7 @@ await workspaceUserStore.fetchWorkspaceUsers();
       <div
         class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
       >
-        <UInput v-model="q" placeholder="Filter users..." />
+        <UInput v-model="q" placeholder="Search users..." />
         <div>
           <UButton
             v-if="getUserType === 'company'"
