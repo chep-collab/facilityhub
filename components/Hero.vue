@@ -13,9 +13,10 @@
                 <button class="bg-[#006B00] text-white px-6 py-3 rounded-md" @click="router.push('company/signup')">
                     Get Started
                 </button>
-                <button class="bg-transparent text-grey-800 border border-[#006B00] px-6 py-3 rounded-md" @click="">
+                <a href="https://forms.gle/PhZW1dHoDz5L99Qf8" target="_blank" rel="noopener noreferrer"
+                    class="bg-transparent text-grey-800 border border-[#006B00] px-6 py-3 rounded-md inline-block">
                     Book A Demo
-                </button>
+                </a>
             </div>
         </div>
 

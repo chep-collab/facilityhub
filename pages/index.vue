@@ -46,8 +46,8 @@
   <Features/>
   <BookADemo/>
   <WhoWeAre/>
-  <Partners/>
-  <Testimonials/>
+  <!-- <Partners/> -->
+  <!-- <Testimonials/> -->
   <StartNow/>
   <WebsiteFooter/>
 </template>
