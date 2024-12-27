@@ -204,25 +204,26 @@ const closeActivateDeactiveModal = () => {
         </template>
 
         <template #description-data="{ row }">
-          <div class="flex flex-row">
-            <span>
-              {{ row.description.substring(0, 15) }}
-            </span>
-            <UPopover mode="hover">
-              <UButton
-                color="white"
-                variant="ghost"
-                trailing-icon="i-heroicons-chevron-down-20-solid"
-              />
+  <div class="flex flex-row">
+    <span>
+      {{ row.description == "undefined" ? "" : row.description.substring(0, 15)}}
+    </span>
+    <UPopover mode="hover" v-if="row.description">
+      <UButton
+        color="white"
+        variant="ghost"
+        trailing-icon="i-heroicons-chevron-down-20-solid"
+      />
 
-              <template #panel>
-                <div class="p-4">
-                  {{ row.description }}
-                </div>
-              </template>
-            </UPopover>
-          </div>
-        </template>
+      <template #panel>
+        <div class="p-4">
+          {{ row.description == "undefined" ? "" : row.description }}
+        </div>
+      </template>
+    </UPopover>
+  </div>
+</template>
+
 
         <template #actions-data="{ row }">
           <UDropdown :items="items(row)">
