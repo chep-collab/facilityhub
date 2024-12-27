@@ -81,7 +81,7 @@ if (getUserType == 'company') {
           color: 'orange',
           variant: 'outline',
           padded: false,
-        }" :title="`There are ${companySummary.subscriptionsToAttendTo} subscriptions with uploaded receipts that you need to attend to`" />
+        }" :title="`You have ${companySummary.subscriptionsToAttendTo} subscription(s) with uploaded receipts that you need to attend to`" />
         <h2 class="text-lg font-semibold mb-2">Analytics</h2>
         <div class="flex flex-col lg:flex-row gap-2">
           <SummaryCard title="Total users" :value="companySummary.totalUsers" />
