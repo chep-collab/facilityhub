@@ -22,7 +22,8 @@ const fetchingDashboardSummary = ref(false);
 const companySummary = ref({
   totalUsers: 0,
   totalActiveSubscriptions: 0,
-  totalServiceCount: 0
+  totalServiceCount: 0,
+  subscriptionsToAttendTo: 0
 })
 
 async function getCompanyDashboardSummary() {
@@ -32,7 +33,8 @@ async function getCompanyDashboardSummary() {
     companySummary.value = {
       totalUsers: response.data.totalUsers,
       totalActiveSubscriptions: response.data.totalActiveSubscriptions,
-      totalServiceCount: response.data.totalServiceCount
+      totalServiceCount: response.data.totalServiceCount,
+      subscriptionsToAttendTo: response.data.subscriptionsToAttendTo
     }
   } catch (error: any) {
     if (error) {
@@ -64,7 +66,7 @@ async function getActiveSubscriptionsForUser() {
   }
 }
 
-if(getUserType == 'company'){
+if (getUserType == 'company') {
   getCompanyDashboardSummary()
 } else {
   getActiveSubscriptionsForUser()
@@ -74,7 +76,12 @@ if(getUserType == 'company'){
 <template>
   <div class="px-3 py-3.5">
     <div v-if="getUserType === 'company'">
-      <section class="mb-10">
+      <section>
+        <UAlert v-if="getUserType === 'company' && companySummary.subscriptionsToAttendTo > 0" class="mb-2 border border-blue-500" :close-button="{
+          color: 'orange',
+          variant: 'outline',
+          padded: false,
+        }" :title="`There are ${companySummary.subscriptionsToAttendTo} subscriptions with uploaded receipts that you need to attend to`" />
         <h2 class="text-lg font-semibold mb-2">Analytics</h2>
         <div class="flex flex-col lg:flex-row gap-2">
           <SummaryCard title="Total users" :value="companySummary.totalUsers" />
@@ -100,8 +107,9 @@ if(getUserType == 'company'){
         <h2 class="text-lg font-semibold mb-2">Active Subscriptions</h2>
         <div v-if="userSubscriptionList.length > 0">
           <div class="flex flex-col lg:flex-row gap-2 mb-2">
-            <ActiveSubscriptionCard v-for="sub in userSubscriptionList" :company-name="sub.company.name" :service-name="sub.actualSubscriptionName"
-              :start-date="formatDateAddDay(sub.startDate)" :end-date="formatDateAddDay(sub.endDate)" />
+            <ActiveSubscriptionCard v-for="sub in userSubscriptionList" :company-name="sub.company.name"
+              :service-name="sub.actualSubscriptionName" :start-date="formatDateAddDay(sub.startDate)"
+              :end-date="formatDateAddDay(sub.endDate)" />
           </div>
         </div>
 
