@@ -32,8 +32,8 @@ const props = defineProps({
             <span class="text-green-500">Active</span>
         </div>
         <div class="flex flex-row items-center gap-2">
-            <p>From : {{ startDate }}</p>
-            <p>To: {{ endDate }}</p>
+            <p>{{ startDate }}</p>
+            <p>-  {{ endDate }}</p>
         </div>
     </UCard>
 </template>
