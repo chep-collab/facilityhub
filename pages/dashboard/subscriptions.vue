@@ -248,10 +248,10 @@ await subscriptionStore.fetchCompanySubscriptions();
           <p v-else class="text-red-500">
            Receipt Not Uploaded
           </p>
-          <p v-if="getUserType == 'company' && !row.isActive" class="text-orange-500">
+          <p v-if="getUserType == 'company' && !row.isActive && row.receipt" class="text-orange-500">
            Please review and activate
           </p>
-          <p v-if="getUserType == 'user' && !row.isActive" class="text-orange-500">
+          <p v-if="getUserType == 'user' && !row.isActive && row.receipt" class="text-orange-500">
            Awaiting activation
           </p>
         </template>
