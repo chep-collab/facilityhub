@@ -35,8 +35,8 @@ const features = [
     smallImage: false
   },
   {
-    title: "User Onboarding",
-    description: "Invite users directly to your facility, giving them instant access to your services and simplifying onboarding.",
+    title: "User Onboarding & App access",
+    description: "Invite users to your facility for instant access to services and streamlined onboarding. They also get a web app for easy service access.",
     comingSoon: false,
     imagePath: userOnboardingtImagePath,
     smallImage: false
@@ -51,7 +51,7 @@ const features = [
   {
     title: "Automated Renewal Reminders",
     description: "Automatic reminders notify users when subscriptions are about to expire, ensuring seamless renewals.",
-    comingSoon: false,
+    comingSoon: true,
     imagePath: automatedRenewalsImagePath,
     smallImage: true
   },
