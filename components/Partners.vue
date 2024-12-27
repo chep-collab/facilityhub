@@ -1,7 +1,7 @@
 <template>
     <div class="partner-section w-full py-5 relative overflow-hidden">
       <!-- Green bar above -->
-      <p class="text-center text-[#344054] text-4xl mb-8">Trusted By</p>
+      <!-- <p class="text-center text-[#344054] text-4xl mb-8">Trusted By</p> -->
 
       <div class="h-4 bg-[#55AA55] w-full"></div>
 
@@ -14,7 +14,7 @@
         <img
           v-for="(partner, index) in [1,2,3,4,5]"
           :key="index"
-          src="../assets/landing-page/rakuten.png"
+          src="../assets/landing-page/star.png"
           alt="Partner Logo"
           class="partner-logo w-24 h-auto mr-5"
         />
