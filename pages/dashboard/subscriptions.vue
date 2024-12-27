@@ -23,10 +23,6 @@ const columns = [
     label: "ID",
   },
   {
-    key: "fullName",
-    label: "Full Name",
-  },
-  {
     key: "service",
     label: "Service",
   },
@@ -37,6 +33,10 @@ const columns = [
   {
     key: "status",
     label: "Status",
+  },
+  {
+    key: "fullName",
+    label: "Full Name",
   },
   {
     key: "company",
@@ -186,6 +186,28 @@ await subscriptionStore.fetchCompanySubscriptions();
       }"
       title="You need to create a service that users can subscribe to. Click 'Service' then 'Add Service' to add a new service."
     />
+    <UAlert
+      v-if="getUserType === 'company'"
+      class="my-4 mx-4 border border-blue-500"
+      :close-button="{
+        icon: 'i-heroicons-x-mark-20-solid',
+        color: 'gray',
+        variant: 'link',
+        padded: false,
+      }"
+      title="You can activate subscription when a users uploads a receipt."
+    />
+    <UAlert
+      v-else
+      class="my-4 mx-4 border border-blue-500"
+      :close-button="{
+        icon: 'i-heroicons-x-mark-20-solid',
+        color: 'gray',
+        variant: 'link',
+        padded: false,
+      }"
+      title="Don't forget to pay for your subscription and upload a receipt"
+    />
     <div>
       <div
         class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
@@ -220,6 +242,12 @@ await subscriptionStore.fetchCompanySubscriptions();
           <span>
             {{ row.actualSubscriptionName }}
           </span>
+          <p v-if="row.receipt" class="text-green-500">
+           Receipt Uploaded
+          </p>
+          <p v-else class="text-red-500">
+           Receipt Not Uploaded
+          </p>
         </template>
 
         <template #amount-data="{ row }">
