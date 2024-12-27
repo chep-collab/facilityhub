@@ -3,11 +3,11 @@
         <!-- Left Side: Text Section -->
         <div class="md:w-1/2 space-y-6 md:pr-8">
             <h1 class="text-4xl lg:text-7xl font-bold text-gray-800">
-                Effortless <br> Workspace Management
+                Effortless <br> Facility Management
             </h1>
             <img src="../assets/landing-page/curved-line.png" class="h-4 w-12">
             <p class="text-lg lg:text-xl text-gray-600">
-                Manage your workspace, users, subscriptions, and services in one place.
+                Manage your facilites (workspaces, gyms, etc.), users, subscriptions, and services in one place.
             </p>
             <div class="flex space-x-4">
                 <button class="bg-[#006B00] text-white px-6 py-3 rounded-md" @click="router.push('company/signup')">

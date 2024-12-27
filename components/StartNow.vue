@@ -7,7 +7,7 @@
         <!-- Content -->
         <div class="relative z-10 px-4">
             <h1 class="text-white text-3xl md:text-5xl font-bold mb-4">
-                Start Managing Your Workspace Now
+                Start Managing Your Facilities Now
             </h1>
             <br>
             <button

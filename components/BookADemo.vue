@@ -3,7 +3,7 @@
         class="flex items-center justify-center py-8 md:py-20 bg-gradient-to-r from-[#F0FF00] to-[#58CFFB] text-center p-8">
         <div class="space-y-6">
             <h1 class="text-2xl md:text-4xl font-bold text-gray-800">
-                Revolutionize Your Workspace Experience with Satisfaction
+                Revolutionize Your Facility Experience with Satisfaction
             </h1>
 
             <p class="text-base md:text-lg text-gray-600">
