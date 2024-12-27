@@ -85,7 +85,7 @@ const setCompanyToView = (company: object) => {
 </script>
 <template>
   <div class="py-3 px-3">
-    <UAlert
+    <!-- <UAlert
       v-if="getCompaniesAUserJoined.length > 0"
       variant="ghost"
       title="Facilities you have joined"
@@ -97,19 +97,19 @@ const setCompanyToView = (company: object) => {
           click: () => router.push('/facilities'),
         },
       ]"
-    />
+    /> -->
 
     <br />
     <div class="text-center" v-if="getCompaniesAUserJoined.length === 0">
       <p>You have not joined any facility</p>
       <br />
-      <UButton
+      <!-- <UButton
         color="cyan"
         variant="outline"
         @click="router.push('/facilities')"
       >
         Browse facilities
-      </UButton>
+      </UButton> -->
     </div>
     <div
       v-else
