@@ -14,6 +14,7 @@ const schema = object({
     .min(8, "Must be at least 8 characters")
     .required("Required"),
 });
+import { handleErrorMessages } from "~/common/errorHandlers";
 
 type Schema = InferType<typeof schema>;
 
@@ -25,6 +26,7 @@ const state = reactive({
 
 const route = useRoute();
 const token = route.query.token as string; // Retrieve token from URL query parameters
+const router = useRouter();
 
 if (!token) {
   console.error("Token is missing in the URL query parameters.");
@@ -37,7 +39,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     sendingResetPasswordRequest.value = true;
 
-    const response = await useNuxtApp().$axios.post("/company/reset-password", {
+    const response = await useNuxtApp().$axios.post("/user/reset-password", {
   token,
   newPassword: state.password,
   confirmNewPassword: state.confirmPassword,
@@ -55,10 +57,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       user_type: "user",
     });
 
-  
+    router.push("/user/login");
   } catch (error: any) {
     toast.add({
-      title: error.userFriendlyMessage || "An error occurred. Please try again.",
+      title: handleErrorMessages(error) || "An error occurred. Please try again.",
       color: "red",
     });
   } finally {
