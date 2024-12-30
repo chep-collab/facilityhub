@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
+import { handleErrorMessages } from "~/common/errorHandlers";
 
 const {
   posthog: { captureEvent, ALLOWED_EVENT_NAMES },
@@ -32,30 +33,36 @@ if (!token) {
 
 const toast = useToast();
 const sendingResetPasswordRequest = ref(false);
+const router = useRouter();
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     sendingResetPasswordRequest.value = true;
 
- 
+    const response = await useNuxtApp().$axios.post("/company/reset-password", {
+  token,
+  newPassword: state.password,
+  confirmNewPassword: state.confirmPassword,
+});
+
     toast.add({
       title:
         response.data.message ||
         "Your password has been successfully reset.",
       color: "green",
     });
-      // Collect event only after a successful password reset
-      captureEvent(ALLOWED_EVENT_NAMES.COMPANY_CHANGED_PASSWORD, {
-      user_type: "company",
+
+    captureEvent(ALLOWED_EVENT_NAMES.USER_CHANGED_PASSWORD, {
       email: state.email,
+      user_type: "company",
     });
-    
+
+    router.push("/company/login");
   } catch (error: any) {
     toast.add({
-      title: error.userFriendlyMessage || "An error occurred. Please try again.",
+      title: handleErrorMessages(error) || "An error occurred. Please try again.",
       color: "red",
     });
-   
   } finally {
     sendingResetPasswordRequest.value = false;
   }
