@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ColorModeButton from '~/components/ColorModeButton.vue';
+
 const activeUserStore = useActiveUserStore();
 const { userType, getUserDetails } = storeToRefs(activeUserStore);
 
@@ -25,7 +27,7 @@ const logout = () => {
         <span v-else>{{ `${getUserDetails.name}` }}</span>
       </h1>
       <div class="flex flex-row gap-4">
-        <!-- <UButton color="white" variant="solid">Profile</UButton> -->
+         <ColorModeButton/>
         <UButton @click="logout" color="white" variant="solid">Logout</UButton>
       </div>
     </div>
