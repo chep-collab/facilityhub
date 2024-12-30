@@ -7,7 +7,8 @@ import purpleCashPath from "~/assets/icons/purple-cash.png"
 import { formatDateAddDay } from "~/common/dataFormatter";
 const subscriptionStore = useSubscriptionStore();
 const { getUserType } = useActiveUserStore();
-
+const activeUserStore = useActiveUserStore();
+const { userType, getUserDetails } = storeToRefs(activeUserStore);
 const toast = useToast();
 
 definePageMeta({
@@ -23,7 +24,8 @@ const companySummary = ref({
   totalUsers: 0,
   totalActiveSubscriptions: 0,
   totalServiceCount: 0,
-  subscriptionsToAttendTo: 0
+  subscriptionsToAttendTo: 0,
+  invitationLink: ''
 })
 
 async function getCompanyDashboardSummary() {
@@ -34,7 +36,8 @@ async function getCompanyDashboardSummary() {
       totalUsers: response.data.totalUsers,
       totalActiveSubscriptions: response.data.totalActiveSubscriptions,
       totalServiceCount: response.data.totalServiceCount,
-      subscriptionsToAttendTo: response.data.subscriptionsToAttendTo
+      subscriptionsToAttendTo: response.data.subscriptionsToAttendTo,
+      invitationLink: response.data.invitationLink
     }
   } catch (error: any) {
     if (error) {
@@ -74,9 +77,9 @@ if (getUserType == 'company') {
 
 const shareInviteLink = () => {
   const shareData = {
-    title: 'Join Our Facility',
-    text: 'Check out this amazing facility and join us today!',
-    url: 'https://example.com/join' // Replace with your actual link
+    title: `Join ${getUserDetails.value.name}`,
+    text: `Click the link below to join ${getUserDetails.value.name} and subscribe to our services.`,
+    url: companySummary.value.invitationLink 
   };
 
   if (navigator.share) {
