@@ -100,7 +100,7 @@ const shareInviteLink = () => {
 <template>
   <div class="px-3 py-3.5">
     <div v-if="getUserType === 'company'">
-      <section class="flex flex-row justify-between items-center my-2">
+      <section class="flex flex-row justify-between md:justify-start gap-2 items-center my-2">
         <p>{{ companySummary.totalUsers }} users have joined your facility</p>
         <UButton icon="i-heroicons-share" size="sm" color="primary" variant="solid" label="Invite more"
           :trailing="false" @click="shareInviteLink"/>
