@@ -7,7 +7,8 @@ import purpleCashPath from "~/assets/icons/purple-cash.png"
 import { formatDateAddDay } from "~/common/dataFormatter";
 const subscriptionStore = useSubscriptionStore();
 const { getUserType } = useActiveUserStore();
-
+const activeUserStore = useActiveUserStore();
+const { userType, getUserDetails } = storeToRefs(activeUserStore);
 const toast = useToast();
 
 definePageMeta({
@@ -23,7 +24,8 @@ const companySummary = ref({
   totalUsers: 0,
   totalActiveSubscriptions: 0,
   totalServiceCount: 0,
-  subscriptionsToAttendTo: 0
+  subscriptionsToAttendTo: 0,
+  invitationLink: ''
 })
 
 async function getCompanyDashboardSummary() {
@@ -34,7 +36,8 @@ async function getCompanyDashboardSummary() {
       totalUsers: response.data.totalUsers,
       totalActiveSubscriptions: response.data.totalActiveSubscriptions,
       totalServiceCount: response.data.totalServiceCount,
-      subscriptionsToAttendTo: response.data.subscriptionsToAttendTo
+      subscriptionsToAttendTo: response.data.subscriptionsToAttendTo,
+      invitationLink: response.data.invitationLink
     }
   } catch (error: any) {
     if (error) {
@@ -71,17 +74,45 @@ if (getUserType == 'company') {
 } else {
   getActiveSubscriptionsForUser()
 }
+
+const shareInviteLink = () => {
+  const shareData = {
+    title: `Join ${getUserDetails.value.name}`,
+    text: `Click the link below to join ${getUserDetails.value.name} and subscribe to our services.`,
+    url: companySummary.value.invitationLink 
+  };
+
+  if (navigator.share) {
+    navigator
+      .share(shareData)
+      .then(() => {
+        console.log('Share successful!');
+      })
+      .catch((err) => {
+        console.error('Error sharing:', err);
+      });
+  } else {
+    alert('Sharing is not supported on this browser.');
+  }
+};
 </script>
 
 <template>
   <div class="px-3 py-3.5">
     <div v-if="getUserType === 'company'">
+      <section class="flex flex-row justify-between md:justify-start gap-2 items-center my-2">
+        <p>{{ companySummary.totalUsers }} users have joined your facility</p>
+        <UButton icon="i-heroicons-share" size="sm" color="primary" variant="solid" label="Invite more"
+          :trailing="false" @click="shareInviteLink"/>
+      </section>
       <section>
-        <UAlert v-if="getUserType === 'company' && companySummary.subscriptionsToAttendTo > 0" class="mb-2 border border-blue-500" :close-button="{
-          color: 'orange',
-          variant: 'outline',
-          padded: false,
-        }" :title="`You have ${companySummary.subscriptionsToAttendTo} subscription(s) with uploaded receipts that you need to attend to`" />
+        <UAlert v-if="getUserType === 'company' && companySummary.subscriptionsToAttendTo > 0"
+          class="mb-2 border border-blue-500" :close-button="{
+            color: 'orange',
+            variant: 'outline',
+            padded: false,
+          }"
+          :title="`You have ${companySummary.subscriptionsToAttendTo} subscription(s) with uploaded receipts that you need to attend to`" />
         <h2 class="text-lg font-semibold mb-2">Analytics</h2>
         <div class="flex flex-col lg:flex-row gap-2">
           <SummaryCard title="Total users" :value="companySummary.totalUsers" />
