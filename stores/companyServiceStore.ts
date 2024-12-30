@@ -64,10 +64,9 @@ export const useCompanyServiceStore = defineStore({
         const formData = new FormData();
         formData.append("name", name);
         formData.append("description", description);
-        if (!avatar) {
-          throw new Error("An image must be uploaded to showcase your service");
+        if (avatar) {
+          formData.append("avatar", avatar, avatar.name);
         }
-        formData.append("avatar", avatar, avatar.name);
         const serviceResponse = await useNuxtApp().$axios.post(
           "/company-service",
           formData

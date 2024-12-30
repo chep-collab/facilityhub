@@ -17,16 +17,21 @@
 
       <!-- Right buttons for Sign Up and Login (hidden on small screens) -->
       <div class="hidden md:flex space-x-4">
-        <button class="text-grey-800 border border-grey-800 px-4 py-2 rounded-full" @click="router.push('company/login')">Login</button>
-        <button class="bg-[#006B00] text-white px-4 py-2 rounded-full" @click="router.push('company/signup')">Sign Up</button>
+        <button class="text-grey-800 border border-grey-800 px-4 py-2 rounded-full"
+          @click="router.push('company/login')">Login</button>
+        <button class="bg-[#006B00] text-white px-4 py-2 rounded-full" @click="router.push('company/signup')">Sign
+          Up</button>
       </div>
 
       <!-- Hamburger menu for mobile -->
-      <button @click="isOpen = !isOpen" class="md:hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <button @click="isOpen = !isOpen" class="md:hidden relative focus:outline-none">
+        <span class="absolute inset-0 rounded-full animate-ping bg-[#006B00] opacity-75" aria-hidden="true"></span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 relative z-10" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
+
     </div>
 
     <!-- Mobile Menu (only visible when isOpen is true) -->
@@ -36,20 +41,22 @@
         <li><a href="#about" class="hover:text-grey-400">About</a></li>
         <li><a href="#services" class="hover:text-grey-400">Services</a></li>
         <li><a href="#contact" class="hover:text-grey-400">Contact</a></li>
-        <li><button class="bg-[#006B00] text-white w-full py-2 rounded"  @click="router.push('company/signup')">Sign Up</button></li>
-        <li><button class="text-grey-800 border border-grey-800 border border-grey-800 w-full py-2 rounded" @click="router.push('company/login')">Login</button></li>
+        <li><button class="bg-[#006B00] text-white w-full py-2 rounded" @click="router.push('company/signup')">Sign
+            Up</button></li>
+        <li><button class="text-grey-800 border border-grey-800 border border-grey-800 w-full py-2 rounded"
+            @click="router.push('company/login')">Login</button></li>
       </ul>
     </div>
   </nav>
-  <Hero/>
-  <TrustedBy/>
-  <Features/>
-  <BookADemo/>
-  <WhoWeAre/>
-  <Partners/>
-  <Testimonials/>
-  <StartNow/>
-  <WebsiteFooter/>
+  <Hero />
+  <!-- <TrustedBy/> -->
+  <Features />
+  <BookADemo />
+  <WhoWeAre />
+  <!-- <Partners/> -->
+  <!-- <Testimonials/> -->
+  <StartNow />
+  <WebsiteFooter />
 </template>
 
 <script setup>

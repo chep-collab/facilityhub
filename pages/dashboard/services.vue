@@ -158,7 +158,7 @@ const closeActivateDeactiveModal = () => {
       <div
         class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
       >
-        <UInput v-model="q" placeholder="Filter services..." />
+        <UInput v-model="q" placeholder="Search services..." />
         <div>
           <UButton
             v-if="getUserType === 'company'"
@@ -204,25 +204,26 @@ const closeActivateDeactiveModal = () => {
         </template>
 
         <template #description-data="{ row }">
-          <div class="flex flex-row">
-            <span>
-              {{ row.description.substring(0, 15) }}
-            </span>
-            <UPopover mode="hover">
-              <UButton
-                color="white"
-                variant="ghost"
-                trailing-icon="i-heroicons-chevron-down-20-solid"
-              />
+  <div class="flex flex-row">
+    <span>
+      {{ row.description == "undefined" ? "" : row.description.substring(0, 15)}}
+    </span>
+    <UPopover mode="hover" v-if="row.description">
+      <UButton
+        color="white"
+        variant="ghost"
+        trailing-icon="i-heroicons-chevron-down-20-solid"
+      />
 
-              <template #panel>
-                <div class="p-4">
-                  {{ row.description }}
-                </div>
-              </template>
-            </UPopover>
-          </div>
-        </template>
+      <template #panel>
+        <div class="p-4">
+          {{ row.description == "undefined" ? "" : row.description }}
+        </div>
+      </template>
+    </UPopover>
+  </div>
+</template>
+
 
         <template #actions-data="{ row }">
           <UDropdown :items="items(row)">

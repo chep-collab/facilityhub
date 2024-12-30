@@ -12,16 +12,12 @@
                 </div>
 
                 <p class="text-lg lg:text-xl text-gray-600 text-center md:text-left">
-                    Facility Hub is a comprehensive platform for workspace owners and users. Workspace owners can
-                    register and list spaces, upload user details, and manage bookings, payments, and usage tracking—all
-                    in one place. 
+                    Facility Hub is a comprehensive platform for workspace owners and users. Workspace owners can list and manage their available services, invite users to join and subscribe to their services, and manage subscriptions in one app.
                     <br> <br>
-                    Users benefit from a streamlined booking experience with flexible payment options,
-                    subscription plans, and access to personalized dashboards, making it easy to find and book spaces
+                    Users benefit from a streamlined subscription experience and access to personalized dashboards, making it easy to find and book spaces
                     that suit their needs. </p>
             </div>
 
-            <!-- Right Side: Image Section -->
             <div class="md:w-1/2 mt-3 md:mt-0 flex justify-center">
                 <img src="../assets/landing-page/whoweare.jpeg" alt="Hero Image"
                     class="w-full md:w-[500px] md:h-[500px] lg:w-[800px] lg:h-[600px] rounded-lg shadow-lg object-cover" />

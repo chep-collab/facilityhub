@@ -3,19 +3,20 @@
         <!-- Left Side: Text Section -->
         <div class="md:w-1/2 space-y-6 md:pr-8">
             <h1 class="text-4xl lg:text-7xl font-bold text-gray-800">
-                Effortless <br> Workspace Management
+                Effortless <br> {{ facilities[currentIndex] }} <span class="inline"><br></span> Management
             </h1>
             <img src="../assets/landing-page/curved-line.png" class="h-4 w-12">
             <p class="text-lg lg:text-xl text-gray-600">
-                Manage your workspace, users, subscriptions, and services in one place.
+                Manage your facilites (workspaces, gyms, etc.), users, subscriptions, and services in one place.
             </p>
             <div class="flex space-x-4">
                 <button class="bg-[#006B00] text-white px-6 py-3 rounded-md" @click="router.push('company/signup')">
                     Get Started
                 </button>
-                <button class="bg-transparent text-grey-800 border border-[#006B00] px-6 py-3 rounded-md" @click="">
+                <a href="https://forms.gle/PhZW1dHoDz5L99Qf8" target="_blank" rel="noopener noreferrer"
+                    class="bg-transparent text-grey-800 border border-[#006B00] px-6 py-3 rounded-md inline-block">
                     Book A Demo
-                </button>
+                </a>
             </div>
         </div>
 
@@ -28,9 +29,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 const router = useRouter();
 const isOpen = ref(false)
+
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const currentIndex = ref(0)
+const facilities = ['Facility', 'Gym', 'Co-workspace', 'Training Center', "Sports Complex"]
+let interval
+
+onMounted(() => {
+  interval = setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % facilities.length
+  }, 1500)
+})
+
+onUnmounted(() => {
+  clearInterval(interval)
+})
 </script>
 
 <style scoped>

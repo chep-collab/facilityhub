@@ -41,7 +41,7 @@ const subscribeToThisService = async () => {
       color: "green",
     });
     emit("close");
-    router.push("/dashboard");
+    router.push("/dashboard/subscriptions");
   } catch (error: any) {
     if (error) {
       toast.add({
@@ -167,11 +167,11 @@ watchEffect(() => {
             />
           </div>
           <div class="flex flex-row justify-between">
-            <div class="text-sm text-yellow-300">
+            <div class="text-sm text-brown-200">
               From: {{ formatDateAddDay(state.startDate) }}
               <br />
             </div>
-            <div class="text-sm text-yellow-300">
+            <div class="text-sm text-brown-200">
               To: {{ formatDateAddDay(state.endDate) }} <br />
             </div>
           </div>

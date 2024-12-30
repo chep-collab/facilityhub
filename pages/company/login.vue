@@ -70,6 +70,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
+  <UAlert
+    :actions="[{ variant: 'outline', label: 'Click here to login', click: () => navigateTo('/user/login') }]"
+    title="Are you a facility user?"
+    class="w-full max-w-md mx-auto p-4 rounded-xl bg-white mt-12"
+  />
   <UCard class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
     <template #header>
       <h2 class="text-2xl font-semibold text-center text-gray-900">
