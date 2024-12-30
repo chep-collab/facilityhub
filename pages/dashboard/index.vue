@@ -71,17 +71,45 @@ if (getUserType == 'company') {
 } else {
   getActiveSubscriptionsForUser()
 }
+
+const shareInviteLink = () => {
+  const shareData = {
+    title: 'Join Our Facility',
+    text: 'Check out this amazing facility and join us today!',
+    url: 'https://example.com/join' // Replace with your actual link
+  };
+
+  if (navigator.share) {
+    navigator
+      .share(shareData)
+      .then(() => {
+        console.log('Share successful!');
+      })
+      .catch((err) => {
+        console.error('Error sharing:', err);
+      });
+  } else {
+    alert('Sharing is not supported on this browser.');
+  }
+};
 </script>
 
 <template>
   <div class="px-3 py-3.5">
     <div v-if="getUserType === 'company'">
+      <section class="flex flex-row justify-between items-center my-2">
+        <p>{{ companySummary.totalUsers }} users have joined your facility</p>
+        <UButton icon="i-heroicons-share" size="sm" color="primary" variant="solid" label="Invite more"
+          :trailing="false" @click="shareInviteLink"/>
+      </section>
       <section>
-        <UAlert v-if="getUserType === 'company' && companySummary.subscriptionsToAttendTo > 0" class="mb-2 border border-blue-500" :close-button="{
-          color: 'orange',
-          variant: 'outline',
-          padded: false,
-        }" :title="`You have ${companySummary.subscriptionsToAttendTo} subscription(s) with uploaded receipts that you need to attend to`" />
+        <UAlert v-if="getUserType === 'company' && companySummary.subscriptionsToAttendTo > 0"
+          class="mb-2 border border-blue-500" :close-button="{
+            color: 'orange',
+            variant: 'outline',
+            padded: false,
+          }"
+          :title="`You have ${companySummary.subscriptionsToAttendTo} subscription(s) with uploaded receipts that you need to attend to`" />
         <h2 class="text-lg font-semibold mb-2">Analytics</h2>
         <div class="flex flex-col lg:flex-row gap-2">
           <SummaryCard title="Total users" :value="companySummary.totalUsers" />
