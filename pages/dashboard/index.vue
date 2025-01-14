@@ -100,7 +100,7 @@ const shareInviteLink = () => {
 <template>
   <div class="px-3 py-3.5">
     <div v-if="getUserType === 'company'">
-      <section class="flex flex-row justify-between md:justify-start gap-2 items-center my-2">
+      <section class="flex flex-row justify-between md:justify-start gap-3 items-center my-1 mb-3">
         <p>{{ companySummary.totalUsers }} users have joined your facility</p>
         <UButton icon="i-heroicons-share" size="sm" color="primary" variant="solid" label="Invite more"
           :trailing="false" @click="shareInviteLink"/>
@@ -113,8 +113,8 @@ const shareInviteLink = () => {
             padded: false,
           }"
           :title="`You have ${companySummary.subscriptionsToAttendTo} subscription(s) with uploaded receipts that you need to attend to`" />
-        <h2 class="text-lg font-semibold mb-2">Analytics</h2>
-        <div class="flex flex-col lg:flex-row gap-2">
+        <h2 class="text-lg font-semibold mb-5 mt-5">Analytics</h2>
+        <div class="flex flex-col lg:flex-row gap-10">
           <SummaryCard title="Total users" :value="companySummary.totalUsers" />
           <SummaryCard title="Active Subscriptions" :value="companySummary.totalActiveSubscriptions" />
           <SummaryCard title="Available Services" :value="companySummary.totalServiceCount" />
@@ -122,15 +122,29 @@ const shareInviteLink = () => {
       </section>
 
       <section class="mb-10">
-        <h2 class="text-lg font-semibold mb-5">Quick Access</h2>
-        <div class="flex flex-rownjustify-between gap-4">
-          <QuickAction title="Invite Users" :icon="greenPlusPath"
-            :action="() => navigateTo('/dashboard/users?openInviteForm=yes')" />
-          <QuickAction title="View Services" :icon="orangeBagPath" :action="() => navigateTo('/dashboard/services')" />
-          <QuickAction title="View Subscriptions" :icon="purpleCashPath"
-            :action="() => navigateTo('/dashboard/subscriptions')" />
-        </div>
-      </section>
+  <h2 class="text-lg font-semibold mb-5 mt-5">Quick Access</h2>
+  <div class="flex justify-between gap-1">
+    <QuickAction 
+      title="Invite Users" 
+      :icon="greenPlusPath" 
+      :action="() => navigateTo('/dashboard/users?openInviteForm=yes')" 
+      class="w-[250px]"
+    />
+    <QuickAction 
+      title="View Services" 
+      :icon="orangeBagPath" 
+      :action="() => navigateTo('/dashboard/services')" 
+      class="w-[250px]"
+    />
+    <QuickAction 
+      title="View Subscriptions" 
+      :icon="purpleCashPath" 
+      :action="() => navigateTo('/dashboard/subscriptions')" 
+      class="w-[250px]"
+    />
+  </div>
+</section>
+
     </div>
 
     <div v-if="getUserType === 'user'">
