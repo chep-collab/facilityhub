@@ -69,16 +69,16 @@ const links =
 
 <template>
   <div class=" rounded-bg sidebar w-[239px] sidebar bg-[#599376] dark:bg-[#1B2C23]">
-    <div class="flex items-center space-x-2 p-4 ml-1">
+    <div class="flex items-center space-x-2 p-4 ml-1 mt-3">
       <img src="/assets/icons/light logo.png" alt="Logo Light" class="h-5 w-5 dark:hidden" />
       <img src="/assets/icons/Root (1).png" alt="Logo Dark" class="h-5 w-5 hidden dark:block"
     />
       <div class="font-inter text-[14px] text-center text-sm font-bold text-white dark:text-white">Facility Hub</div>
     </div>
     <div class="font-inter text-[11px] font-semibold leading-[15.95px] text-left text-white dark:text-gray-300 text-sm">
-      <p class="ml-5 mt-3 mb-3">MENU</p>
+      <p class="ml-5 mt-5 mb-3">MENU</p>
       <nav>
-        <ul class="space-y-3 ml-2">
+        <ul class="space-y-2 ml-2">
           <li
             v-for="link in links"
             :key="link.label"
@@ -115,14 +115,11 @@ const links =
       </nav>
       <hr class="ml-4 mr-3 mt-5" />
       <div class="flex items-center space-x-3 p-4">
-  <!-- Profile Picture -->
   <img
-    :src="getUserDetails.profilePicture || '/assets/icons/default-avatar.png'"
+    :src="getUserDetails.profilePicture"
     alt="User Profile Picture"
     class="h-10 w-10 rounded-full border border-gray-300 dark:border-gray-600"
   />
-
-  <!-- Welcome Text -->
   <div>
     <p class="font-bold text-gray-700 dark:text-gray-200 text-sm">
       <span v-if="userType === 'user'" style="color: #FFFFFF;">
@@ -132,7 +129,7 @@ const links =
       {{ getUserDetails.name }}
       </span>
     </p>
-    <p class="text-xs dark:text-gray-400">
+    <p class="text-xs text-gray-300 dark:text-gray-400">
             {{ getUserDetails.email || 'No email available' }}
           </p>
   </div>

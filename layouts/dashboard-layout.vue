@@ -4,17 +4,22 @@ import ColorModeButton from '~/components/ColorModeButton.vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
-
 const activeUserStore = useActiveUserStore();
 const { userType, getUserDetails } = storeToRefs(activeUserStore);
 const router = useRouter();
 
 const darkMode = ref(false);
+const sidebarVisible = ref(false);
 
 // Toggle dark mode
 const toggleDarkMode = () => {
   darkMode.value = !darkMode.value;
-  document.documentElement.classList.toggle('dark', darkMode.value); // Toggle the 'dark' class on the root element
+  document.documentElement.classList.toggle('dark', darkMode.value); 
+};
+
+// Toggle sidebar visibility
+const toggleSidebar = () => {
+  sidebarVisible.value = !sidebarVisible.value;
 };
 
 const logout = () => {
@@ -29,23 +34,40 @@ const logout = () => {
 </script>
 
 <template>
-  <div :class="['dashboard-layout flex h-screen', { dark: darkMode }]">
-    <SidebarNavigation />
-    <div class="flex-1 flex flex-col">
-      <div class="py-3 px-9 flex justify-between bg-gray-100 dark:bg-[#0D0D0D99] rounded-md">
-        <h1 class="font-bold text-gray-400 dark:text-grey-200 ml-2">
-  Workspace 
-  <span>{{ userType === "user" ? "User" : "Admin" }}</span>
-  <br />
-  <span v-if="userType === 'user'"style="color: #667185;">
-    Welcome, {{ getUserDetails.firstName }} {{ getUserDetails.lastName }}!
-  </span>
-  <span v-else style="color: #667185;">
-    Welcome, {{ getUserDetails.name }}!
-  </span>
-</h1>
+  <div :class="['dashboard-layout flex h-screen relative', { dark: darkMode }]">
+    <!-- Overlay -->
+    <div 
+      v-if="sidebarVisible" 
+      @click="toggleSidebar"
+      class="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden transition-opacity"
+    ></div>
 
-        <div class="flex items-center gap-4 ">
+    <!-- Sidebar -->
+    <SidebarNavigation 
+      :class="['fixed lg:relative z-20 top-0 left-0 h-full w-64 shadow-lg transform lg:translate-x-0', sidebarVisible ? 'translate-x-0' : '-translate-x-full']"
+      style="transition: transform 0.3s ease-in-out;"
+    />
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <div class="py-3 px-7 flex justify-between bg-gray-100 dark:bg-[#0D0D0D99] rounded-md shadow">
+        <button @click="toggleSidebar" class="lg:hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <h1 class="font-bold text-gray-400 text-sm dark:text-grey-200 ml-2">
+          Workspace 
+          <span class="text-sm">{{ userType === "user" ? "User" : "Admin" }}</span>
+          <br />
+          <span v-if="userType === 'user'" class="text-md" style="color: #667185;">
+            Welcome, {{ getUserDetails.firstName }} {{ getUserDetails.lastName }}!
+          </span>
+          <span v-else class="text-md" style="color: #667185;">
+            Welcome, {{ getUserDetails.name }}!
+          </span>
+        </h1>
+        <div class="flex items-center gap-4">
           <ColorModeButton @click="toggleDarkMode" />
           <UButton @click="logout" color="white" variant="solid">Logout</UButton>
         </div>
@@ -61,6 +83,6 @@ const logout = () => {
 
 <style scoped>
 .dashboard-layout {
-  display: flex; 
+  display: flex;
 }
 </style>
