@@ -32,25 +32,26 @@ const logout = () => {
   <div :class="['dashboard-layout flex h-screen', { dark: darkMode }]">
     <SidebarNavigation />
     <div class="flex-1 flex flex-col">
-      <div class="py-3 px-3 flex justify-between bg-gray-100 dark:bg-gray-800 shadow-md">
-        <h1 class="font-bold text-gray-900 dark:text-gray-100">
-          Workspace 
-          <span>{{ userType === "user" ? "User" : "Admin" }}</span>
-          <br />
-          <span v-if="userType === 'user'">
-            {{ getUserDetails.firstName }} {{ getUserDetails.lastName }}
-          </span>
-          <span v-else>
-            {{ getUserDetails.name }}
-          </span>
-        </h1>
-        <div class="flex items-center gap-4">
+      <div class="py-3 px-9 flex justify-between bg-gray-100 dark:bg-[#0D0D0D99] rounded-md">
+        <h1 class="font-bold text-gray-400 dark:text-grey-200 ml-2">
+  Workspace 
+  <span>{{ userType === "user" ? "User" : "Admin" }}</span>
+  <br />
+  <span v-if="userType === 'user'"style="color: #667185;">
+    Welcome, {{ getUserDetails.firstName }} {{ getUserDetails.lastName }}!
+  </span>
+  <span v-else style="color: #667185;">
+    Welcome, {{ getUserDetails.name }}!
+  </span>
+</h1>
+
+        <div class="flex items-center gap-4 ">
           <ColorModeButton @click="toggleDarkMode" />
           <UButton @click="logout" color="white" variant="solid">Logout</UButton>
         </div>
       </div>
 
-      <main class="p-4 flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+      <main class="p-5 flex-1 overflow-y-auto bg-white dark:bg-[#0D0D0D99]">
         <slot />
       </main>
       <Footer />

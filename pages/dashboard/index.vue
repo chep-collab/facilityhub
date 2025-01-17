@@ -98,70 +98,69 @@ const shareInviteLink = () => {
 </script>
 
 <template>
-  <div class="px-3 py-3.5">
+  <div class="px-3 py-3 dark:bg-[#0D0D0D99] dark:text-white rounded-lg">
     <div v-if="getUserType === 'company'">
-      <section class="flex flex-row justify-between md:justify-start gap-3 items-center my-1 mb-3">
-        <p>{{ companySummary.totalUsers }} users have joined your facility</p>
+      <section class="flex flex-row justify-between md:justify-start gap-2 items-center my-1 mt-0 ">
+        <p class="dark:text-gray-200 ml-3">{{ companySummary.totalUsers }} users have joined your facility</p>
         <UButton icon="i-heroicons-share" size="sm" color="primary" variant="solid" label="Invite more"
           :trailing="false" @click="shareInviteLink"/>
       </section>
       <section>
         <UAlert v-if="getUserType === 'company' && companySummary.subscriptionsToAttendTo > 0"
-          class="mb-2 border border-blue-500" :close-button="{
+          class="mb-2 border border-blue-500 dark:border-gray-600" :close-button="{
             color: 'orange',
             variant: 'outline',
             padded: false,
           }"
           :title="`You have ${companySummary.subscriptionsToAttendTo} subscription(s) with uploaded receipts that you need to attend to`" />
-        <h2 class="text-lg font-semibold mb-5 mt-5">Analytics</h2>
-        <div class="flex flex-col lg:flex-row gap-10">
-          <SummaryCard title="Total users" :value="companySummary.totalUsers" />
+        <h2 class="text-lg text-gray-600 dark:text-gray-200 font-semibold mb-5 mt-5 ml-3">Analytics</h2>
+        <div class="flex flex-col lg:flex-row gap-5 ml-3">
+          <SummaryCard title="Total users" :value="companySummary.totalUsers"/>
           <SummaryCard title="Active Subscriptions" :value="companySummary.totalActiveSubscriptions" />
           <SummaryCard title="Available Services" :value="companySummary.totalServiceCount" />
         </div>
       </section>
 
       <section class="mb-10">
-  <h2 class="text-lg font-semibold mb-5 mt-5">Quick Access</h2>
-  <div class="flex justify-between gap-1">
-    <QuickAction 
-      title="Invite Users" 
-      :icon="greenPlusPath" 
-      :action="() => navigateTo('/dashboard/users?openInviteForm=yes')" 
-      class="w-[250px]"
-    />
-    <QuickAction 
-      title="View Services" 
-      :icon="orangeBagPath" 
-      :action="() => navigateTo('/dashboard/services')" 
-      class="w-[250px]"
-    />
-    <QuickAction 
-      title="View Subscriptions" 
-      :icon="purpleCashPath" 
-      :action="() => navigateTo('/dashboard/subscriptions')" 
-      class="w-[250px]"
-    />
-  </div>
-</section>
-
+        <h2 class="text-lg text-gray-600 dark:text-gray-200 font-semibold mb-5 mt-5 ml-3">Quick Access</h2>
+        <div class="flex justify-between gap-1 ml-3">
+          <QuickAction 
+            title="Invite Users" 
+            :icon="greenPlusPath" 
+            :action="() => navigateTo('/dashboard/users?openInviteForm=yes')" 
+            class="w-[250px] dark:bg-gray-700 dark:hover:bg-gray-600"
+          />
+          <QuickAction 
+            title="View Services" 
+            :icon="orangeBagPath" 
+            :action="() => navigateTo('/dashboard/services')" 
+            class="w-[250px] dark:bg-gray-700 dark:hover:bg-gray-600"
+          />
+          <QuickAction 
+            title="View Subscriptions" 
+            :icon="purpleCashPath" 
+            :action="() => navigateTo('/dashboard/subscriptions')" 
+            class="w-[250px] dark:bg-gray-700 dark:hover:bg-gray-600"
+          />
+        </div>
+      </section>
     </div>
 
     <div v-if="getUserType === 'user'">
       <section class="mb-10">
-        <h2 class="text-lg font-semibold mb-2">Active Subscriptions</h2>
+        <h2 class="text-lg font-semibold mb-2 dark:text-gray-200">Active Subscriptions</h2>
         <div v-if="userSubscriptionList.length > 0">
           <div class="flex flex-col lg:flex-row gap-2 mb-2">
             <ActiveSubscriptionCard v-for="sub in userSubscriptionList" :company-name="sub.company.name"
               :service-name="sub.actualSubscriptionName" :start-date="formatDateAddDay(sub.startDate)"
-              :end-date="formatDateAddDay(sub.endDate)" />
+              :end-date="formatDateAddDay(sub.endDate)" class="dark:bg-gray-800"/>
           </div>
         </div>
 
         <div v-else class="text-center">
-          <p>You do not have an active subscription</p>
+          <p class="dark:text-gray-200">You do not have an active subscription</p>
           <br />
-          <UButton color="cyan" variant="outline" @click="navigateTo('/dashboard/joined-centers')">
+          <UButton color="cyan" variant="outline" @click="navigateTo('/dashboard/joined-centers')" class="dark:bg-gray-700 dark:hover:bg-gray-600">
             View facilities and subscribe
           </UButton>
         </div>
