@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { object, string, type InferType } from "yup";
+import { usePasswordResetStore } from "~/stores/usePasswordResetStore"; 
 import type { FormSubmitEvent } from "#ui/types";
+import { handleErrorMessages } from "~/common/errorHandlers";
+import { reactive } from "vue"; 
 
 const {
   posthog: { captureEvent, ALLOWED_EVENT_NAMES },
-} = usePosthog(); 
+} = usePosthog();
 
 const schema = object({
   password: string()
@@ -14,57 +17,51 @@ const schema = object({
     .min(8, "Must be at least 8 characters")
     .required("Required"),
 });
-import { handleErrorMessages } from "~/common/errorHandlers";
 
 type Schema = InferType<typeof schema>;
 
-const state = reactive({
-  password: undefined,
-  confirmPassword: undefined,
-  email: undefined,
-});
-
 const route = useRoute();
-const token = route.query.token as string; // Retrieve token from URL query parameters
-const router = useRouter();
+const token = route.query.token as string;
 
 if (!token) {
   console.error("Token is missing in the URL query parameters.");
 }
 
 const toast = useToast();
-const sendingResetPasswordRequest = ref(false);
+const router = useRouter();
+const passwordResetStore = usePasswordResetStore(); 
+
+const state = reactive({
+  password: "",
+  confirmPassword: "",
+  email: "",  
+});
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
-    sendingResetPasswordRequest.value = true;
+    passwordResetStore.resettingPassword = true; // Set state to true when resetting starts
 
-    const response = await useNuxtApp().$axios.post("/user/reset-password", {
-  token,
-  newPassword: state.password,
-  confirmNewPassword: state.confirmPassword,
-});
+    // Call the store's resetPassword method
+    await passwordResetStore.resetPassword(state.email, 'company');
 
     toast.add({
-      title:
-        response.data.message ||
-        "Your password has been successfully reset.",
+      title: "Your password has been successfully reset.",
       color: "green",
     });
 
     captureEvent(ALLOWED_EVENT_NAMES.USER_CHANGED_PASSWORD, {
       email: state.email,
-      user_type: "user",
+      user_type: "company",
     });
 
-    router.push("/user/login");
+    router.push("/company/login");
   } catch (error: any) {
     toast.add({
       title: handleErrorMessages(error) || "An error occurred. Please try again.",
       color: "red",
     });
   } finally {
-    sendingResetPasswordRequest.value = false;
+    passwordResetStore.resettingPassword = false; 
   }
 }
 </script>
@@ -82,7 +79,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         class="space-y-6"
         @submit="onSubmit"
       >
-        <UFormGroup label="New password" name="password">
+        <UFormGroup label="Password" name="password">
           <UInput
             v-model="state.password"
             type="password"
