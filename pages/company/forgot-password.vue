@@ -2,6 +2,8 @@
 import { object, string, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 import { handleErrorMessages } from "~/common/errorHandlers";
+import { usePasswordResetStore } from '~/stores/usePasswordResetStore'; //imported the store
+
 const {
   posthog: { captureEvent, ALLOWED_EVENT_NAMES },
 } = usePosthog();
@@ -12,27 +14,29 @@ const schema = object({
 
 type Schema = InferType<typeof schema>;
 
-const state = reactive({
-  email: undefined,
+  const state = reactive({
+  email: "" as string, 
 });
 const sendingResetPasswordRequest = ref(false);
 
 const toast = useToast();
+
+// Accessingg the store to use the forgotPassword action
+const passwordResetStore = usePasswordResetStore();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     sendingResetPasswordRequest.value = true;
-    // Sendss the POST request to the company reset password endpoint
-    const response = await useNuxtApp().$axios.post("/company/forgot-password", {
-      email: state.email,
-    });
-    // This shows the message from the backend or the fallback message
+    // Call the store's forgotPassword method to handle the request
+    const response = await passwordResetStore.forgotPassword(state.email, 'company');
+    
     toast.add({
       title:
         response.data.message ||
         "Reset password instructions will be sent to your email address if an account exists with the email you provided.",
       color: "green",
     });
-  captureEvent(ALLOWED_EVENT_NAMES.COMPANY_REQUESTED_PASSWORD_RESET, {
+
+    captureEvent(ALLOWED_EVENT_NAMES.COMPANY_REQUESTED_PASSWORD_RESET, {
       email: state.email,
       user_type: "company",
     });
@@ -41,8 +45,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       title: handleErrorMessages(error),
       color: "red",
     });
-
-  } finally {
+    } finally {
     sendingResetPasswordRequest.value = false;
   }
 }
