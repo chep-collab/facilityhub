@@ -120,26 +120,26 @@ const shareInviteLink = () => {
         </div>
       </section>
 
-      <section class="mb-10">
+      <section class="mb-10 items-center justify-center">
         <h2 class="text-lg text-gray-600 dark:text-gray-200 font-semibold mb-5 mt-5 ml-3">Quick Access</h2>
-        <div class="flex flex-wrap gap-1 ml-3">
+        <div class="flex flex-wrap gap-12 ml-3">
           <QuickAction 
             title="Invite Users" 
             :icon="greenPlusPath" 
             :action="() => navigateTo('/dashboard/users?openInviteForm=yes')" 
-            class="w-full sm:w-[250px] dark:bg-gray-700 dark:hover:bg-gray-600"
+            class="w-full sm:w-[240px] dark:bg-gray-700 dark:hover:bg-gray-600 "
           />
           <QuickAction 
             title="View Services" 
             :icon="orangeBagPath" 
             :action="() => navigateTo('/dashboard/services')" 
-            class="w-full sm:w-[250px] dark:bg-gray-700 dark:hover:bg-gray-600"
+            class="w-full sm:w-[240px] dark:bg-gray-700 dark:hover:bg-gray-600"
           />
           <QuickAction 
             title="View Subscriptions" 
             :icon="purpleCashPath" 
             :action="() => navigateTo('/dashboard/subscriptions')" 
-            class="w-full sm:w-[250px] dark:bg-gray-700 dark:hover:bg-gray-600"
+            class="w-full sm:w-[240px] dark:bg-gray-700 dark:hover:bg-gray-600"
           />
         </div>
       </section>

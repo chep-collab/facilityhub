@@ -59,11 +59,11 @@ const logout = () => {
     <div class="flex-1 flex flex-col">
       <div class="py-3 px-7 flex justify-between bg-gray-100 dark:bg-[#0D0D0D99] rounded-md shadow">
         <button @click="toggleSidebar" class="lg:hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 dark:text-gray-200 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <h1 class="font-bold text-gray-400 text-sm dark:text-grey-200 ml-2">
+        <h1 class="font-bold text-gray-400 text-sm dark:text-grey-200 ml-4">
           Workspace 
           <span class="text-sm">{{ userType === "user" ? "User" : "Admin" }}</span>
           <br />
@@ -74,7 +74,7 @@ const logout = () => {
             Welcome, {{ getUserDetails.name }}!
           </span>
         </h1>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-1">
           <ColorModeButton @click="toggleDarkMode" />
           <UButton @click="logout" color="white" variant="solid">Logout</UButton>
         </div>

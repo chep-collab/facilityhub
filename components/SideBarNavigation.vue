@@ -75,12 +75,15 @@ const emit = defineEmits(['closeSidebar']);
 <template>
   <div class=" rounded-bg sidebar w-[239px] sidebar bg-[#599376] dark:bg-[#1B2C23]">
     <div class="flex items-center space-x-2 p-4 ml-1 mt-3">
-      <img src="/assets/icons/light logo.png" alt="Logo Light" class="h-5 w-5 dark:hidden" />
-      <img src="/assets/icons/Root (1).png" alt="Logo Dark" class="h-5 w-5 hidden dark:block" />
-      <div class="font-inter text-[14px] text-center text-sm font-bold text-white dark:text-white">Facility Hub</div>
-    </div>
+  <div style="position: relative; width: 20px; height: 20px;">
+    <img src="/assets/icons/dark_mode_logo.png" alt="Logo Light" class="h-5 w-5 dark:hidden" style="position: absolute; top: 0; left: 0;" />
+    <img src="/assets/icons/light_mode_logo.png" alt="Logo Dark" class="h-5 w-5 hidden dark:block" style="position: absolute; top: 0; left: 0;" />
+  </div>
+  <div class="font-inter text-[14px] text-center text-sm font-bold text-white dark:text-white">Facility Hub</div>
+</div>
+
     <div class="font-inter text-[11px] font-semibold leading-[15.95px] text-left text-white dark:text-gray-300 text-sm">
-      <p class="ml-5 mt-5 mb-3">MENU</p>
+      <p class="ml-5 mt-4 mb-3">MENU</p>
       <nav>
         <ul class="space-y-2 ml-2">
           <li
