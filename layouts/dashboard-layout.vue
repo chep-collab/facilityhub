@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import SidebarNavigation from '~/components/SideBarNavigation.vue';
 import ColorModeButton from '~/components/ColorModeButton.vue';
 import { useRouter } from 'vue-router';
@@ -22,6 +23,11 @@ const toggleSidebar = () => {
   sidebarVisible.value = !sidebarVisible.value;
 };
 
+// Event to close sidebar
+const closeSidebar = () => {
+  sidebarVisible.value = false;
+};
+
 const logout = () => {
   localStorage.clear();
   activeUserStore.setAuthenticationState(false);
@@ -38,7 +44,7 @@ const logout = () => {
     <!-- Overlay -->
     <div 
       v-if="sidebarVisible" 
-      @click="toggleSidebar"
+      @click="closeSidebar"
       class="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden transition-opacity"
     ></div>
 
@@ -46,6 +52,7 @@ const logout = () => {
     <SidebarNavigation 
       :class="['fixed lg:relative z-20 top-0 left-0 h-full w-64 shadow-lg transform lg:translate-x-0', sidebarVisible ? 'translate-x-0' : '-translate-x-full']"
       style="transition: transform 0.3s ease-in-out;"
+      @closeSidebar="closeSidebar"
     />
 
     <!-- Main Content -->
