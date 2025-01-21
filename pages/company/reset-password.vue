@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { object, string, type InferType } from "yup";
+import { usePasswordResetStore } from "~/stores/usePasswordResetStore"; // Import the store
 import type { FormSubmitEvent } from "#ui/types";
 import { handleErrorMessages } from "~/common/errorHandlers";
+import { reactive } from "vue"; 
 
 const {
   posthog: { captureEvent, ALLOWED_EVENT_NAMES },
-} = usePosthog(); // Import captureEvent and ALLOWED_EVENT_NAMES
+} = usePosthog();
 
 const schema = object({
   password: string()
@@ -17,38 +19,34 @@ const schema = object({
 });
 
 type Schema = InferType<typeof schema>;
-
-const state = reactive({
-  password: "",
-  confirmPassword: "",
-  email: "",  
-});
-
+  
 const route = useRoute();
-const token = route.query.token as string; // Retrieve token from URL query parameters
+const token = route.query.token as string;
 
 if (!token) {
   console.error("Token is missing in the URL query parameters.");
 }
 
 const toast = useToast();
-const sendingResetPasswordRequest = ref(false);
 const router = useRouter();
+const passwordResetStore = usePasswordResetStore(); // Access the store
+
+// Initialize state with reactive
+const state = reactive({
+  password: "",
+  confirmPassword: "",
+  email: "",  
+});
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
-    sendingResetPasswordRequest.value = true;
+    passwordResetStore.resettingPassword = true; // Set state to true when resetting starts
 
-    const response = await useNuxtApp().$axios.post("/company/reset-password", {
-  token,
-  newPassword: state.password,
-  confirmNewPassword: state.confirmPassword,
-});
+    // Call the store's resetPassword method
+    await passwordResetStore.resetPassword(state.email, 'company');
 
     toast.add({
-      title:
-        response.data.message ||
-        "Your password has been successfully reset.",
+      title: "Your password has been successfully reset.",
       color: "green",
     });
 
@@ -64,7 +62,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       color: "red",
     });
   } finally {
-    sendingResetPasswordRequest.value = false;
+    passwordResetStore.resettingPassword = false; // Reset state after request
   }
 }
 </script>
