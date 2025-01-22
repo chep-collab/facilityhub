@@ -54,6 +54,7 @@ Submit
   import type { FormSubmitEvent } from "#ui/types"; 
   import { handleErrorMessages } from "~/common/errorHandlers";
   import { reactive } from "vue";
+  import axios from 'axios';
   
 
   const schema = object({
@@ -81,7 +82,7 @@ Submit
   
   const toast = useToast();
   const router = useRouter();
-  const passwordResetStore = usePasswordResetStore(); // Access the store
+  const passwordResetStore = usePasswordResetStore(); 
   
   
   const state = reactive({
@@ -91,28 +92,37 @@ Submit
     email: "",
   });
   
-  // Handle form submission
-  async function onSubmit(event: FormSubmitEvent<Schema>) {
-    try {
-      passwordResetStore.resettingPassword = true; // Set state to true when resetting starts
-  
-      // Call the store's resetPassword method
-      await passwordResetStore.resetPassword(state.oldPassword, state.password, state.confirmPassword);
-  
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  try {
+    passwordResetStore.resettingPassword = true;
+
+    const response = await axios.post('/company/change-password', {
+      oldPassword: state.oldPassword,
+      newPassword: state.password,
+      confirmPassword: state.confirmPassword,
+    }, {
+      headers: {
+        "Authorization": "Bearer <your_auth_token>", 
+      }
+    });
+
+    if (response.data.status) {
       toast.add({
-        title: "Your password has been successfully reset.",
+        title: "Password updated successfully.",
         color: "green",
       });
-  
       router.push("/company/login");
-    } catch (error: any) {
-      toast.add({
-        title: handleErrorMessages(error) || "An error occurred. Please try again.",
-        color: "red",
-      });
-    } finally {
-      passwordResetStore.resettingPassword = false; // Reset state after request
     }
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || handleErrorMessages(error);
+    toast.add({
+      title: errorMessage || "An error occurred. Please try again.",
+      color: "red",
+    });
+  } finally {
+    passwordResetStore.resettingPassword = false;
   }
+}
   </script>
   
