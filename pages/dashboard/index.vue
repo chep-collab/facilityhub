@@ -95,6 +95,27 @@ const shareInviteLink = () => {
     alert('Sharing is not supported on this browser.');
   }
 };
+const copyInvitationLink = () => {
+  const invitationLink = companySummary.value.invitationLink;
+
+  if (!invitationLink) {
+    alert('Invitation link is not available.');
+    return;
+  }
+
+  // Copy the link to the clipboard
+  navigator.clipboard
+    .writeText(invitationLink)
+    .then(() => {
+      console.log('Invitation link copied to clipboard!');
+      alert('Invitation link copied successfully!');
+    })
+    .catch((err) => {
+      console.error('Error copying link:', err);
+      alert('Failed to copy the invitation link. Please try again.');
+    });
+};
+
 </script>
 <template>
   <div class="px-3 py-3 dark:bg-[#0D0D0D99] dark:text-white rounded-lg">
@@ -103,6 +124,8 @@ const shareInviteLink = () => {
         <p class="dark:text-gray-200 ml-3">{{ companySummary.totalUsers }} users have joined your facility</p>
         <UButton icon="i-heroicons-share" size="sm" color="primary" variant="solid" label="Invite more"
           :trailing="false" @click="shareInviteLink"/>
+          <UButton icon="i-heroicons-clipboard-document-list" size="sm" color="primary" variant="outline" label="Copy Invitation Link"
+          :trailing="false" @click="copyInvitationLink"/>
       </section>
       <section>
         <UAlert v-if="getUserType === 'company' && companySummary.subscriptionsToAttendTo > 0"
