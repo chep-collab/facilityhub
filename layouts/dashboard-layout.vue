@@ -83,7 +83,6 @@ const logout = () => {
       <main class="p-5 flex-1 overflow-y-auto bg-white dark:bg-[#0D0D0D99]">
         <slot />
       </main>
-      <Footer />
     </div>
   </div>
 </template>

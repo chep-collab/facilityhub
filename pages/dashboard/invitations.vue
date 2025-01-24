@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-definePageMeta({
-  layout: "dashboard-layout",
-});
 
 const companyStore = useCompanyStore();
+const { getCompanies } = storeToRefs(companyStore);
+const router = useRouter();
+definePageMeta({
+  layout: "dashboard-layout",
+  middleware: ['invitation']
+});
 companyStore.fetchCompanyJoinedByAUser();
-const selectedCompany = ref({});
-const alreadyJoined = ref(true); // State to check if the user has already joined the company
+const alreadyJoined = ref(false); 
 
 const state = reactive({
-  companyInvitationCode: "",
+    companyInvitationCode: "",
 });
-
-const setCompanyToJoin = (company: object) => {
-  selectedCompany.value = company;
-};
 
 import { handleErrorMessages } from "../../common/errorHandlers";
 
@@ -24,14 +21,62 @@ const fetchingCompanyName = ref(false);
 const facilityType = ref();
 const facilityAddress = ref();
 const invitingCompanyName = ref("");
+const facilityId = ref();
 
 async function getCompanyNameViaInvitationCode(invitationCode: string) {
+    try {
+        fetchingCompanyName.value = true;
+        const response = await useNuxtApp().$axios.get(`/company/get-name/${invitationCode}`);
+        invitingCompanyName.value = response.data.name;
+        facilityType.value = response.data.facility_type;
+        facilityAddress.value = response.data.address;
+        facilityId.value = response.data.id
+    } catch (error: any) {
+        if (error) {
+            toast.add({
+                title: handleErrorMessages(error),
+                color: "red",
+            });
+        }
+    } finally {
+        fetchingCompanyName.value = false;
+    }
+}
+
+const route = useRoute();
+const invitationCode = route.query.invitationCode as string;
+if (invitationCode) {
+    state.companyInvitationCode = invitationCode;
+    getCompanyNameViaInvitationCode(invitationCode);
+    console.log({
+        getCompanies: getCompanies.value,
+        invitationCode
+    })
+    for (const company in getCompanies.value) {
+        if (company.generalInvitationCode = invitationCode){
+            alreadyJoined.value = true
+        }
+    }
+}
+
+const loading = ref(false);
+
+function goToJoinedCompanies() {
+  useRouter().push("/dashboard/joined-centers");
+}
+function rejectInvitation() {
+    router.push("/dashboard");
+}
+
+const acceptInvitation = async () => {
   try {
-    fetchingCompanyName.value = true;
-    const response = await useNuxtApp().$axios.get(`/company/get-name/${invitationCode}`);
-    invitingCompanyName.value = response.data.name;
-    facilityType.value = response.data.facility_type;
-    facilityAddress.value = response.data.address;
+    loading.value = true
+    const response = await companyStore.JoinACompnay(facilityId.value);
+    toast.add({
+      title: response.data.message || "Successful",
+      color: "green",
+    });
+    router.push("/dashboard/joined-centers");
   } catch (error: any) {
     if (error) {
       toast.add({
@@ -40,33 +85,9 @@ async function getCompanyNameViaInvitationCode(invitationCode: string) {
       });
     }
   } finally {
-    fetchingCompanyName.value = false;
+    loading.value = false
   }
-}
-
-const route = useRoute();
-const invitationCode = route.query.invitationCode as string;
-if (invitationCode) {
-  state.companyInvitationCode = invitationCode;
-  getCompanyNameViaInvitationCode(invitationCode);
-}
-
-const pending = ref(false);
-
-// Function to handle redirecting to the list of joined companies
-function goToJoinedCompanies() {
-  useRouter().push("/joined-companies");
-}
-
-// Function to handle accepting the invitation
-function acceptInvitation() {
-  // Logic to be implemented
-}
-
-// Function to handle rejecting the invitation
-function rejectInvitation() {
-  // Logic to be implemented
-}
+};
 </script>
 
 <template>
@@ -75,6 +96,7 @@ function rejectInvitation() {
       Join {{ invitingCompanyName }}
     </h1>
     <p class="text-gray-700 mb-2">
+        alreadyJoined {{ alreadyJoined }} <br>
       <span class="font-medium">Facility type:</span> {{ facilityType }}
     </p>
     <p class="text-gray-700 mb-4">
@@ -96,8 +118,8 @@ function rejectInvitation() {
 
     <div v-else class="flex flex-row gap-4 mb-4">
       <UButton
-        :loading="pending"
-        :disabled="pending"
+        :loading="loading"
+        :disabled="loading"
         type="submit"
         @click="acceptInvitation"
         class="bg-green-500 text-white py-3 px-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
@@ -107,8 +129,6 @@ function rejectInvitation() {
 
       <UButton
         color=""
-        :loading="pending"
-        :disabled="pending"
         type="button"
         @click="rejectInvitation"
         class="bg-white text-gray-800 py-3 px-6 rounded-md border border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2"
