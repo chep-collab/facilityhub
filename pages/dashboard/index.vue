@@ -136,33 +136,33 @@ const copyInvitationLink = () => {
           }"
           :title="`You have ${companySummary.subscriptionsToAttendTo} subscription(s) with uploaded receipts that you need to attend to`" />
         <h2 class="text-lg text-gray-600 dark:text-gray-200 font-semibold mb-5 mt-5 ml-3">Analytics</h2>
-        <div class="flex flex-col lg:flex-row gap-5 ml-3">
-          <SummaryCard title="Total users" :value="companySummary.totalUsers"/>
+        <div class="flex flex-wrap gap-6 ml-3">
+          <SummaryCard title="Total users" :value="companySummary.totalUsers" />
           <SummaryCard title="Active Subscriptions" :value="companySummary.totalActiveSubscriptions" />
           <SummaryCard title="Available Services" :value="companySummary.totalServiceCount" />
         </div>
       </section>
 
-      <section class="mb-10 items-center justify-center">
+      <section class="mb-10 items-center justify-left">
         <h2 class="text-lg text-gray-600 dark:text-gray-200 font-semibold mb-5 mt-5 ml-3">Quick Access</h2>
-        <div class="flex flex-wrap gap-12 ml-3">
+        <div class="flex flex-wrap gap-7 ml-3 text-left">
           <QuickAction 
             title="Invite Users" 
             :icon="greenPlusPath" 
             :action="() => navigateTo('/dashboard/users?openInviteForm=yes')" 
-            class="w-full sm:w-[240px] dark:bg-gray-700 dark:hover:bg-gray-600 "
+            class="py-4 px-2 sm:w-[170px] dark:bg-gray-700 dark:hover:bg-gray-600 "
           />
           <QuickAction 
             title="View Services" 
             :icon="orangeBagPath" 
             :action="() => navigateTo('/dashboard/services')" 
-            class="w-full sm:w-[240px] dark:bg-gray-700 dark:hover:bg-gray-600"
+            class="py-4 px-2 sm:w-[170px] dark:bg-gray-700 dark:hover:bg-gray-600"
           />
           <QuickAction 
             title="View Subscriptions" 
             :icon="purpleCashPath" 
             :action="() => navigateTo('/dashboard/subscriptions')" 
-            class="w-full sm:w-[240px] dark:bg-gray-700 dark:hover:bg-gray-600"
+            class="py-4 sm:w-[170px] dark:bg-gray-700 dark:hover:bg-gray-600"
           />
         </div>
       </section>

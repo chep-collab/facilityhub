@@ -76,7 +76,7 @@ const logout = () => {
         </h1>
         <div class="flex items-center gap-1">
           <ColorModeButton @click="toggleDarkMode" />
-          <UButton @click="logout" color="white" variant="solid">Logout</UButton>
+          <!--<UButton @click="logout" color="white" variant="solid">Logout</UButton>-->
         </div>
       </div>
 
