@@ -2,6 +2,7 @@
 import { handleErrorMessages } from "~/common/errorHandlers";
 import { formatDate } from "../../common/dataFormatter";
 import { mixed, object } from "yup";
+import { capitalizeWord } from "~/common/textFormatters";
 const subscriptionStore = useSubscriptionStore();
 const { getUserType } = useActiveUserStore();
 const {
@@ -88,7 +89,7 @@ const companyMenus = (row) => [
         subscriptionIdToUpdate.value = row.id;
         isActivateModalOpen.value = true;
       },
-      disabled: row.isActive ? true : false,
+      disabled: row.status == 'active' ? true : false,
     },
     {
       label: "View receipt",
@@ -132,8 +133,7 @@ const subscriptionIdToUpdate = ref("");
 const onSubmitSubscriptionActivationRequest = async () => {
   try {
     await subscriptionStore.activateSubscription(
-      subscriptionIdToUpdate.value,
-      true
+      subscriptionIdToUpdate.value
     );
     isActivateModalOpen.value = false;
   } catch (error: any) {
@@ -248,10 +248,10 @@ await subscriptionStore.fetchCompanySubscriptions();
           <p v-else class="text-red-500">
            Receipt Not Uploaded
           </p>
-          <p v-if="getUserType == 'company' && !row.isActive && row.receipt" class="text-orange-500">
+          <p v-if="getUserType == 'company' && (row.status == 'inactive') && row.receipt" class="text-orange-500">
            Please review and activate
           </p>
-          <p v-if="getUserType == 'user' && !row.isActive && row.receipt" class="text-orange-500">
+          <p v-if="getUserType == 'user' && (row.status == 'inactive') && row.receipt" class="text-orange-500">
            Awaiting activation
           </p>
         </template>
@@ -265,8 +265,8 @@ await subscriptionStore.fetchCompanySubscriptions();
         </template>
 
         <template #status-data="{ row }">
-          <span :class="row.isActive ? 'text-green-500' : 'text-red-500'">
-            {{ row.isActive == true ? "Active" : "Inactive" }}
+          <span :class="(row.status == 'active') ? 'text-green-500' : (row.status == 'inactive') ? 'text-orange-500' : 'text-red-500'">
+            {{ capitalizeWord(row.status) }}
           </span>
         </template>
 
