@@ -24,7 +24,11 @@ module.exports = {
       //     base: "",
       //     background: "",
       //     padding: "px-4 py-2 sm:px-6",
-      //   },
+      //   }
+      // font-family{
+        //inter:['Inter', 'sans-serif'],
+      }
+      // ,
       // },
 
       // Custom animation
