@@ -1,32 +1,33 @@
 <template>
   <div class="pt-0 pl-6">
-    <h4 class="text-2xl text-gray-600 dark:text-gray-300 font-semibold mb-4">Users</h4>
+    <h4 class="text-2xl text-black-600 dark:text-gray-300 font-semibold mb-4">Users</h4>
     <div v-if="loading" class="text-center text-gray-500 dark:text-gray-400">Loading...</div>
 
-    <ul v-else class="space-y-4">
+    <ul v-else class= "space-y-3 w-full max-w-3xl">
       <li 
         v-for="(user, index) in paginatedUsers" 
         :key="user.id" 
-        class="bg-white dark:bg-gray-800 p-3 rounded shadow-lg dark:shadow-none flex justify-between items-center transition-colors"
+        class="bg-white dark:bg-gray-800 p-2 rounded shadow-lg dark:shadow-none flex justify-between items-center transition-colors"
       >
-        <div class="flex items-center space-x-4">
-          <span class="font-bold text-gray-800 dark:text-gray-300">
+        <div class="flex items-center space-x-4 w-full">
+          <span class="font-bold text-gray-800 dark:text-gray-300 w-6 ml-2">
             {{ (currentPage - 1) * itemsPerPage + index + 1 }}.
           </span> 
-          <img :src="'https://theuserprofilepic'" alt="User" class="w-10 h-10 rounded-full">
-          <div>
-            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">{{ user.fullName }}</p>
+          <img :src="''" alt="User" class="w-10 h-10 rounded-full">
+          <div class="flex-1">
+            <p class="text-md font-medium text-gray-800 dark:text-gray-200 truncate">
+              {{ getUserName(user.id) }}
+            </p>
           </div>
         </div>
-        <div>
-          <span :class="getStatusClass(user.status)">{{ user.status }}</span>
+        <div class="flex justify-between items-center w-full">
+          <span :class="getStatusClass(user.id)" class="text-sm font-medium">
+            {{ getUserSubscriptionStatus(user.id) }}
+          </span>
+          <button class="text-green-500 dark:text-green-400 hover:underline mt-2 mr-3" @click="viewUser(user.id)">View →</button>
         </div>
-        <!-- Button -->
-        <button class="text-green-500 dark:text-green-400 hover:underline" @click="viewUser(user.id)">View →</button>
       </li>
     </ul>
-
-    <!-- Pagination -->
     <div class="mt-4 flex justify-between items-center" v-if="totalPages > 1">
       <button
         class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded disabled:opacity-50"
@@ -55,12 +56,16 @@ import { useWorkspaceUserStore } from "@/stores/workspaceUserStore";
 import { useSubscriptionStore } from "@/stores/subscriptionStore"; 
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import { useActiveUserStore } from "@/stores/activeUserStore"; // Importing
 
 const subscriptionStore = useSubscriptionStore();
 const { getSubscriptions } = storeToRefs(subscriptionStore);
 
 const workspaceUserStore = useWorkspaceUserStore();
 const { getWorkspaceUsers } = storeToRefs(workspaceUserStore);
+
+const activeUserStore = useActiveUserStore();
+const { getUserDetails } = storeToRefs(activeUserStore); // Getting active user 
 
 const loading = ref(true);
 const currentPage = ref(1);
@@ -80,17 +85,28 @@ const changePage = (page) => {
   currentPage.value = page;
 };
 
-const getStatusClass = (status) => {
-  switch (status?.toLowerCase()) {
-    case "active":
-      return "text-green-500 dark:text-green-400 font-bold";
-    case "inactive":
-      return "text-yellow-500 dark:text-yellow-400 font-bold";
-    case "expired":
-      return "text-red-500 dark:text-red-400 font-bold";
-    default:
-      return "text-gray-500 dark:text-gray-400";
+const getUserName = (userId) => {
+  const user = getWorkspaceUsers.value.find(u => u.id === userId);
+  if (user) {
+    return `${user.firstName || ''} ${user.lastName || ''}`.trim() || "Unknown User";
   }
+  return "Unknown User";
+};
+
+const getUserSubscriptionStatus = (userId) => {
+  const userSubscription = getSubscriptions.value.find(subscription => subscription.userId === userId);
+  if (userSubscription) {
+    return userSubscription.isActive ? "Active" : "Inactive";
+  }
+  return "Inactive"; 
+};
+
+const getStatusClass = (userId) => {
+  const userSubscription = getSubscriptions.value.find(subscription => subscription.userId === userId);
+  if (userSubscription) {
+    return userSubscription.isActive ? "text-green-500 dark:text-green-400 font-bold" : "text-orange-500 dark:text-orange-400 font-bold";
+  }
+  return "text-orange-400 dark:text-orange-400";
 };
 
 const viewUser = (userId) => {
@@ -99,6 +115,7 @@ const viewUser = (userId) => {
 
 onMounted(async () => {
   await workspaceUserStore.fetchWorkspaceUsers();
+  await subscriptionStore.fetchCompanySubscriptions(); 
   loading.value = false;
 });
 </script>
