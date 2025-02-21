@@ -2,34 +2,61 @@
   <div class="pt-1 pl-6 pr-6">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center space-x-14">
-        <button @click="goBack" class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">
+        <button @click="goBack" class="text-gray-900 font-bold  dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">
           <span class="font-bold text-xl">← </span>{{ user?.firstName + ' ' + user?.lastName }}
         </button>
       </div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 justify-around">
-      <div class="bg-white dark:bg-gray-900 p-6 rounded shadow dark:shadow-gray-700">
-        <h3 class="text-lg text-center font-semibold text-gray-800 dark:text-white">Profile</h3>
-        <hr class="border-gray-300 dark:border-gray-700">
-        <img :src="''" alt="Profile Picture" class="w-12 h-12 rounded-full mt-4 mb-2">
-        <p class="text-gray-800 dark:text-gray-300"> {{ user?.firstName + ' ' + user?.lastName  }}</p>
-        <p class="text-gray-600 dark:text-gray-400">Status:</p>
-        <p class="text-gray-600 dark:text-gray-400">Facility:</p>
-        <p class="text-gray-600 dark:text-gray-400">Date Joined:</p>
-        <div>
-          <p class="text-gray-800 dark:text-gray-300"><strong>Email:</strong> {{ user?.email }}</p>
-          <p class="text-gray-800 dark:text-gray-300"><strong>Phone number:</strong> {{ user?.phone || 'N/A' }}</p>
+    <div class="flex gap-2 justify-between mb-10">
+  <div class="w-[427px] h-[290px] bg-white dark:bg-gray-900 px-4 py-5 rounded shadow dark:shadow-gray-700">
+    <h3 class="text-lg text-center font-semibold text-gray-800 dark:text-white">Profile</h3>
+    <hr class="border-gray-300 dark:border-gray-700">
+    <div class="flex items-center pl-2 mt-3 mb-6">
+      <img :src="''" alt="Profile Picture" class="w-12 h-12 rounded-full">
+      <div class="flex flex-col ml-3">
+        <p class="text-gray-800 font-bold dark:text-gray-300">{{ user?.firstName + ' ' + user?.lastName }}</p>
+        <div class="flex items-center">
+          <img src="../../assets/icons/fluent_status-20-regular.svg" alt="status_logo" class="w-4 h-6 mr-1">
+          <p class="text-gray-600 dark:text-gray-400 text-md">Status:</p>
         </div>
       </div>
-
-      <div class="bg-white dark:bg-gray-900 p-6 rounded shadow dark:shadow-gray-700">
-        <h3 class="text-lg text-center font-semibold text-gray-800 dark:text-white">Statistics</h3>
-        <hr class="border-gray-300 dark:border-gray-700">
-        <div class="text-gray-800 dark:text-gray-300">Stats bar here</div>
-        <p class="text-gray-800 dark:text-gray-300"><strong>Total subscription:</strong> {{ subscriptions.length }}</p>
-        <p class="text-gray-800 dark:text-gray-300"><strong>Active Subscription:</strong> {{ activeSubscriptions }}</p>
-      </div>
     </div>
+    
+    <div class="space-y-2">
+  <div class="flex items-center">
+    <img src="../../assets/icons/facility.svg" alt="facility_logo" class="w-4 h-6 mr-2"/>
+    <p class="text-gray-600 dark:text-gray-400 text-md">Facility:</p>
+  </div>
+
+  <div class="flex items-center">
+    <img src="../../assets/icons/uit_calender.svg" alt="calendar_logo" class="w-4 h-6 mr-2"/>
+    <p class="text-gray-600 dark:text-gray-400 text-md">Date Joined:</p>
+  </div>
+</div>
+
+
+  <div class="flex gap-3 h-7 mt-9">
+  <p class="inline-flex items-center flex-1 min-w-0 whitespace-nowrap bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded overflow-hidden text-ellipsis">
+    <img src="../../assets/icons/mdi-light_email.svg" alt="email_logo" class="w-4 h-4 mr-1 flex-shrink-0"/>
+    <strong class="mr-1 flex-shrink-0">Email:</strong>
+    <span class="truncate">{{ user?.email }}</span>
+  </p>
+  <p class="inline-flex items-center flex-1 min-w-0 whitespace-nowrap bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded overflow-hidden text-ellipsis">
+    <img src="../../assets/icons/phone.svg" alt="phone_logo" class="w-4 h-4 mr-1 flex-shrink-0"/>
+    <strong class="mr-1 flex-shrink-0">Phone:</strong>
+    <span class="truncate">{{ user?.phone || 'N/A' }}</span>
+  </p>
+</div>
+</div>
+
+  <div class="w-[427px] h-[290px] bg-white dark:bg-gray-900 p-6 rounded shadow dark:shadow-gray-700">
+    <h3 class="text-lg text-center font-semibold text-gray-800 dark:text-white">Statistics</h3>
+    <hr class="border-gray-300 dark:border-gray-700">
+    <p class="text-gray-600 dark:text-gray-300 text-md mt-5"><strong>Total subscription:</strong> {{ subscriptions.length }}</p>
+    <p class="text-gray-600 dark:text-gray-300 text-md"><strong>Active Subscription:</strong> {{ activeSubscriptions }}</p>
+  </div>
+</div>
+
     
     <div class="bg-white dark:bg-gray-900 p-6 rounded shadow dark:shadow-gray-700 mb-6">
   <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Activity Chart</h3>
@@ -132,7 +159,7 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = 5;
 
-    // Fetch user details
+  
     const fetchUser = async () => {
       await workspaceUserStore.fetchWorkspaceUsers();
       user.value = workspaceUserStore.getWorkspaceUsers.find(u => u.id === userId.value) || null;
