@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+  export default defineNuxtRouteMiddleware(async (to, from) => {
   const activeUserStore = useActiveUserStore();
   const toast = useToast();
   const router = useRouter();
@@ -37,12 +37,23 @@ export default defineNuxtRouteMiddleware((to, from) => {
   // A simpler approach might be to user a single login form for both user and admin
   // (Note: the dashboard view takes shapes depending on the user type that is logged in)
   // If you decide to do the above, then the if statement below will not require modification.
-
   // Please rememeber to clear out or modify the comment based on what you do.
-  if (
-    destinationName.includes("login") &&
-    getAuthenticationState.value === true
-  ) {
-    router.push({ name: "dashboard" });
+
+  // This logic checks the onboarding status for authenticated users trying to access the dashboard
+   if (destinationName.includes("dashboard") && getAuthenticationState.value) {
+    try {
+      const response = await $fetch('/api/onboarding');  // This will be replaced with the actual API endpoint please
+      if (response.status === "incomplete") {
+        toast.add({ title: "Please complete your onboarding", color: "red" });
+        return router.push({ name: "onboarding" });
+      }
+    } catch (error) {
+      console.error("Error checking onboarding status:", error);
+    }
+  }
+
+  // If authenticated user visits login, redirect to dashboard
+  if (destinationName.includes("login") && getAuthenticationState.value) {
+    return router.push({ name: "dashboard" });
   }
 });
