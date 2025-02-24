@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center space-x-14">
         <button @click="goBack" class="text-gray-900 font-bold dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">
-          <span class="font-bold text-xl">← </span>{{ user?.firstName + ' ' + user?.lastName }}
+          <span class="font-bold text-xl"> ⟵ </span>{{ user?.firstName + ' ' + user?.lastName }}
         </button>
       </div>
     </div>
@@ -12,11 +12,11 @@
     <h3 class="text-lg text-center font-semibold text-gray-800 dark:text-white">Profile</h3>
     <hr class="border-gray-300 dark:border-gray-700">
     <div class="flex items-center pl-2 mt-3 mb-6">
-      <img :src="''" alt="Profile Picture" class="w-12 h-12 rounded-full">
+      <img :src="''" alt="Profile Picture" class="w-12 h-12 rounded-full border">
       <div class="flex flex-col ml-3">
         <p class="text-gray-800 font-bold dark:text-gray-300">{{ user?.firstName + ' ' + user?.lastName }}</p>
         <div class="flex items-center">
-          <img src="../../assets/icons/fluent_status-20-regular.svg" alt="status_logo" class="w-4 h-6 mr-1">
+          <img src="../../../assets/icons/fluent_status-20-regular.svg" alt="status_logo" class="w-4 h-6 mr-1">
           <p class="text-gray-600 dark:text-gray-400 text-md">Status:</p>
         </div>
       </div>
@@ -24,12 +24,12 @@
     
     <div class="space-y-2">
   <div class="flex items-center">
-    <img src="../../assets/icons/facility.svg" alt="facility_logo" class="w-4 h-6 mr-2"/>
+    <img src="../../../assets/icons/facility.svg" alt="facility_logo" class="w-4 h-6 mr-2"/>
     <p class="text-gray-600 dark:text-gray-400 text-md">Facility:</p>
   </div>
 
   <div class="flex items-center">
-    <img src="../../assets/icons/uit_calender.svg" alt="calendar_logo" class="w-4 h-6 mr-2"/>
+    <img src="../../../assets/icons/uit_calender.svg" alt="calendar_logo" class="w-4 h-6 mr-2"/>
     <p class="text-gray-600 dark:text-gray-400 text-md">Date Joined:</p>
   </div>
 </div>
@@ -37,12 +37,12 @@
 
   <div class="flex gap-3 h-7 mt-9">
   <button class="inline-flex items-center flex-1 min-w-0 whitespace-nowrap bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded overflow-hidden text-ellipsis">
-    <img src="../../assets/icons/mdi-light_email.svg" alt="email_logo" class="w-4 h-4 mr-1 flex-shrink-0"/>
+    <img src="../../../assets/icons/mdi-light_email.svg" alt="email_logo" class="w-4 h-4 mr-1 flex-shrink-0"/>
     <strong class="mr-1 flex-shrink-0">Email:</strong>
     <span class="truncate">{{ user?.email }}</span>
   </button>
   <button class="inline-flex items-center flex-1 min-w-0 whitespace-nowrap bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded overflow-hidden text-ellipsis">
-    <img src="../../assets/icons/phone.svg" alt="phone_logo" class="w-4 h-4 mr-1 flex-shrink-0"/>
+    <img src="../../../assets/icons/phone.svg" alt="phone_logo" class="w-4 h-4 mr-1 flex-shrink-0"/>
     <strong class="mr-1 flex-shrink-0">Phone:</strong>
     <span class="truncate">{{ user?.phone || 'N/A' }}</span>
   </button>
@@ -54,12 +54,12 @@
   <hr class="border-gray-300 dark:border-gray-700">
   
   <div class="flex items-center mt-5">
-    <img src="../../assets/icons/circum_money-bill.svg" alt="status" class="w-5 h-5 mr-2"/>
+    <img src="../../../assets/icons/circum_money-bill.svg" alt="status" class="w-5 h-5 mr-2"/>
     <p class="text-gray-600 dark:text-gray-300 text-md"><strong>Total Subscription:</strong> {{ subscriptions.length }}</p>
   </div>
 
   <div class="flex items-center mt-3">
-    <img src="../../assets/icons/fluent_status-20-regular.svg" alt="status" class="w-5 h-5 mr-2"/>
+    <img src="../../../assets/icons/fluent_status-20-regular.svg" alt="status" class="w-5 h-5 mr-2"/>
     <p class="text-gray-600 dark:text-gray-300 text-md"><strong>Active Subscriptions:</strong> {{ activeSubscriptions }}</p>
   </div>
 </div>
@@ -77,7 +77,7 @@
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-semibold">Subscription List</h3>
         <button @click="showFilterModal = true" class="flex items-center text-green-500 dark:text-green-400 hover:underline">
-  <img src="../../assets/icons/filter.svg" alt="filter_logo" class="w-3 h-3 mr-1"/>
+  <img src="../../../assets/icons/filter.svg" alt="filter_logo" class="w-3 h-3 mr-1"/>
   Filter
 </button>
 
