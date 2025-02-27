@@ -2,13 +2,15 @@
   <div class="pt-1 pl-6 pr-6">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center space-x-14">
-        <button @click="goBack" class="text-gray-900 font-bold dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">
-          <span class="font-bold text-xl"> ⟵ </span>{{ user?.firstName + ' ' + user?.lastName }}
-        </button>
-      </div>
+    <button @click="goBack" class="inline-flex items-center text-gray-900 font-bold dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">
+        <img src="../../../assets/icons/arrow back.svg" alt="Go back" class="w-5 h-5 mr-2"/>  
+        <span class="font-bold text-xl">{{ user?.firstName + ' ' + user?.lastName }}</span>
+    </button>
+</div>
+
     </div>
     <div class="flex gap-2 justify-between mb-10">
-  <div class="w-[427px] h-[290px] bg-white dark:bg-gray-900 px-4 py-5 rounded shadow dark:shadow-gray-700">
+  <div class="w-[455px] h-[290px] bg-white dark:bg-gray-900 px-6 py-5 rounded shadow dark:shadow-gray-700">
     <h3 class="text-lg text-center font-semibold text-gray-800 dark:text-white">Profile</h3>
     <hr class="border-gray-300 dark:border-gray-700">
     <div class="flex items-center pl-2 mt-3 mb-6">
@@ -17,7 +19,7 @@
         <p class="text-gray-800 font-bold dark:text-gray-300">{{ user?.firstName + ' ' + user?.lastName }}</p>
         <div class="flex items-center">
           <img src="../../../assets/icons/fluent_status-20-regular.svg" alt="status_logo" class="w-4 h-6 mr-1">
-          <p class="text-gray-600 dark:text-gray-400 text-md">Status:</p>
+          <p class="text-gray-600 dark:text-gray-400 text-md">Status: </p>
         </div>
       </div>
     </div>
@@ -33,19 +35,17 @@
     <p class="text-gray-600 dark:text-gray-400 text-md">Date Joined:</p>
   </div>
 </div>
-
-
-  <div class="flex gap-3 h-7 mt-9">
-  <button class="inline-flex items-center flex-1 min-w-0 whitespace-nowrap bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded overflow-hidden text-ellipsis">
-    <img src="../../../assets/icons/mdi-light_email.svg" alt="email_logo" class="w-4 h-4 mr-1 flex-shrink-0"/>
-    <strong class="mr-1 flex-shrink-0">Email:</strong>
-    <span class="truncate">{{ user?.email }}</span>
-  </button>
-  <button class="inline-flex items-center flex-1 min-w-0 whitespace-nowrap bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded overflow-hidden text-ellipsis">
-    <img src="../../../assets/icons/phone.svg" alt="phone_logo" class="w-4 h-4 mr-1 flex-shrink-0"/>
+  <div class="flex gap-1 h-7 mt-9 mr-4">
+  <button class="inline-flex items-center flex-wrap min-w-fit bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded">
+  <img src="../../../assets/icons/mdi-light_email.svg" alt="email_logo" class="w-3 h-3 mr-1 flex-shrink-0"/>
+  <strong class="mr-1 flex-shrink-0">Email:</strong>
+  <span class="whitespace-normal break-all">{{ user?.email }}</span>
+</button>
+<button class="inline-flex items-center flex-wrap min-w-fit bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded">
+    <img src="../../../assets/icons/phone.svg" alt="phone_logo" class="w-3 h-3 mr-1 flex-shrink-0"/>
     <strong class="mr-1 flex-shrink-0">Phone:</strong>
-    <span class="truncate">{{ user?.phone || 'N/A' }}</span>
-  </button>
+    <span class="whitespace-normal break-all">{{ user?.phone || 'N/A' }}</span>
+</button>
 </div>
 </div>
 
@@ -86,7 +86,7 @@
       <div v-if="subscriptions.length > 0">
         <ul class="space-y-4">
           <li v-for="subscription in paginatedSubscriptions" :key="subscription.id"
-            class="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+            class="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray600 hover:bg-gray-700 dark:hover:bg-gray-700 rounded">
             <div class="flex-1">
               <p><strong>Payment Made By:</strong> {{ subscription.paidBy }}</p>
               <p><strong>Facility:</strong> {{ subscription.facility }}</p>
@@ -131,6 +131,7 @@
                 <option value="">All</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
+                <option value="expired">Expired</option>
               </select>
             </div>
             <div class="flex justify-between">
