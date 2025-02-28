@@ -2,27 +2,44 @@
   <div class="pt-1 pl-6 pr-6">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center space-x-14">
-    <button @click="goBack" class="inline-flex items-center text-gray-900 font-bold dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">
-        <img src="../../../assets/icons/arrow back.svg" alt="Go back" class="w-5 h-5 mr-2"/>  
-        <span class="font-bold text-xl">{{ user?.firstName + ' ' + user?.lastName }}</span>
-    </button>
+        <button @click="goBack" class="inline-flex items-center text-gray-900 font-bold dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">
+    <img src="../../../assets/icons/arrow back.svg" alt="Go back" class="w-5 h-5 mr-2"/>  
+    <span class="font-bold text-xl">
+        <span v-if="user?.firstName && user?.lastName">
+            {{ user.firstName + ' ' + user.lastName }}
+        </span>
+        <span v-else>
+            <img src="../../../assets/icons/clockloader.svg" alt="Loading" class="w-5 h-5 inline animate-spin"/>
+        </span>
+    </span>
+</button>
+
 </div>
 
     </div>
+    
     <div class="flex gap-2 justify-between mb-10">
   <div class="w-[455px] h-[290px] bg-white dark:bg-gray-900 px-6 py-5 rounded shadow dark:shadow-gray-700">
     <h3 class="text-lg text-center font-semibold text-gray-800 dark:text-white">Profile</h3>
     <hr class="border-gray-300 dark:border-gray-700">
     <div class="flex items-center pl-2 mt-3 mb-6">
-      <img :src="''" alt="Profile Picture" class="w-12 h-12 rounded-full border">
+      <img src="../../../assets/icons/avatarImg.svg" alt="Profile Picture" class="w-12 h-12 rounded-full border">
       <div class="flex flex-col ml-3">
-        <p class="text-gray-800 font-bold dark:text-gray-300">{{ user?.firstName + ' ' + user?.lastName }}</p>
+        <p class="text-gray-800 font-bold dark:text-gray-300">
+          <span v-if="user?.firstName && user?.lastName">
+            {{ user.firstName + ' ' + user.lastName }}
+          </span>
+          <span v-else>
+            <img src="../../../assets/icons/clockloader.svg" alt="Loading" class="w-5 h-5 inline animate-spin"/>
+          </span>
+        </p>
         <div class="flex items-center">
           <img src="../../../assets/icons/fluent_status-20-regular.svg" alt="status_logo" class="w-4 h-6 mr-1">
           <p class="text-gray-600 dark:text-gray-400 text-md">Status: </p>
         </div>
       </div>
-    </div>
+</div>
+
     
     <div class="space-y-2">
   <div class="flex items-center">
@@ -35,17 +52,28 @@
     <p class="text-gray-600 dark:text-gray-400 text-md">Date Joined:</p>
   </div>
 </div>
-  <div class="flex gap-1 h-7 mt-9 mr-4">
+<div class="flex gap-1 h-7 mt-9 mr-4">
   <button class="inline-flex items-center flex-wrap min-w-fit bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded">
-  <img src="../../../assets/icons/mdi-light_email.svg" alt="email_logo" class="w-3 h-3 mr-1 flex-shrink-0"/>
-  <strong class="mr-1 flex-shrink-0">Email:</strong>
-  <span class="whitespace-normal break-all">{{ user?.email }}</span>
-</button>
-<button class="inline-flex items-center flex-wrap min-w-fit bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded">
+    <img src="../../../assets/icons/mdi-light_email.svg" alt="email_logo" class="w-3 h-3 mr-1 flex-shrink-0"/>
+    <strong class="mr-1 flex-shrink-0">Email:</strong>
+    <span class="whitespace-normal break-all">
+      <span v-if="user?.email">{{ user.email }}</span>
+      <span v-else>
+        <img src="../../../assets/icons/clockloader.svg" alt="Loading" class="w-3 h-3 inline animate-spin"/>
+      </span>
+    </span>
+  </button>
+  
+  <button class="inline-flex items-center flex-wrap min-w-fit bg-white dark:bg-gray-900 shadow dark:shadow-gray-700 text-gray-600 dark:text-gray-300 text-sm px-2 py-1 rounded">
     <img src="../../../assets/icons/phone.svg" alt="phone_logo" class="w-3 h-3 mr-1 flex-shrink-0"/>
     <strong class="mr-1 flex-shrink-0">Phone:</strong>
-    <span class="whitespace-normal break-all">{{ user?.phone || 'N/A' }}</span>
-</button>
+    <span class="whitespace-normal break-all">
+      <span v-if="user?.phone">{{ user.phone }}</span>
+      <span v-else>
+        <img src="../../../assets/icons/clockloader.svg" alt="Loading" class="w-3 h-3 inline animate-spin"/>
+      </span>
+    </span>
+  </button>
 </div>
 </div>
 
@@ -200,7 +228,6 @@ export default {
     const applyFilter = () => {
       showFilterModal.value = false;
     };
-
     const goBack = () => {
       router.push("/dashboard/users");
     };

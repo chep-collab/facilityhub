@@ -13,7 +13,7 @@
             <span class="font-bold text-gray-800 dark:text-gray-300 w-4 sm:w-6 text-xs sm:text-sm ml-1 sm:ml-2">
               {{ (currentPage - 1) * itemsPerPage + index + 1 }}.
             </span> 
-            <img :src="''" alt="User" class="w-8 sm:w-10 h-8 sm:h-10 rounded-full border">
+            <img src="../../../assets/icons/avatarImg.svg" alt="User" class="w-8 sm:w-10 h-8 sm:h-10 rounded-full border">
             <div class="flex-1">
               <p class="text-xs sm:text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
                 {{ getUserName(user.id) }}
