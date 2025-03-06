@@ -42,8 +42,9 @@
       <!--  Button -->
       <div class="flex justify-between mt-6">
         <BaseButton
+        :loading="loading"
           type="submit"
-          :disabled="isDisabled"
+          :disabled="isDisabled || loading "
           :class="
             isDisabled
               ? 'bg-grey-green cursor-not-allowed'
@@ -62,7 +63,7 @@ import { number, object, string } from "yup";
 import { useToast } from "#imports";
 
 const toast = useToast();
-
+const loading = ref(false);
 const props = defineProps<{
   onSuccess: () => void;
 }>();
@@ -73,7 +74,7 @@ const formState = ref({
   period: "",
 });
 
-const periodOptions = ["Monthly", "Quarterly", "Yearly"];
+const periodOptions = ["Monthly", "Quarterly", "Yearly", "Daily"];
 const schema = object({
   serviceName: string().min(
     3,
@@ -81,26 +82,50 @@ const schema = object({
   ),
   price: number().positive("Price must be a positive number"),
   period: string()
-    .oneOf(["Monthly", "Quarterly", "Yearly"], "Invalid period")
+    .oneOf(["Monthly", "Quarterly", "Yearly", "Daily"], "Invalid period")
     .required("Period is required"),
 });
 const isDisabled = computed(() => {
-  
-
   return (
     !formState.value.serviceName ||
     formState.value.price <= 0 ||
     !formState.value.period
   );
 });
-const onSubmit = async () => {
-  emit("next-step");
+async function onSubmit() {
+  loading.value = true;
+  const serviceNamePayload = {
+    name: formState.value.serviceName,
+  };
+  try {
+    const response = await useNuxtApp().$axios.post(
+      "/company-service",
+      serviceNamePayload
+    );
+
+    if (response.data) {
+      const servicePricePayload = {
+        serviceId: response?.data?.id,
+        amount: formState.value.price,
+        period: formState.value.period.toLocaleLowerCase(),
+      };
+      const servicePriceResponse = await useNuxtApp().$axios.post(
+        "/company-service-price",
+        servicePricePayload
+      );
+    }
+
+    emit("next-step");
+  } catch (error) {
+  } finally {
+    loading.value = false;
+  }
   toast.add({
     title: "Form Submitted",
     description: "Your service has been created successfully!",
     color: "green",
   });
-};
+}
 </script>
 
 <style scoped></style>

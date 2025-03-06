@@ -19,7 +19,7 @@ const toast = useToast();
 const schema = object({
   email: string().email("Invalid email").required("Required"),
   password: string()
-    .min(8, "Must be at least 8 characters")
+    .min(4, "Must be at least 8 characters")
     .required("Required"),
 });
 
@@ -34,6 +34,7 @@ const state = reactive({
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
+
     pending.value = true;
     const response = await useNuxtApp().$axios.post("/company/login", {
       email: state.email,
@@ -55,6 +56,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       email: userDetails.value.email,
       full_name: `${userDetails.value.name}`,
     });
+    
     router.push("/onboarding");
   } catch (error: any) {
     if (error) {
