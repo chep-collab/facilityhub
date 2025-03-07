@@ -121,7 +121,7 @@ const formsInformation: formsInformation = [
 ];
 
 const steps = ref(["1", "2", "3", "4", "5"]);
-const currentStep = ref(1);
+const currentStep = ref(2);
 const isVisible = ref(true);
 watch(currentStep, async () => {
   await nextTick();

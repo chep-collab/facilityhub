@@ -15,6 +15,7 @@
             <InputField
               icon=""
               type="text"
+              :disabled="true"
               v-model="formState.countryName"
               placeholder="Nigeria"
             >
@@ -29,8 +30,9 @@
         <div>
           <UFormGroup label="Bank Name" name="bankName">
             <SelectField
-              v-model="formState.bankName"
               :options="bankOptions"
+              option-attribute="name"
+              v-model="formState.bankCode"
               placeholder="E.g Zenith Bank PLC"
             />
           </UFormGroup>
@@ -75,19 +77,20 @@ import { useToast } from "#imports";
 const toast = useToast();
 
 const formState = ref({
-  bankName: "",
+  bankCode: "",
   accountNumber: 0,
-  countryName: "",
+  countryName: "Nigeria",
 });
 const props = defineProps<{
   isVisible: boolean;
 }>();
 const emit = defineEmits(["next-step"]);
-
+const optionAttribute = "name";
 // Period options
-const bankOptions = ["FCMB", "GTB", "ACCESS"];
+
+const bankOptions = ref([{}]);
 const schema = object({
-  bankName: string(),
+  bankCode: string(),
   accountNumber: number().min(
     10,
     "Account number cannot be less than 10 digits!"
@@ -96,14 +99,42 @@ const schema = object({
 });
 const isDisabled = computed(() => {
   return (
-    !formState.value.bankName ||
+    !formState.value.bankCode ||
     !formState.value.accountNumber ||
     !formState.value.countryName
   );
 });
+
+onMounted(async () => {
+  const banksListResponse = await useNuxtApp().$axios.get(
+    "/settlement-account/list-banks"
+  );
+  bankOptions.value = banksListResponse.data;
+  const bankDetailsCut = banksListResponse.data.map((bank: unknown) => ({
+    name: bank?.name,
+    value: bank?.code,
+  }));
+
+  bankOptions.value = bankDetailsCut;
+});
+
+watchEffect(()=>{
+  if (formState.value.accountNumber){
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
+})
+
 const onSubmit = async () => {
   emit("next-step");
-
+  try {
+    const banksListResponse = await useNuxtApp().$axios.get(
+      "/settlement-account/list-banks"
+    );
+  } catch (error) {}
   toast.add({
     title: "Form Submitted",
     description: "Your service has been created successfully!",
