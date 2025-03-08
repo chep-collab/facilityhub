@@ -32,7 +32,7 @@
             <SelectField
               :options="bankOptions"
               option-attribute="name"
-              :disabled="isResolveAccountLoading"
+              :disabled="isSubmitting || isResolveAccountLoading"
               v-model="formState.bankCode"
               placeholder="E.g Zenith Bank PLC"
             />
@@ -67,7 +67,7 @@
             <UFormGroup label="Account Number" name="accountNumber">
               <InputField
                 type="number"
-                :disabled="isResolveAccountLoading"
+                :disabled="isSubmitting || isResolveAccountLoading"
                 v-model="formState.accountNumber"
                 placeholder="e.g 0123345345"
               />
@@ -164,6 +164,7 @@ watchEffect(async () => {
   if (!isAccountNumberValid || !isBankCodeValid) {
     return;
   }
+  isResolveAccountLoading.value = true;
   showPopover.value = true;
   try {
     const bankResolveResponse = await useNuxtApp().$axios.post(
@@ -183,6 +184,8 @@ watchEffect(async () => {
       description: error?.response?.data?.message,
       color: "red",
     });
+  } finally {
+    isResolveAccountLoading.value = false;
   }
 });
 const onSubmit = async () => {
@@ -215,3 +218,4 @@ const onSubmit = async () => {
 </script>
 
 <style scoped></style>
+
