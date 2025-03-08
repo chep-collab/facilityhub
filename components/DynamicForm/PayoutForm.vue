@@ -32,23 +32,49 @@
             <SelectField
               :options="bankOptions"
               option-attribute="name"
+              :disabled="isResolveAccountLoading"
               v-model="formState.bankCode"
               placeholder="E.g Zenith Bank PLC"
             />
           </UFormGroup>
         </div>
-
+        <!-- show isResolve , show this content-isResolve is false,showPop -->
         <!-- Account Number -->
-        <div>
-          <UFormGroup label="Account Number" name="accountNumber">
-            <InputField
-              type="number"
-              v-model="formState.accountNumber"
-              placeholder="e.g 0123345345"
-            />
-          </UFormGroup>
+        <div class="relative">
+          <div
+            v-if="showPopover"
+            class="animate-fade-in absolute w-3/5 right-0 text-[12px] whitespace-nowrap flex bottom-[50px] text-black transition-all translate-y-3 shadow rounded-md border"
+          >
+            <div
+              v-show="!showBankDetails"
+              class="flex p-2 gap-5 justify-between w-full items-center"
+            >
+              <USkeleton class="w-full h-5 rounded" />
 
-          <div></div>
+              <USkeleton class="h-5 w-5" />
+            </div>
+
+            <div
+              v-show="showBankDetails && !formState.confirmBankDetails"
+              class="p-2 items-center w-full justify-between flex bg-white"
+            >
+              <p class="font-bold">{{ bankDetails?.accountName }}</p>
+              <UCheckbox v-model="formState.confirmBankDetails" />
+            </div>
+          </div>
+
+          <div>
+            <UFormGroup label="Account Number" name="accountNumber">
+              <InputField
+                type="number"
+                :disabled="isResolveAccountLoading"
+                v-model="formState.accountNumber"
+                placeholder="e.g 0123345345"
+              />
+            </UFormGroup>
+
+            <div></div>
+          </div>
         </div>
 
         <!--  Button -->
@@ -56,6 +82,7 @@
           <BaseButton
             type="submit"
             :disabled="isDisabled"
+            :loading="isSubmitting"
             :class="
               isDisabled
                 ? 'bg-grey-green cursor-not-allowed'
@@ -78,30 +105,38 @@ const toast = useToast();
 
 const formState = ref({
   bankCode: "",
-  accountNumber: 0,
+  accountNumber: "",
   countryName: "Nigeria",
+  confirmBankDetails: false,
 });
+type accountNumber = number | string;
+
 const props = defineProps<{
   isVisible: boolean;
 }>();
 const emit = defineEmits(["next-step"]);
-const optionAttribute = "name";
-// Period options
-
+const bankDetails = ref({});
+const isResolveAccountLoading = ref(false);
 const bankOptions = ref([{}]);
+const showPopover = ref(false);
+const isSubmitting = ref(false);
+const showBankDetails = ref(false);
+const accountNumberSchema = string()
+  .matches(/^\d{10}$/, "Account number must be exactly 10 digits")
+  .required("Account number is required");
+const bankCodeSchema = string().required("Bank is required");
 const schema = object({
-  bankCode: string(),
-  accountNumber: number().min(
-    10,
-    "Account number cannot be less than 10 digits!"
-  ),
+  bankCode: bankCodeSchema,
+  accountNumber: accountNumberSchema,
   countryName: string().required("Country is required"),
 });
+
 const isDisabled = computed(() => {
   return (
     !formState.value.bankCode ||
     !formState.value.accountNumber ||
-    !formState.value.countryName
+    !formState.value.countryName ||
+    !formState.value.confirmBankDetails
   );
 });
 
@@ -118,28 +153,64 @@ onMounted(async () => {
   bankOptions.value = bankDetailsCut;
 });
 
-watchEffect(()=>{
-  if (formState.value.accountNumber){
-    try {
-      
-    } catch (error) {
-      
-    }
-  }
-})
+watchEffect(async () => {
+  const accountNumber = formState.value.accountNumber;
+  const bankCode = formState.value.bankCode;
 
-const onSubmit = async () => {
-  emit("next-step");
+  const isAccountNumberValid = await accountNumberSchema.isValid(accountNumber);
+  const isBankCodeValid = await bankCodeSchema.isValid(bankCode);
+  console.log(isAccountNumberValid, isBankCodeValid);
+
+  if (!isAccountNumberValid || !isBankCodeValid) {
+    return;
+  }
+  showPopover.value = true;
   try {
-    const banksListResponse = await useNuxtApp().$axios.get(
-      "/settlement-account/list-banks"
+    const bankResolveResponse = await useNuxtApp().$axios.post(
+      "/settlement-account/resolve-bank-account",
+      {
+        bankCode: bankCode,
+        accountNumber: accountNumber.toString(),
+      }
     );
-  } catch (error) {}
-  toast.add({
-    title: "Form Submitted",
-    description: "Your service has been created successfully!",
-    color: "green",
-  });
+
+    bankDetails.value = bankResolveResponse.data;
+
+    showBankDetails.value = true;
+  } catch (error) {
+    toast.add({
+      title: "Error",
+      description: error?.response?.data?.message,
+      color: "red",
+    });
+  }
+});
+const onSubmit = async () => {
+  isSubmitting.value = true;
+  try {
+    const settlementAccountPayload = {
+      bankCode: formState.value.bankCode,
+      accountNumber: formState.value.accountNumber.toString(),
+    };
+    await useNuxtApp().$axios.post(
+      "/settlement-account",
+      settlementAccountPayload
+    );
+    toast.add({
+      title: "Form Submitted",
+      description: "Your settlement account has been created successfully!",
+      color: "green",
+    });
+    emit("next-step");
+  } catch (error) {
+    toast.add({
+      title: "Error",
+      description: error?.response?.data?.message,
+      color: "red",
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
 

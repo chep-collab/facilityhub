@@ -37,6 +37,7 @@ module.exports = {
       animation: {
         // Define the custom animation for the glistening effect
         glistening: "glistening 1.5s ease-in-out infinite",
+        "fade-in": "fadeIn 1s ease-in-out",
 
         // Added a custom background image
       },
@@ -54,6 +55,16 @@ module.exports = {
           "100%": {
             textShadow:
               "0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.6)",
+          },
+        },
+        fadeIn: {
+          "0%": {
+            opacity: 0,
+            transform: "translateY(20px)",
+          },
+          "100%": {
+            opacity: 1,
+            transform: "translateY(0px)",
           },
         },
       },
