@@ -19,7 +19,7 @@ const toast = useToast();
 const schema = object({
   email: string().email("Invalid email").required("Required"),
   password: string()
-    .min(4, "Must be at least 8 characters")
+    .min(4, "Must be at least 4 characters")
     .required("Required"),
 });
 

@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="lg:px-6"  >
+  <UContainer class="lg:px-6">
     <UForm
       :schema="schema"
       class="flex flex-col mt-8 gap-6"
@@ -9,29 +9,24 @@
       <!--  Profile Policy select -->
       <div>
         <UFormGroup
-          label="Is a profile picture required for staff?"
-          name="bankName"
+          label="Is a profile picture required for users?"
+          name="profilePolicy"
         >
           <SelectField
-            v-model="formState.profilePolicy"
+            :model-value="formState.profilePolicy"
             :options="policyOptions"
             placeholder="Select Policy"
+            @update:modelValue="
+              (value) =>
+                (formState.profilePolicy = value === 'true' || value === true)
+            "
           />
         </UFormGroup>
       </div>
 
       <!--  Button -->
       <div class="flex justify-between mt-6">
-        <BaseButton
-          type="submit"
-          :disabled="isDisabled"
-          :class="
-            isDisabled
-              ? 'bg-grey-green cursor-not-allowed'
-              : 'bg-primary-green hover:bg-[#0D7F32]'
-          "
-          >Continue</BaseButton
-        >
+        <BaseButton type="submit">Continue</BaseButton>
       </div>
     </UForm>
   </UContainer>
@@ -39,31 +34,50 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { number, object, string } from "yup";
+import { boolean, number, object, string } from "yup";
 import { useToast } from "#imports";
 
 const toast = useToast();
-
+const isSubmitting = ref(false);
 const formState = ref({
-  profilePolicy: "",
+  profilePolicy: true,
 });
 const emit = defineEmits(["next-step"]);
 
 // Period options
-const policyOptions = ["Lorem ipsum", "Ipsum Lorem"];
+const policyOptions = [
+  { label: "Yes", value: true },
+  { label: "No", value: false },
+];
 const schema = object({
-  bankName: string(),
+  profilePolicy: boolean().transform(
+    (value: string | boolean) => value === "true" || value === true
+  ),
 });
-const isDisabled = computed(() => {
-  return !formState.value.profilePolicy;
-});
+// const isDisabled = computed(() => {
+//   return formState.value.profilePolicy;
+// });
 const onSubmit = async () => {
-  emit("next-step");
-  toast.add({
-    title: "Form Submitted",
-    description: "Your service has been created successfully!",
-    color: "green",
-  });
+  isSubmitting.value = true;
+  try {
+    await useNuxtApp().$axios.patch("/company/update", {
+      isUserProfilePictureCompulsory: formState.value.profilePolicy,
+    });
+    toast.add({
+      title: "Form Submitted",
+      description: "Your profile has been updated successfully!",
+      color: "green",
+    });
+    emit("next-step");
+  } catch (error) {
+    toast({
+      title: "Error",
+      description: "There was an error submitting the form.",
+      color: "red",
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
 
