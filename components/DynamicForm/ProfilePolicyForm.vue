@@ -15,6 +15,7 @@
           <SelectField
             :model-value="formState.profilePolicy"
             :options="policyOptions"
+            :disabled="isSubmitting"
             placeholder="Select Policy"
             @update:modelValue="
               (value) =>
@@ -26,7 +27,12 @@
 
       <!--  Button -->
       <div class="flex justify-between mt-6">
-        <BaseButton type="submit">Continue</BaseButton>
+        <BaseButton
+          :loading="isSubmitting"
+          :disabled="isSubmitting"
+          type="submit"
+          >Continue</BaseButton
+        >
       </div>
     </UForm>
   </UContainer>
