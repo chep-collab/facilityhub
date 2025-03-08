@@ -184,6 +184,7 @@ watchEffect(async () => {
       description: error?.response?.data?.message,
       color: "red",
     });
+    showPopover.value = false;
   } finally {
     isResolveAccountLoading.value = false;
   }
@@ -218,4 +219,3 @@ const onSubmit = async () => {
 </script>
 
 <style scoped></style>
-
