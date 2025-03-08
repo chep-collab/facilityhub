@@ -120,12 +120,14 @@ const copyInvitationLink = () => {
 <template>
   <div class="px-3 py-3 dark:bg-[#0D0D0D99] dark:text-white rounded-lg">
     <div v-if="getUserType === 'company'">
-      <section class="flex flex-row justify-between md:justify-start gap-2 items-center my-1 mt-0 ">
+      <section class="flex flex-col md:flex-row justify-between md:justify-start gap-2 md:items-center my-1 mt-0 ">
         <p class="dark:text-gray-200 ml-3">{{ companySummary.totalUsers }} users have joined your facility</p>
+        <div class="flex gap-4">
         <UButton icon="i-heroicons-share" size="sm" color="primary" variant="solid" label="Invite more"
           :trailing="false" @click="shareInviteLink"/>
           <UButton icon="i-heroicons-clipboard-document-list" size="sm" color="primary" variant="outline" label="Copy Invitation Link"
           :trailing="false" @click="copyInvitationLink"/>
+        </div>
       </section>
       <section>
         <UAlert v-if="getUserType === 'company' && companySummary.subscriptionsToAttendTo > 0"
