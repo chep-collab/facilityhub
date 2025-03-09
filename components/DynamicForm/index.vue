@@ -61,7 +61,7 @@
         <USkeleton class="h-10 w-1/3" />
       </template>
       <template v-else>
-        <div>
+        <!-- <div>
           <BaseButton
             v-if="canGoBack"
             @click="goBack"
@@ -71,8 +71,8 @@
             <img src="../../assets/icons/arrowleft.svg" alt="back arrow" />
             Back
           </BaseButton>
-        </div>
-        <div>
+        </div> -->
+        <div class="w-fit flex ml-auto justify-end" >
           <BaseButton
             class="p-[40px] md:min-w-[30%] w-fit hover:bg-red-500 focus:bg-red-500 bg-error"
             >Logout</BaseButton
