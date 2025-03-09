@@ -1,6 +1,11 @@
+type userStoreState = {
+  userType: string;
+  userDetails: {};
+  isAuthenticated: boolean;
+};
 export const useActiveUserStore = defineStore({
   id: "activeUserStore",
-  state: () => {
+  state: (): userStoreState => {
     return {
       userType: "",
       userDetails: {},
@@ -8,9 +13,8 @@ export const useActiveUserStore = defineStore({
     };
   },
   actions: {
-    fetchUserDetails(type: string) {
-      // fetch from the backend
-      //set the user's details
+    setUserDetails(value: {}) {
+      this.userDetails = value;
     },
     setAuthenticationState(value: boolean) {
       this.isAuthenticated = value;

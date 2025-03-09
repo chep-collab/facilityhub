@@ -13,14 +13,10 @@
           name="profilePolicy"
         >
           <SelectField
-            :model-value="formState.profilePolicy"
+            v-model="formState.profilePolicy"
             :options="policyOptions"
             :disabled="isSubmitting"
             placeholder="Select Policy"
-            @update:modelValue="
-              (value) =>
-                (formState.profilePolicy = value === 'true' || value === true)
-            "
           />
         </UFormGroup>
       </div>
@@ -56,18 +52,13 @@ const policyOptions = [
   { label: "No", value: false },
 ];
 const schema = object({
-  profilePolicy: boolean().transform(
-    (value: string | boolean) => value === "true" || value === true
-  ),
+  profilePolicy: boolean(),
 });
-// const isDisabled = computed(() => {
-//   return formState.value.profilePolicy;
-// });
 const onSubmit = async () => {
   isSubmitting.value = true;
   try {
     await useNuxtApp().$axios.patch("/company/update", {
-      isUserProfilePictureCompulsory: formState.value.profilePolicy,
+      isUserProfilePictureCompulsory: Boolean(formState.value.profilePolicy),
     });
     toast.add({
       title: "Form Submitted",

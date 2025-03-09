@@ -1,4 +1,6 @@
 import { handleErrorMessages } from "~/common/errorHandlers";
+import { useActiveUserStore } from "#imports";
+import { storeToRefs } from "#imports";
 const toast = useToast();
 const {
   posthog: { captureEvent, ALLOWED_EVENT_NAMES },
@@ -15,6 +17,8 @@ export const useCompanyServiceStore = defineStore({
       isActivateModalOpen: false,
       updatingCompanyServiceStatus: false,
       deletingCompanyServiceStatus: false,
+      facilityAmenities: [] as {}[],
+      onboardingStatus: {} as any,
     };
   },
   actions: {
@@ -50,6 +54,56 @@ export const useCompanyServiceStore = defineStore({
         }
       } finally {
         this.fetchingServices = false;
+      }
+    },
+    async fetchFacilityAmenities() {
+      const { userDetails } = storeToRefs(useActiveUserStore());
+      const facilityTypeId = userDetails.value?.facility_types[0]?.id;
+      try {
+        const response = await useNuxtApp().$axios.get(
+          `/facility-types/${facilityTypeId}/amenities`
+        );
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async addAmenitiesToCompany(ids: number[]) {
+      try {
+        const response = await useNuxtApp().$axios.post(`/company/amenities`, {
+          amenityIds: ids,
+        });
+        this.onboardingStatus = response.data;
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async updateCompanyProfile({
+      key,
+      value,
+    }: {
+      key: string;
+      value: boolean;
+    }) {
+      try {
+        await useNuxtApp().$axios.patch("/company/update", {
+          key: value,
+        });
+        return { data: "Profile updated", result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async getCompanyOnboardingStatus() {
+      try {
+        const response = await useNuxtApp().$axios.get(
+          "/company/onboarding-statuses"
+        );
+        this.onboardingStatus = response?.data;
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
       }
     },
     async createNewService(

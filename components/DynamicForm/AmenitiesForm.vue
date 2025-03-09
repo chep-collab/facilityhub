@@ -2,8 +2,18 @@
   <UContainer class="lg:px-6">
     <UForm @submit="submitForm" :state="selectedItems">
       <div class="grid grid-cols-2 mt-8 gap-8">
+        <div
+          v-show="isAmenitiesLoading"
+          v-for=" in 8"
+          class="w-full flex gap-2"
+        >
+          <USkeleton class="h-5 w-8" />
+          <USkeleton class="h-5 w-4/5" />
+        </div>
+
         <label
-          v-for="item in items"
+          v-show="!isAmenitiesLoading"
+          v-for="item in selectedItems"
           :key="item.id"
           class="flex items-center w-full space-x-2 cursor-pointer"
         >
@@ -34,24 +44,37 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 const emit = defineEmits(["next-step"]);
-const items = ref([
-  { id: 1, label: "Shared meeting rooms" },
-  { id: 2, label: "Shared meeting rooms" },
-  { id: 3, label: "Shared meeting rooms" },
-  { id: 4, label: "Shared meeting rooms" },
-  { id: 5, label: "Shared meeting rooms" },
-  { id: 6, label: "Shared meeting rooms" },
-  { id: 7, label: "Shared meeting rooms" },
-  { id: 8, label: "Shared meeting rooms" },
-  { id: 9, label: "Shared meeting rooms" },
-  { id: 10, label: "OShared meeting rooms" },
-]);
-
 const selectedItems = ref([]);
-
+const isAmenitiesLoading = ref(true);
 const isDisabled = computed(() => selectedItems.value.length === 0);
+const companyServiceStore = useCompanyServiceStore();
+const toast = useToast();
 
-function submitForm() {
+onMounted(async () => {
+  const amenitiesResponse = await companyServiceStore.fetchFacilityAmenities();
+  const result = amenitiesResponse.result;
+  selectedItems.value = amenitiesResponse.data.map((item: unknown) => ({
+    id: item?.id,
+    label: item?.name,
+  }));
+
+  if (result === "success") {
+  } else {
+    toast.error("Error getting facility amenities"); // ❌ Show error toast
+  }
+});
+
+async function submitForm() {
+  const addAmenitiesResponse = await companyServiceStore.addAmenitiesToCompany(
+    selectedItems.value
+  );
+  const result = addAmenitiesResponse.result;
+  if (result === "success") {
+    isAmenitiesLoading.value = false;
+    toast.success("Amenities added successfully");
+  } else {
+    toast.error("Error adding amenities"); 
+  }
 
   emit("next-step");
 }

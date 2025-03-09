@@ -11,7 +11,9 @@ definePageMeta({
 });
 
 const activeUserStore = useActiveUserStore();
+
 const { userType, userDetails } = storeToRefs(activeUserStore);
+const { setUserDetails } = useActiveUserStore();
 
 const router = useRouter();
 const toast = useToast();
@@ -34,7 +36,6 @@ const state = reactive({
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
-
     pending.value = true;
     const response = await useNuxtApp().$axios.post("/company/login", {
       email: state.email,
@@ -49,6 +50,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     const userDetailsResponse = await useNuxtApp().$axios.get("/company/me");
     userDetails.value = userDetailsResponse.data;
+    setUserDetails(userDetails.value);
     activeUserStore.setAuthenticationState(true);
     const { posthog } = usePosthog();
     posthog.identifyUser({
@@ -56,7 +58,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       email: userDetails.value.email,
       full_name: `${userDetails.value.name}`,
     });
-    
+
     router.push("/onboarding");
   } catch (error: any) {
     if (error) {

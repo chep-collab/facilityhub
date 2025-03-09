@@ -40,25 +40,41 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { number, object, string } from "yup";
+import { boolean, number, object, string } from "yup";
 import { useToast } from "#imports";
 
 const toast = useToast();
 
 const formState = ref({
-  servicePolicy: "",
+  servicePolicy: true,
 });
 const emit = defineEmits(["setup-success"]);
-
-const policyOptions = ["Yes", "No"];
+const companyServiceStore = useCompanyServiceStore();
+const isSubmitting = ref(false);
+const policyOptions = [
+  { label: "Yes", value: true },
+  { label: "No", value: false },
+];
 const schema = object({
-  servicePolicy: string(),
+  servicePolicy: boolean(),
 });
 const isDisabled = computed(() => {
   return !formState.value.servicePolicy;
 });
 const onSubmit = async () => {
-  emit("setup-success");
+  isSubmitting.value = true;
+
+  const response = await companyServiceStore.updateCompanyProfile({
+    key: "isApplicationRequiredToUseFacility",
+    value: Boolean(formState.value.servicePolicy),
+  });
+  const result = response.result;
+  if (result === "success") {
+    emit("setup-success");
+  } else {
+    toast.error("Error getting facility amenities");
+  }
+
   toast.add({
     title: "Form Submitted",
     description: "Your service has been created successfully!",
@@ -67,5 +83,4 @@ const onSubmit = async () => {
 };
 </script>
 
-<style>
-</style>
+<style></style>

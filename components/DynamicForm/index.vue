@@ -1,64 +1,92 @@
 <template>
   <div class="dynamic-form w-full md:w-3/5 lg:w-2/5">
     <!-- Stepper Component -->
-    <Stepper :currentStep="currentStep" :steps="steps" />
+    <template v-if="loading">
+      <USkeleton class="h-8 w-full mb-4" />
+    </template>
+    <template v-else>
+      <Stepper :currentStep="currentStep" :steps="steps" />
+    </template>
+
     <!-- Facility Text  -->
     <section class="mt-[52px] gap-3 flex items-center flex-col">
-      <h1 class="font-semibold text-[24px]">
-        {{ formsInformation[currentStep - 1]?.text.header }}
-      </h1>
-      <p class="text-center text-[18px]">
-        {{ formsInformation[currentStep - 1]?.text.sub }}
-      </p>
-      <hr class="w-full mt-5 h-[1px] bg-[#98A2B3]" />
+      <template v-if="loading">
+        <USkeleton class="h-8 w-3/4 mb-4" />
+        <USkeleton class="h-6 w-2/3 mb-4" />
+      </template>
+      <template v-else>
+        <h1 class="font-semibold text-[24px]">
+          {{ formsInformation[currentStep ? currentStep - 1 : 0]?.text.header }}
+        </h1>
+        <p class="text-center text-[18px]">
+          {{ formsInformation[currentStep ? currentStep - 1 : 0]?.text.sub }}
+        </p>
+        <hr class="w-full mt-5 h-[1px] bg-[#98A2B3]" />
+      </template>
     </section>
 
     <!-- Form Component -->
-
     <div class="pt-8">
-      <h2 class="text-sm px-6 text-grey-border font-semibold">
-        {{ formsInformation[currentStep - 1]?.text.sub }}*
-      </h2>
+      <template v-if="loading">
+        <USkeleton class="h-6 w-full mb-4" />
+        <USkeleton class="h-6 w-full mb-4" />
+      </template>
+      <template v-else>
+        <h2 class="text-sm px-6 text-grey-border font-semibold">
+          {{ formsInformation[currentStep ? currentStep - 1 : 0]?.text.sub }}*
+        </h2>
 
-      <keep-alive>
-        <Transition name="fade-slide" mode="out-in">
-          <component
-            :is="formsInformation[currentStep - 1].formComponent"
-            v-if="isVisible"
-            v-model:isVisible="isVisible"
-            @next-step="handleNextStep"
-            @setup-success="handleSetupSuccess"
-          />
-        </Transition>
-      </keep-alive>
+        <keep-alive>
+          <Transition name="fade-slide" mode="out-in">
+            <component
+              :is="
+                formsInformation[currentStep ? currentStep - 1 : 0]
+                  .formComponent
+              "
+              v-if="isVisible"
+              v-model:isVisible="isVisible"
+              @next-step="handleNextStep"
+              @setup-success="handleSetupSuccess"
+            />
+          </Transition>
+        </keep-alive>
+      </template>
     </div>
 
     <hr class="w-full mt-6 h-[1px] bg-[#98A2B3]" />
 
     <div class="flex w-full justify-between ml-auto mt-7 self-end">
-      <div>
-        <BaseButton
-          @click="goBack"
-          class="bg-transparent focus:bg-black focus:bg-opacity-5 hover:bg-opacity-5 hover:bg-black border md:min-w-[30%] border-grey-green text-grey-green p-[40px] w-fit"
-          v-show="currentStep > 1"
-        >
-          <img src="../../assets/icons/arrowleft.svg" alt="back arrow" />
-          Back
-        </BaseButton>
-      </div>
-      <div>
-        <BaseButton
-          class="p-[40px] md:min-w-[30%] w-fit hover:bg-red-500 focus:bg-red-500 bg-error"
-          >Logout</BaseButton
-        >
-      </div>
+      <template v-if="loading">
+        <USkeleton class="h-10 w-1/3" />
+        <USkeleton class="h-10 w-1/3" />
+      </template>
+      <template v-else>
+        <div>
+          <BaseButton
+            @click="goBack"
+            class="bg-transparent focus:bg-black focus:bg-opacity-5 hover:bg-opacity-5 hover:bg-black border md:min-w-[30%] border-grey-green text-grey-green p-[40px] w-fit"
+            v-show="currentStep > 1"
+          >
+            <img src="../../assets/icons/arrowleft.svg" alt="back arrow" />
+            Back
+          </BaseButton>
+        </div>
+        <div>
+          <BaseButton
+            class="p-[40px] md:min-w-[30%] w-fit hover:bg-red-500 focus:bg-red-500 bg-error"
+            >Logout</BaseButton
+          >
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, nextTick } from "vue";
+import { ref, nextTick, computed, watch, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useCompanyServiceStore } from "@/stores/companyServiceStore";
+import { storeToRefs } from "pinia";
 
 type formsInformation = {
   text: { header: string; sub: string; formHeader: string };
@@ -121,27 +149,69 @@ const formsInformation: formsInformation = [
 ];
 
 const steps = ref(["1", "2", "3", "4", "5"]);
-const currentStep = ref(3);
 const isVisible = ref(true);
+const loading = ref(true);
+const companyServiceStore = useCompanyServiceStore();
+const { getCompanyOnboardingStatus } = companyServiceStore;
+const { onboardingStatus } = storeToRefs(companyServiceStore);
+const nextOnboardingStep = ref(onboardingStatus.value.next_step || null);
+const stepsWithNumber = [
+  { name: "add_service", step: 1 },
+  { name: "settlement_account", step: 2 },
+  { name: "profile_picture_policy", step: 3 },
+  { name: "select_amenities", step: 4 },
+  { name: "service_application_policy", step: 5 },
+];
+
+const currentStep = computed(() => {
+  return (
+    stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)
+      ?.step || null
+  );
+});
+
 watch(currentStep, async () => {
   await nextTick();
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
+
+onMounted(async () => {
+  const isOnboardingStatusEmpty =
+    Object.keys(onboardingStatus.value).length === 0;
+  console.log("Is onboarding status empty:", isOnboardingStatusEmpty);
+
+  if (isOnboardingStatusEmpty) {
+    console.log("Fetching onboarding status...");
+
+    const response = await getCompanyOnboardingStatus();
+    if (response?.result === "success") {
+      nextOnboardingStep.value = response?.data.next_step || null;
+      console.log("Onboarding status updated:", response.data);
+    } else {
+      console.log("Failed to fetch onboarding status:", response);
+    }
+  } else {
+    console.log("Onboarding status already available:", onboardingStatus.value);
+    nextOnboardingStep.value = onboardingStatus.value.next_step || null;
+  }
+
+  loading.value = false;
+});
+
 function handleNextStep() {
   isVisible.value = false;
-  if (currentStep.value < formsInformation.length) {
+  if (currentStep?.value < formsInformation.length) {
     setTimeout(() => {
-      currentStep.value++;
+      nextOnboardingStep.value++;
       isVisible.value = true;
     }, 500);
   }
 }
 function handleSetupSuccess() {
-  
   router.push("/dashboard");
 }
 function goBack() {
-  currentStep.value--;
+  nextOnboardingStep.value--;
 }
 </script>
 
