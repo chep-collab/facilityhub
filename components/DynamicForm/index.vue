@@ -63,6 +63,7 @@
       <template v-else>
         <div>
           <BaseButton
+            v-if="canGoBack"
             @click="goBack"
             class="bg-transparent focus:bg-black focus:bg-opacity-5 hover:bg-opacity-5 hover:bg-black border md:min-w-[30%] border-grey-green text-grey-green p-[40px] w-fit"
             v-show="currentStep > 1"
@@ -154,7 +155,7 @@ const loading = ref(true);
 const companyServiceStore = useCompanyServiceStore();
 const { getCompanyOnboardingStatus } = companyServiceStore;
 const { onboardingStatus } = storeToRefs(companyServiceStore);
-const nextOnboardingStep = ref(onboardingStatus.value.next_step || null);
+const nextOnboardingStep = ref(onboardingStatus.value?.next_step || null);
 const stepsWithNumber = [
   { name: "add_service", step: 1 },
   { name: "settlement_account", step: 2 },
@@ -163,35 +164,42 @@ const stepsWithNumber = [
   { name: "service_application_policy", step: 5 },
 ];
 
-const currentStep = computed(() => {
-  return (
-    stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)
-      ?.step || null
-  );
-});
-
+const currentStep = ref(
+  stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)
+    ?.step || 1
+);
 watch(currentStep, async () => {
   await nextTick();
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+watch(nextOnboardingStep, () => {
+  currentStep.value =
+    stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)
+      ?.step || 1;
+});
+// console.log(
+//   onboardingStatus.value?.steps[stepsWithNumber[currentStep.value].name],
+//   currentStep.value - 1
+// );
+
+const indexToCheckForCompletion = currentStep.value - 2;
+const canGoBack =
+  !onboardingStatus.value?.steps?.[
+    stepsWithNumber[indexToCheckForCompletion]?.name
+  ]?.completed;
+
 onMounted(async () => {
   const isOnboardingStatusEmpty =
     Object.keys(onboardingStatus.value).length === 0;
-  console.log("Is onboarding status empty:", isOnboardingStatusEmpty);
 
   if (isOnboardingStatusEmpty) {
-    console.log("Fetching onboarding status...");
-
     const response = await getCompanyOnboardingStatus();
     if (response?.result === "success") {
       nextOnboardingStep.value = response?.data.next_step || null;
-      console.log("Onboarding status updated:", response.data);
     } else {
-      console.log("Failed to fetch onboarding status:", response);
     }
   } else {
-    console.log("Onboarding status already available:", onboardingStatus.value);
     nextOnboardingStep.value = onboardingStatus.value.next_step || null;
   }
 
@@ -202,7 +210,7 @@ function handleNextStep() {
   isVisible.value = false;
   if (currentStep?.value < formsInformation.length) {
     setTimeout(() => {
-      nextOnboardingStep.value++;
+      currentStep.value++;
       isVisible.value = true;
     }, 500);
   }
@@ -211,7 +219,7 @@ function handleSetupSuccess() {
   router.push("/dashboard");
 }
 function goBack() {
-  nextOnboardingStep.value--;
+  currentStep.value--;
 }
 </script>
 

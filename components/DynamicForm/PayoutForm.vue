@@ -159,7 +159,6 @@ watchEffect(async () => {
 
   const isAccountNumberValid = await accountNumberSchema.isValid(accountNumber);
   const isBankCodeValid = await bankCodeSchema.isValid(bankCode);
-  console.log(isAccountNumberValid, isBankCodeValid);
 
   if (!isAccountNumberValid || !isBankCodeValid) {
     return;
