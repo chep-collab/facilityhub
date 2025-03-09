@@ -42,9 +42,9 @@
       <!--  Button -->
       <div class="flex justify-between mt-6">
         <BaseButton
-        :loading="loading"
+          :loading="loading"
           type="submit"
-          :disabled="isDisabled || loading "
+          :disabled="isDisabled || loading"
           :class="
             isDisabled
               ? 'bg-grey-green cursor-not-allowed'
@@ -74,7 +74,7 @@ const formState = ref({
   period: "",
 });
 
-const periodOptions = ["Monthly", "Quarterly", "Yearly", "Daily"];
+const periodOptions = ["Monthly", "Weekly", "Daily"];
 const schema = object({
   serviceName: string().min(
     3,
@@ -82,7 +82,7 @@ const schema = object({
   ),
   price: number().positive("Price must be a positive number"),
   period: string()
-    .oneOf(["Monthly", "Quarterly", "Yearly", "Daily"], "Invalid period")
+    .oneOf(["Monthly", "Weekly", "Daily"], "Invalid period")
     .required("Period is required"),
 });
 const isDisabled = computed(() => {
@@ -114,17 +114,18 @@ async function onSubmit() {
         servicePricePayload
       );
     }
+    toast.add({
+      title: "Form Submitted",
+      description: "Your service has been created successfully!",
+      color: "green",
+    });
 
     emit("next-step");
   } catch (error) {
+    toast.error("Error creating service");
   } finally {
     loading.value = false;
   }
-  toast.add({
-    title: "Form Submitted",
-    description: "Your service has been created successfully!",
-    color: "green",
-  });
 }
 </script>
 

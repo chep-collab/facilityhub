@@ -178,16 +178,16 @@ watch(nextOnboardingStep, () => {
     stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)
       ?.step || 1;
 });
-// console.log(
-//   onboardingStatus.value?.steps[stepsWithNumber[currentStep.value].name],
-//   currentStep.value - 1
-// );
-
 const indexToCheckForCompletion = currentStep.value - 2;
 const canGoBack =
   !onboardingStatus.value?.steps?.[
     stepsWithNumber[indexToCheckForCompletion]?.name
   ]?.completed;
+
+  console.log(onboardingStatus.value?.steps?.[
+    stepsWithNumber[indexToCheckForCompletion]?.name
+  ]);
+  
 
 onMounted(async () => {
   const isOnboardingStatusEmpty =
@@ -208,9 +208,11 @@ onMounted(async () => {
 
 function handleNextStep() {
   isVisible.value = false;
+  console.log(currentStep?.value, formsInformation.length);
+  
   if (currentStep?.value < formsInformation.length) {
     setTimeout(() => {
-      currentStep.value++;
+      currentStep.value ++;
       isVisible.value = true;
     }, 500);
   }
@@ -219,7 +221,7 @@ function handleSetupSuccess() {
   router.push("/dashboard");
 }
 function goBack() {
-  currentStep.value--;
+  currentStep.value --;
 }
 </script>
 
