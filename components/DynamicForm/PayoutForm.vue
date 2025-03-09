@@ -66,7 +66,7 @@
           <div>
             <UFormGroup label="Account Number" name="accountNumber">
               <InputField
-                type="number"
+                type="text"
                 :disabled="isSubmitting || isResolveAccountLoading"
                 v-model="formState.accountNumber"
                 placeholder="e.g 0123345345"
