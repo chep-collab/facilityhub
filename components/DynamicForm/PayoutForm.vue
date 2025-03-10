@@ -160,7 +160,14 @@ watchEffect(async () => {
   const isAccountNumberValid = await accountNumberSchema.isValid(accountNumber);
   const isBankCodeValid = await bankCodeSchema.isValid(bankCode);
 
-  if (!isAccountNumberValid || !isBankCodeValid) {
+  if (
+    !isAccountNumberValid ||
+    !isBankCodeValid ||
+    !accountNumber ||
+    !bankCode
+  ) {
+    showBankDetails.value = false;
+    formState.value.confirmBankDetails = false;
     return;
   }
   isResolveAccountLoading.value = true;
@@ -188,6 +195,7 @@ watchEffect(async () => {
     isResolveAccountLoading.value = false;
   }
 });
+
 const onSubmit = async () => {
   isSubmitting.value = true;
   try {

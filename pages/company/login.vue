@@ -33,7 +33,9 @@ const state = reactive({
   email: undefined,
   password: undefined,
 });
+const companyServiceStore = useCompanyServiceStore();
 
+const { getCompanyOnboardingStatus } = companyServiceStore;
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     pending.value = true;
@@ -59,7 +61,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       full_name: `${userDetails.value.name}`,
     });
 
-    router.push("/onboarding");
+    if (userDetailsResponse?.data) {
+      const onboardingStatusResponse = await getCompanyOnboardingStatus();
+      if (
+        Object.values(onboardingStatusResponse.data.steps).every(
+          (step: any) => step.completed
+        )
+      ) {
+        router.push("/dashboard");
+      } else {
+        router.push("/onboarding");
+      }
+    }
+
   } catch (error: any) {
     if (error) {
       toast.add({

@@ -80,15 +80,17 @@ export const useCompanyServiceStore = defineStore({
       }
     },
     async updateCompanyProfile({
-      key,
+      fieldKey,
       value,
     }: {
-      key: string;
+      fieldKey: string;
       value: boolean;
     }) {
       try {
+        console.log(fieldKey, value,'broot');
+        
         await useNuxtApp().$axios.patch("/company/update", {
-          key: value,
+         [fieldKey]: value,
         });
         return { data: "Profile updated", result: "success" };
       } catch (error) {

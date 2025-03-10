@@ -25,6 +25,7 @@
           <BaseButton
             type="submit"
             :disabled="isDisabled"
+            :loading="isSubmitting"
             :class="
               isDisabled
                 ? 'bg-grey-green cursor-not-allowed'
@@ -44,13 +45,12 @@ import { boolean, number, object, string } from "yup";
 import { useToast } from "#imports";
 
 const toast = useToast();
-
+const isSubmitting = ref(false);
 const formState = ref({
   servicePolicy: true,
 });
 const emit = defineEmits(["setup-success"]);
 const companyServiceStore = useCompanyServiceStore();
-const isSubmitting = ref(false);
 const policyOptions = [
   { label: "Yes", value: true },
   { label: "No", value: false },
@@ -65,21 +65,21 @@ const onSubmit = async () => {
   isSubmitting.value = true;
 
   const response = await companyServiceStore.updateCompanyProfile({
-    key: "isApplicationRequiredToUseFacility",
+    fieldKey: "isApplicationRequiredToUseFacility",
     value: Boolean(formState.value.servicePolicy),
   });
   const result = response.result;
   if (result === "success") {
+    toast.add({
+      title: "Application Policy Updated",
+      description: "You have been onboarded successfully!",
+      color: "green",
+    });
+    isSubmitting.value = false;
     emit("setup-success");
   } else {
     toast.error("Error getting facility amenities");
   }
-
-  toast.add({
-    title: "Form Submitted",
-    description: "Your service has been created successfully!",
-    color: "green",
-  });
 };
 </script>
 

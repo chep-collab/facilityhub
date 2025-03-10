@@ -5,6 +5,7 @@ import { storeToRefs } from "pinia";
 const router = useRouter();
 const route = useRoute();
 const activeUserStore = useActiveUserStore();
+const companyServiceStore = useCompanyServiceStore();
 const { userType, getUserDetails } = storeToRefs(activeUserStore);
 
 // Emit closeSidebar event when a menu item is clicked
@@ -12,7 +13,10 @@ const closeSidebarAndNavigate = (link: { to: string }) => {
   emit("closeSidebar");
   router.push(link.to);
 };
-
+function resetStores() {
+  activeUserStore.$reset();
+  companyServiceStore.$reset();
+}
 // Logout function
 const logout = () => {
   localStorage.clear();
@@ -20,10 +24,10 @@ const logout = () => {
 
   if (userType.value === "company") {
     router.push({ name: "company-login" });
-    activeUserStore.$reset();
+    resetStores();
   } else {
     router.push({ name: "user-login" });
-    activeUserStore.$reset();
+    resetStores();
   }
 };
 

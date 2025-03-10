@@ -166,7 +166,7 @@ const stepsWithNumber = [
 
 const currentStep = ref(
   stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)
-    ?.step || 1
+    ?.step 
 );
 watch(currentStep, async () => {
   await nextTick();
@@ -176,17 +176,17 @@ watch(currentStep, async () => {
 watch(nextOnboardingStep, () => {
   currentStep.value =
     stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)
-      ?.step || 1;
+      ?.step ;
 });
 const indexToCheckForCompletion = currentStep.value - 2;
-const canGoBack =
-  !onboardingStatus.value?.steps?.[
-    stepsWithNumber[indexToCheckForCompletion]?.name
-  ]?.completed;
+// const canGoBack =
+//   !onboardingStatus.value?.steps?.[
+//     stepsWithNumber[indexToCheckForCompletion]?.name
+//   ]?.completed;
 
-  console.log(onboardingStatus.value?.steps?.[
-    stepsWithNumber[indexToCheckForCompletion]?.name
-  ]);
+//   console.log(onboardingStatus.value?.steps?.[
+//     stepsWithNumber[indexToCheckForCompletion]?.name
+//   ]);
   
 
 onMounted(async () => {
