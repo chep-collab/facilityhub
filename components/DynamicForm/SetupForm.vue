@@ -92,28 +92,15 @@ const isDisabled = computed(() => {
     !formState.value.period
   );
 });
+const { createNewService } = useCompanyServiceStore();
 async function onSubmit() {
   loading.value = true;
-  const serviceNamePayload = {
-    name: formState.value.serviceName,
-  };
   try {
-    const response = await useNuxtApp().$axios.post(
-      "/company-service",
-      serviceNamePayload
-    );
-
-    if (response.data) {
-      const servicePricePayload = {
-        serviceId: response?.data?.id,
-        amount: formState.value.price,
-        period: formState.value.period.toLocaleLowerCase(),
-      };
-      const servicePriceResponse = await useNuxtApp().$axios.post(
-        "/company-service-price",
-        servicePricePayload
-      );
-    }
+    const response = await createNewService({
+      name: formState.value.serviceName,
+      amount: formState.value.price,
+      period: formState.value.period.toLowerCase(),
+    });
     toast.add({
       title: "Form Submitted",
       description: "Your service has been created successfully!",
@@ -122,7 +109,11 @@ async function onSubmit() {
 
     emit("next-step");
   } catch (error) {
-    toast.error("Error creating service");
+    toast.add({
+      color: "red",
+      title: "Error",
+      description: "Error creating service",
+    });
   } finally {
     loading.value = false;
   }

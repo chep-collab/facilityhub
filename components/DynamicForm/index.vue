@@ -72,8 +72,9 @@
             Back
           </BaseButton>
         </div> -->
-        <div class="w-fit flex ml-auto justify-end" >
+        <div class="w-fit flex ml-auto justify-end">
           <BaseButton
+            @click="logout"
             class="p-[40px] md:min-w-[30%] w-fit hover:bg-red-500 focus:bg-red-500 bg-error"
             >Logout</BaseButton
           >
@@ -148,8 +149,7 @@ const formsInformation: formsInformation = [
     ),
   },
 ];
-
-const steps = ref(["1", "2", "3", "4", "5"]);
+const { logout } = useLogout();
 const isVisible = ref(true);
 const loading = ref(true);
 const companyServiceStore = useCompanyServiceStore();
@@ -164,9 +164,11 @@ const stepsWithNumber = [
   { name: "service_application_policy", step: 5 },
 ];
 
+const steps = computed(
+  () => Object.values(onboardingStatus.value?.steps ?? []).length
+);
 const currentStep = ref(
-  stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)
-    ?.step 
+  stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)?.step
 );
 watch(currentStep, async () => {
   await nextTick();
@@ -174,20 +176,10 @@ watch(currentStep, async () => {
 });
 
 watch(nextOnboardingStep, () => {
-  currentStep.value =
-    stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)
-      ?.step ;
+  currentStep.value = stepsWithNumber.find(
+    (item) => item.name === nextOnboardingStep.value
+  )?.step;
 });
-const indexToCheckForCompletion = currentStep.value - 2;
-// const canGoBack =
-//   !onboardingStatus.value?.steps?.[
-//     stepsWithNumber[indexToCheckForCompletion]?.name
-//   ]?.completed;
-
-//   console.log(onboardingStatus.value?.steps?.[
-//     stepsWithNumber[indexToCheckForCompletion]?.name
-//   ]);
-  
 
 onMounted(async () => {
   const isOnboardingStatusEmpty =
@@ -209,10 +201,10 @@ onMounted(async () => {
 function handleNextStep() {
   isVisible.value = false;
   console.log(currentStep?.value, formsInformation.length);
-  
+
   if (currentStep?.value < formsInformation.length) {
     setTimeout(() => {
-      currentStep.value ++;
+      currentStep.value++;
       isVisible.value = true;
     }, 500);
   }
@@ -221,7 +213,7 @@ function handleSetupSuccess() {
   router.push("/dashboard");
 }
 function goBack() {
-  currentStep.value --;
+  currentStep.value--;
 }
 </script>
 

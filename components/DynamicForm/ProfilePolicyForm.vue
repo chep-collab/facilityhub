@@ -9,7 +9,7 @@
       <!--  Profile Policy select -->
       <div>
         <UFormGroup
-          label="Is a profile picture required for users?"
+          label="Is a profile picture required for users? Select No if Users can access your facility once they pay."
           name="profilePolicy"
         >
           <SelectField
@@ -54,20 +54,26 @@ const policyOptions = [
 const schema = object({
   profilePolicy: boolean(),
 });
+const companyServiceStore = useCompanyServiceStore();
 const onSubmit = async () => {
   isSubmitting.value = true;
+
   try {
-    await useNuxtApp().$axios.patch("/company/update", {
-      isUserProfilePictureCompulsory: Boolean(formState.value.profilePolicy),
+    const response = await companyServiceStore.updateCompanyProfile({
+      fieldKey: "isUserProfilePictureCompulsory",
+      value: Boolean(formState.value.profilePolicy),
     });
-    toast.add({
-      title: "Form Submitted",
-      description: "Your profile has been updated successfully!",
-      color: "green",
-    });
-    emit("next-step");
+    const result = response.result;
+    if (result === "success") {
+      toast.add({
+        title: "Form Submitted",
+        description: "Your profile has been updated successfully!",
+        color: "green",
+      });
+      emit("next-step");
+    }
   } catch (error) {
-    toast({
+    toast.add({
       title: "Error",
       description: "There was an error submitting the form.",
       color: "red",

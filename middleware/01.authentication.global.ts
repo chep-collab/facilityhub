@@ -1,22 +1,25 @@
-  export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   const activeUserStore = useActiveUserStore();
   const toast = useToast();
   const router = useRouter();
   const runtimeConfig = useRuntimeConfig(); // Referencing the runtime configuration
   const activateComingSoon = runtimeConfig.public.activateComingSoon; //targets the variable here
 
-
-   // This check if Coming Soon is active, then it will redirect to coming soon page 
-   if (activateComingSoon === "yes" && ((to.name as string).includes("login") || (to.name as string).includes("signup"))) {
-    return navigateTo({ name: "coming-soon" });  
+  // This check if Coming Soon is active, then it will redirect to coming soon page
+  if (
+    activateComingSoon === "yes" &&
+    ((to.name as string).includes("login") ||
+      (to.name as string).includes("signup"))
+  ) {
+    return navigateTo({ name: "coming-soon" });
   }
-
 
   const { getAuthenticationState } = storeToRefs(activeUserStore);
   const destinationName = to.name as string;
   if (
-    destinationName.includes("dashboard") &&
-    getAuthenticationState.value === false
+    destinationName.includes("dashboard") ||
+    (destinationName.includes("onboarding") &&
+      getAuthenticationState.value === false)
   ) {
     toast.add({
       title: "Please login",
@@ -40,11 +43,16 @@
   // Please rememeber to clear out or modify the comment based on what you do.
 
   // This logic checks the onboarding status for authenticated users trying to access the dashboard
-   if (destinationName.includes("dashboard") && getAuthenticationState.value) {
+  if (destinationName.includes("dashboard") && getAuthenticationState.value) {
     try {
-      const response = await $fetch('/api/onboarding');  // This will be replaced with the actual API endpoint please
-      if (response.status === "incomplete") {
-        toast.add({ title: "Please complete your onboarding", color: "red" });
+      const response = await useNuxtApp().$axios.get(
+        "/company/onboarding-statuses"
+      );
+      if (
+        Object.values(response.data.steps).every((step: any) => step.completed)
+      ) {
+        return router.push({ name: "dashboard" });
+      } else {
         return router.push({ name: "onboarding" });
       }
     } catch (error) {

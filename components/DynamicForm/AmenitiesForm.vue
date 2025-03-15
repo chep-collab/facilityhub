@@ -56,9 +56,8 @@ const toast = useToast();
 onMounted(async () => {
   const amenitiesResponse = await companyServiceStore.fetchFacilityAmenities();
   const result = amenitiesResponse.result;
-  console.log(amenitiesResponse.data);
 
-  amenities.value = amenitiesResponse.data.map((item: unknown) => ({
+  amenities.value = amenitiesResponse.data?.map((item: unknown) => ({
     id: item?.id,
     label: item?.name,
   }));
@@ -76,7 +75,6 @@ async function submitForm() {
     selectedIds.value
   );
   const result = addAmenitiesResponse.result;
-  console.log(result);
 
   if (result === "success") {
     isAmenitiesLoading.value = false;

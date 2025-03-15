@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-center">
-    <div v-for="(step, index) in steps" :key="index" class="flex items-center">
+    <div v-for="(_, index) in steps" :key="index" class="flex items-center">
       <!-- Step Circle -->
       <div
         class="w-8 h-8 flex items-center border justify-center rounded-full transition-all"
@@ -11,7 +11,7 @@
 
       <div
         class="flex gap-[2px] md:gap-2 mx-[5px] md:mx-[10.5px]"
-        v-if="index !== steps.length - 1"
+        v-if="index !== steps - 1"
       >
         <span
           class="w-1 hidden md:block h-[2px]"
@@ -32,7 +32,7 @@
 import { defineProps } from "vue";
 //  index is like 0 for 1 , less than currentStep which should be 1 show
 const props = defineProps<{
-  steps: string[];
+  steps: number;
   currentStep: number;
   onNextStep: () => void;
 }>();

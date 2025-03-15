@@ -21,7 +21,7 @@ const toast = useToast();
 const schema = object({
   email: string().email("Invalid email").required("Required"),
   password: string()
-    .min(4, "Must be at least 4 characters")
+    .min(8, "Must be at least 8 characters")
     .required("Required"),
 });
 
@@ -34,7 +34,10 @@ const state = reactive({
   password: undefined,
 });
 const companyServiceStore = useCompanyServiceStore();
-
+function updateOnboardingStatus(state) {
+  const status = useState("onboardingStatus");
+  status.value = state;
+}
 const { getCompanyOnboardingStatus } = companyServiceStore;
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
@@ -60,20 +63,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       email: userDetails.value.email,
       full_name: `${userDetails.value.name}`,
     });
-
-    if (userDetailsResponse?.data) {
-      const onboardingStatusResponse = await getCompanyOnboardingStatus();
-      if (
-        Object.values(onboardingStatusResponse.data.steps).every(
-          (step: any) => step.completed
-        )
-      ) {
-        router.push("/dashboard");
-      } else {
-        router.push("/onboarding");
-      }
-    }
-
+    router.push("/dashboard");
   } catch (error: any) {
     if (error) {
       toast.add({
