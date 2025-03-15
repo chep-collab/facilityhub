@@ -41,28 +41,6 @@
         <!-- show isResolve , show this content-isResolve is false,showPop -->
         <!-- Account Number -->
         <div class="relative">
-          <div
-            v-if="showPopover"
-            class="animate-fade-in absolute w-3/5 right-0 text-[12px] whitespace-nowrap flex bottom-[50px] text-black transition-all translate-y-3 shadow rounded-md border"
-          >
-            <div
-              v-show="!showBankDetails"
-              class="flex p-2 gap-5 justify-between w-full items-center"
-            >
-              <USkeleton class="w-full h-5 rounded" />
-
-              <USkeleton class="h-5 w-5" />
-            </div>
-
-            <div
-              v-show="showBankDetails && !formState.confirmBankDetails"
-              class="p-2 items-center w-full justify-between flex bg-white"
-            >
-              <p class="font-bold">{{ bankDetails?.accountName }}</p>
-              <UCheckbox v-model="formState.confirmBankDetails" />
-            </div>
-          </div>
-
           <div>
             <UFormGroup label="Account Number" name="accountNumber">
               <InputField
@@ -74,6 +52,27 @@
             </UFormGroup>
 
             <div></div>
+          </div>
+
+          <div
+            v-if="showPopover"
+            class="animate-fade-in absolute w-3/5 right-0 text-[12px] whitespace-nowrap flex bottom-[-30px] text-black transition-all translate-y-3 shadow rounded-md border"
+          >
+            <div
+              v-show="!showBankDetails"
+              class="flex p-2 gap-5 justify-between w-full items-center"
+            >
+              <USkeleton class="w-full h-5 rounded" />
+
+              <USkeleton class="h-5 w-5" />
+            </div>
+
+            <div
+              v-show="showBankDetails"
+              class="p-2 items-center w-full justify-between flex bg-white"
+            >
+              <p class="font-bold">{{ bankDetails?.accountName }}</p>
+            </div>
           </div>
         </div>
 
@@ -193,6 +192,12 @@ watchEffect(async () => {
     showPopover.value = false;
   } finally {
     isResolveAccountLoading.value = false;
+  }
+});
+
+watchEffect(() => {
+  if (showBankDetails.value) {
+    formState.value.confirmBankDetails = true;
   }
 });
 

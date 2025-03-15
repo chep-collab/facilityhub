@@ -76,7 +76,6 @@ export const useCompanyServiceStore = defineStore({
         const response = await nuxtApp.$axios.post(`/company/amenities`, {
           amenityIds: ids,
         });
-        this.onboardingStatus = response.data;
         return { data: response?.data, result: "success" };
       } catch (error) {
         return { data: error?.response?.data?.message, result: "error" };
@@ -90,7 +89,6 @@ export const useCompanyServiceStore = defineStore({
       value: boolean;
     }) {
       try {
-
         await nuxtApp.$axios.patch("/company/update", {
           [fieldKey]: value,
         });

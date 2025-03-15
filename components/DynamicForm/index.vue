@@ -164,9 +164,8 @@ const stepsWithNumber = [
   { name: "service_application_policy", step: 5 },
 ];
 
-const steps = computed(
-  () => Object.values(onboardingStatus.value?.steps ?? []).length
-);
+const steps = stepsWithNumber.map((item) => item.step);
+
 const currentStep = ref(
   stepsWithNumber.find((item) => item.name === nextOnboardingStep.value)?.step
 );
@@ -200,7 +199,6 @@ onMounted(async () => {
 
 function handleNextStep() {
   isVisible.value = false;
-  console.log(currentStep?.value, formsInformation.length);
 
   if (currentStep?.value < formsInformation.length) {
     setTimeout(() => {

@@ -34,11 +34,6 @@ const state = reactive({
   password: undefined,
 });
 const companyServiceStore = useCompanyServiceStore();
-function updateOnboardingStatus(state) {
-  const status = useState("onboardingStatus");
-  status.value = state;
-}
-const { getCompanyOnboardingStatus } = companyServiceStore;
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     pending.value = true;

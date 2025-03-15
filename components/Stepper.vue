@@ -11,7 +11,7 @@
 
       <div
         class="flex gap-[2px] md:gap-2 mx-[5px] md:mx-[10.5px]"
-        v-if="index !== steps - 1"
+        v-if="index !== steps.length - 1"
       >
         <span
           class="w-1 hidden md:block h-[2px]"
