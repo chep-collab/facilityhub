@@ -1,6 +1,6 @@
-import { useRouter } from 'vue-router';
-import { useActiveUserStore } from '~/stores/activeUserStore';
-import { useCompanyServiceStore } from '~/stores/companyServiceStore';
+import { useRouter } from "vue-router";
+import { useActiveUserStore } from "~/stores/activeUserStore";
+import { useCompanyServiceStore } from "~/stores/companyServiceStore";
 
 export function useLogout() {
   const router = useRouter();
@@ -16,11 +16,11 @@ export function useLogout() {
     localStorage.clear();
     activeUserStore.setAuthenticationState(false);
 
-    if (activeUserStore.userType === 'company') {
-      router.push({ name: 'company-login' });
+    if (activeUserStore.userType === "company") {
+      router.push({ name: "company-login" });
       resetStores();
     } else {
-      router.push({ name: 'user-login' });
+      router.push({ name: "user-login" });
       resetStores();
     }
   };

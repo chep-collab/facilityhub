@@ -9,7 +9,7 @@
       <!--  Profile Policy select -->
       <div>
         <UFormGroup
-          label="Is a profile picture required for users? Select No if Users can access your facility once they pay."
+          label="Is a profile picture required for users? "
           name="profilePolicy"
         >
           <SelectField

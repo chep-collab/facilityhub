@@ -3,7 +3,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const toast = useToast();
   const runtimeConfig = useRuntimeConfig();
   const activateComingSoon = runtimeConfig.public.activateComingSoon;
-  const onboardingStatus = useState("onboardingStatus", () => null);
 
   if (
     activateComingSoon === "yes" &&
@@ -32,23 +31,23 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   if (destinationName.includes("dashboard") && getAuthenticationState.value) {
-    try {
-      if (!onboardingStatus.value) {
+
+    try {      
         const response = await useNuxtApp().$axios.get(
           "/company/onboarding-statuses"
         );
-        onboardingStatus.value = response.data;
-      }
+        const onboardingStatus = response.data;
 
-      const steps = onboardingStatus.value?.steps;
-      if (steps && Object.values(steps).every((step: any) => step.completed)) {
-        return navigateTo({ name: "dashboard" });
-      } else {
-        return navigateTo({ name: "onboarding" });
-      }
+        const steps = onboardingStatus?.steps;
+        if (
+          steps &&
+          !Object.values(steps).every((step: any) => step.completed)
+        ) {
+          return navigateTo({ name: "onboarding" });
+        }
+      
     } catch (error) {
-      console.error("Error checking onboarding status:", error);
-      return; 
+      return navigateTo({ name: "company-login" });
     }
   }
   if (destinationName.includes("login") && getAuthenticationState.value) {

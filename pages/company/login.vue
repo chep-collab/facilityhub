@@ -58,7 +58,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       email: userDetails.value.email,
       full_name: `${userDetails.value.name}`,
     });
-    router.push("/dashboard");
+    navigateTo("/dashboard");
   } catch (error: any) {
     if (error) {
       toast.add({

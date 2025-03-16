@@ -10,7 +10,7 @@
         <!--  Application Policy select -->
         <div>
           <UFormGroup
-            label="Is approval required before users can start using the facility?"
+            label="Is approval required before users can start using the facility? Select No if Users can access your facility once they pay."
             name="servicePolicy"
           >
             <SelectField
