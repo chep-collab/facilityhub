@@ -11,9 +11,9 @@ const activeUserStore = useActiveUserStore();
 const { userType, getUserDetails } = storeToRefs(activeUserStore);
 const toast = useToast();
 
-definePageMeta({
-  layout: "dashboard-layout",
-});
+// definePageMeta({
+//   layout: "dashboard-layout",
+// });
 
 const q = ref("");
 

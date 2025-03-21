@@ -14,9 +14,6 @@ const {
 
 const companyServiceStore = useCompanyServiceStore();
 const { getCompanyServices } = storeToRefs(companyServiceStore);
-definePageMeta({
-  layout: "dashboard-layout",
-});
 
 const columns = [
   {

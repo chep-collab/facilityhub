@@ -59,13 +59,13 @@ const handleFileUpload = (file: any) => {
 async function createNewCompanyService(event: any) {
   try {
     const payload = event.data;
-    await companyServiceStore.createNewService(
-      payload.name,
-      payload.description,
-      payload.amount,
-      payload.period,
-      payload.avatar
-    );
+    await companyServiceStore.createNewService({
+      name: payload.name,
+      description: payload.description,
+      amount: payload.amount,
+      period: payload.period,
+      avatar: payload.avatar,
+    });
     state.name = undefined;
     state.description = undefined;
     state.amount = undefined;
@@ -178,16 +178,19 @@ const toggleChangeImageStatus = () => {
           <UFormGroup label="Service Name" name="name">
             <UInput v-model="state.name" />
           </UFormGroup>
-          
+
           <UFormGroup label="Amount" name="amount">
             <UInput v-model="state.amount" type="number" />
           </UFormGroup>
-          
+
           <UFormGroup label="Period" name="period">
             <USelect v-model="state.period" :options="periods" />
           </UFormGroup>
-          
-          <UFormGroup label="Describe your service (optional)" name="description">
+
+          <UFormGroup
+            label="Describe your service (optional)"
+            name="description"
+          >
             <UTextarea v-model="state.description" type="text" />
           </UFormGroup>
 

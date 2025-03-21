@@ -3,10 +3,6 @@
 const companyStore = useCompanyStore();
 const { getCompanies } = storeToRefs(companyStore);
 const router = useRouter();
-definePageMeta({
-  layout: "dashboard-layout",
-  middleware: ['invitation']
-});
 companyStore.fetchCompanyJoinedByAUser();
 const alreadyJoined = ref(false); 
 

@@ -61,9 +61,6 @@ const addEditServiceMode = ref("add");
 const serviceDataToEdit = ref({});
 const serviceDataToDelete = ref({});
 
-definePageMeta({
-  layout: "dashboard-layout",
-});
 
 const columns = [
   {
@@ -206,7 +203,7 @@ const closeActivateDeactiveModal = () => {
         <template #description-data="{ row }">
   <div class="flex flex-row">
     <span>
-      {{ row.description == "undefined" ? "" : row.description.substring(0, 15)}}
+      {{ row.description == "undefined" ? "" : row.description?.substring(0, 15)}}
     </span>
     <UPopover mode="hover" v-if="row.description">
       <UButton

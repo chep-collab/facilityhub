@@ -7,11 +7,23 @@
     <UCarousel :items="items" arrows class="w-full mx-auto">
       <!-- Default Slot for Carousel Item -->
       <template #default="{ item }">
-        <div class="flex flex-col md:flex-row w-full items-center text-black rounded-lg overflow-hidden p-4 md:p-6 mr-4"
-          style="background: linear-gradient(135deg, rgba(240, 255, 0, 0.55) 0%, rgba(88, 207, 251, 0.55) 100%);">
+        <div
+          class="flex flex-col md:flex-row w-full items-center text-black rounded-lg overflow-hidden p-4 md:p-6 mr-4"
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(240, 255, 0, 0.55) 0%,
+              rgba(88, 207, 251, 0.55) 100%
+            );
+          "
+        >
           <!-- Image on the Left (responsive square) -->
-          <img :src="item.avatar.src" alt="User avatar" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover"
-            draggable="false" />
+          <img
+            :src="item.avatar.src"
+            alt="User avatar"
+            class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover"
+            draggable="false"
+          />
 
           <!-- Text on the Right -->
           <div class="mt-4 md:mt-0 md:ml-6 text-center md:text-left">
@@ -19,7 +31,6 @@
             <p class="text-sm">{{ item.feedback }}</p>
           </div>
         </div>
-
       </template>
 
       <!-- Navigation Buttons -->
@@ -39,41 +50,54 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
-const items = [{
-  name: 'Sébastien Chopin',
-  feedback: 'Nuxt has transformed my development experience!',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/atinux' }
-}, {
-  name: 'Pooya Parsa',
-  feedback: 'I love how Nuxt simplifies complex tasks!',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/pi0' }
-}, {
-  name: 'Daniel Roe',
-  feedback: 'Nuxt makes building applications so much easier!',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/danielroe' }
-}, {
-  name: 'Anthony Fu',
-  feedback: 'Nuxt’s flexibility is unmatched in the industry.',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu' }
-},{
-  name: 'Sébastien Chopin',
-  feedback: 'Nuxt has transformed my development experience!',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/atinux' }
-}, {
-  name: 'Pooya Parsa',
-  feedback: 'I love how Nuxt simplifies complex tasks!',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/pi0' }
-}, {
-  name: 'Daniel Roe',
-  feedback: 'Nuxt makes building applications so much easier!',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/danielroe' }
-}, {
-  name: 'Anthony Fu',
-  feedback: 'Nuxt’s flexibility is unmatched in the industry.',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu' }
-}]
+const items = [
+  {
+    name: "Sébastien Chopin",
+    feedback: "Nuxt has transformed my development experience!",
+    avatar: { src: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/atinux" },
+  },
+  {
+    name: "Pooya Parsa",
+    feedback: "I love how Nuxt simplifies complex tasks!",
+    avatar: { src: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/pi0" },
+  },
+  {
+    name: "Daniel Roe",
+    feedback: "Nuxt makes building applications so much easier!",
+    avatar: {
+      src: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/danielroe",
+    },
+  },
+  {
+    name: "Anthony Fu",
+    feedback: "Nuxt’s flexibility is unmatched in the industry.",
+    avatar: { src: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu" },
+  },
+  {
+    name: "Sébastien Chopin",
+    feedback: "Nuxt has transformed my development experience!",
+    avatar: { src: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/atinux" },
+  },
+  {
+    name: "Pooya Parsa",
+    feedback: "I love how Nuxt simplifies complex tasks!",
+    avatar: { src: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/pi0" },
+  },
+  {
+    name: "Daniel Roe",
+    feedback: "Nuxt makes building applications so much easier!",
+    avatar: {
+      src: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/danielroe",
+    },
+  },
+  {
+    name: "Anthony Fu",
+    feedback: "Nuxt’s flexibility is unmatched in the industry.",
+    avatar: { src: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu" },
+  },
+];
 </script>
 
 <style scoped>
