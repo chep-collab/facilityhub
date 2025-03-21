@@ -56,7 +56,7 @@ const logout = () => {
     />
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col w-full">
       <div class="py-3 px-7 flex justify-between bg-gray-100 dark:bg-[#0D0D0D99] rounded-md shadow">
         <button @click="toggleSidebar" class="lg:hidden">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 dark:text-gray-200 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

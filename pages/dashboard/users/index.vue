@@ -3,6 +3,7 @@ const workspaceUserStore = useWorkspaceUserStore();
 const { getFetchingWorkspaceUserState, getWorkspaceUsers } =
   storeToRefs(workspaceUserStore);
 const { setSelectedUserId, fetchWorkspaceUsers } = workspaceUserStore;
+
 const { getUserType } = useActiveUserStore();
 
 import { storeToRefs } from "pinia";
@@ -43,6 +44,7 @@ const columns = [
 ];
 
 const q = ref("");
+
 const filteredRows = computed(() => {
   const filteredWorkSpaceUserData = getWorkspaceUsers.value.map((item) => {
     const { firstName, lastName, email, phone, id: userId } = item;
