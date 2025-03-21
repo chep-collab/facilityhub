@@ -26,7 +26,7 @@ const schema = object({
 });
 
 const pending = ref(false);
-
+const userTypeInApp = useState("user-type", () => "");
 type Schema = InferType<typeof schema>;
 
 const state = reactive({
@@ -47,7 +47,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     localStorage.setItem("accessToken", accessToken);
 
     userType.value = "company";
-
     const userDetailsResponse = await useNuxtApp().$axios.get("/company/me");
     userDetails.value = userDetailsResponse.data;
     setUserDetails(userDetails.value);
@@ -58,6 +57,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       email: userDetails.value.email,
       full_name: `${userDetails.value.name}`,
     });
+    userTypeInApp.value = "company";
     navigateTo("/dashboard");
   } catch (error: any) {
     if (error) {

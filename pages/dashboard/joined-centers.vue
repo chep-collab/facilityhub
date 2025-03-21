@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import moment from "moment";
 import { storeToRefs } from "pinia";
-definePageMeta({
-  layout: "dashboard-layout",
-});
 
 const companyStore = useCompanyStore();
 const { getCompaniesAUserJoined } = storeToRefs(companyStore);

@@ -26,16 +26,12 @@
     </section>
 
     <!-- Form Component -->
-    <div class="pt-8">
+    <div class="">
       <template v-if="loading">
         <USkeleton class="h-6 w-full mb-4" />
         <USkeleton class="h-6 w-full mb-4" />
       </template>
       <template v-else>
-        <h2 class="text-sm px-6 text-grey-border font-semibold">
-          {{ formsInformation[currentStep ? currentStep - 1 : 0]?.text.sub }}*
-        </h2>
-
         <keep-alive>
           <Transition name="fade-slide" mode="out-in">
             <component

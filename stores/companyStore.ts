@@ -14,6 +14,7 @@ export const useCompanyStore = defineStore({
       fetchingCompanyDetails: false,
       joiningCompany: false,
       selectedCompanyId: "",
+      selectedUserId: "",
     };
   },
   actions: {

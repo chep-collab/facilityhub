@@ -4,6 +4,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const runtimeConfig = useRuntimeConfig();
   const activateComingSoon = runtimeConfig.public.activateComingSoon;
 
+  const nuxtapp = useNuxtApp();
+  const companyStore = useCompanyServiceStore();
+  const { getCompanyOnboardingStatus } = companyStore;
+
   if (
     activateComingSoon === "yes" &&
     ((to.name as string).includes("login") ||
@@ -19,10 +23,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     destinationName.includes("dashboard") &&
     getAuthenticationState.value === false
   ) {
-    toast.add({
-      title: "Please login",
-      color: "amber",
-    });
+    if (toast) {
+      toast?.add({
+        title: "Please login",
+        color: "amber",
+      });
+    }
+
     if (activeUserStore.getUserType == "company") {
       return navigateTo({ name: "company-login" });
     } else {
@@ -30,22 +37,20 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
   }
 
-  if (destinationName.includes("dashboard") && getAuthenticationState.value) {
+  if (
+    !from.name?.toString().includes("dashboard") &&
+    activeUserStore.getUserType === "company" &&
+    destinationName.includes("dashboard") &&
+    getAuthenticationState.value
+  ) {
+    try {
+      const response = await getCompanyOnboardingStatus();
+      const onboardingStatus = response.data;
 
-    try {      
-        const response = await useNuxtApp().$axios.get(
-          "/company/onboarding-statuses"
-        );
-        const onboardingStatus = response.data;
-
-        const steps = onboardingStatus?.steps;
-        if (
-          steps &&
-          !Object.values(steps).every((step: any) => step.completed)
-        ) {
-          return navigateTo({ name: "onboarding" });
-        }
-      
+      const steps = onboardingStatus?.steps;
+      if (steps && !Object.values(steps).every((step: any) => step.completed)) {
+        return navigateTo({ name: "onboarding" });
+      }
     } catch (error) {
       return navigateTo({ name: "company-login" });
     }

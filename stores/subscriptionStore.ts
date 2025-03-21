@@ -59,7 +59,9 @@ export const useSubscriptionStore = defineStore({
     },
 
     async getAUsersSubscriptions(status?: "active" | "inactive" | "expired") {
-      const response = await useNuxtApp().$axios.get(`/subscription${status ? `?status=${status}` : ''}`);
+      const response = await useNuxtApp().$axios.get(
+        `/subscription${status ? `?status=${status}` : ""}`
+      );
       captureEvent(ALLOWED_EVENT_NAMES.FETCHED_SUBSCRIPTIONS, {});
       return response;
     },
@@ -90,7 +92,7 @@ export const useSubscriptionStore = defineStore({
     ) {
       try {
         this.subscribingToAService = true;
-        const response = await useNuxtApp().$axios.post("/subscription", {
+        const response = await useNuxtApp().$axios.post("/subscription/user", {
           serviceId,
           startDate,
           endDate,
@@ -109,7 +111,7 @@ export const useSubscriptionStore = defineStore({
         const response = await useNuxtApp().$axios.patch(
           `/subscription/${subscriptionId}`,
           {
-            status: 'active',
+            status: "active",
           }
         );
         captureEvent(ALLOWED_EVENT_NAMES.ACTIVATED_A_SUBSCRIPTION, {});

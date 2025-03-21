@@ -61,9 +61,6 @@ const addEditServiceMode = ref("add");
 const serviceDataToEdit = ref({});
 const serviceDataToDelete = ref({});
 
-definePageMeta({
-  layout: "dashboard-layout",
-});
 
 const columns = [
   {

@@ -29,6 +29,7 @@ module.exports = {
       //inter:['Inter', 'sans-serif'],
       colors: {
         "grey-stepper": "#344054",
+        "grey-medium": "#475367",
         "grey-border": "#667185",
         "primary-green": "#0F973D",
         error: "#E26E6A",
