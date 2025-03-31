@@ -96,8 +96,8 @@ const router = useRouter();
 const formsInformation: formsInformation = [
   {
     text: {
-      header: "Facility Admin Setup",
-      sub: "Complete setup to manage your facility",
+      header: "Add A Service",
+      sub: "Add the information for one service you provide. You will be able to add more later.",
       formHeader: "Add at least one service",
     },
     formComponent: defineAsyncComponent(
@@ -106,8 +106,8 @@ const formsInformation: formsInformation = [
   },
   {
     text: {
-      header: "Facility Admin Payout",
-      sub: "Allows users to see the account details to pay when subscribing to your facility",
+      header: "Settlement Account",
+      sub: "Provide a bank account that payments can be made into.",
       formHeader: "Provide settlement account",
     },
     formComponent: defineAsyncComponent(
@@ -116,7 +116,7 @@ const formsInformation: formsInformation = [
   },
   {
     text: {
-      header: "Facility Admin Profile Policy",
+      header: "Profile Picture Policy",
       sub: "Should users of your facility provide profile picture when joining your facility?",
       formHeader: "Set profile picture policy",
     },
@@ -126,8 +126,8 @@ const formsInformation: formsInformation = [
   },
   {
     text: {
-      header: "Facility Admin Amenities",
-      sub: "Select the amenities available in your facility",
+      header: "Facility Amenities",
+      sub: "Select the amenities that are available in your facility",
       formHeader: "Select amenities",
     },
     formComponent: defineAsyncComponent(
@@ -136,8 +136,8 @@ const formsInformation: formsInformation = [
   },
   {
     text: {
-      header: "Facility Service Application Policy",
-      sub: "Defines how users access and start using facility services",
+      header: "User Access",
+      sub: "Do you need to approve users before they can join your company and start using your service?",
       formHeader: "Set service application policy",
     },
     formComponent: defineAsyncComponent(
