@@ -12,18 +12,7 @@
           <InputField
             type="text"
             v-model="formState.serviceName"
-            placeholder="E.g Shared workplace"
-          />
-        </UFormGroup>
-      </div>
-
-      <!--  Pricing Information -->
-      <div>
-        <UFormGroup label="Price" name="price">
-          <InputField
-            type="number"
-            v-model="formState.price"
-            placeholder="Enter price"
+            placeholder="e.g Daily Coworking or Monthly Gym Usage"
           />
         </UFormGroup>
       </div>
@@ -38,6 +27,18 @@
           />
         </UFormGroup>
       </div>
+      
+      <!--  Pricing Information -->
+      <div>
+        <UFormGroup label="Price" name="price">
+          <InputField
+            type="number"
+            v-model="formState.price"
+            placeholder="Enter price"
+          />
+        </UFormGroup>
+      </div>
+
 
       <!--  Button -->
       <div class="flex justify-between mt-6">

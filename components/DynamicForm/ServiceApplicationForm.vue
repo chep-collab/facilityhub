@@ -10,7 +10,7 @@
         <!--  Application Policy select -->
         <div>
           <UFormGroup
-            label="Is approval required before users can start using the facility? Select No if Users can access your facility once they pay."
+            label=""
             name="servicePolicy"
           >
             <SelectField
@@ -47,19 +47,19 @@ import { useToast } from "#imports";
 const toast = useToast();
 const isSubmitting = ref(false);
 const formState = ref({
-  servicePolicy: true,
+  servicePolicy: false,
 });
 const emit = defineEmits(["setup-success"]);
 const companyServiceStore = useCompanyServiceStore();
 const policyOptions = [
-  { label: "Yes", value: true },
-  { label: "No", value: false },
+  { label: "No, Users can subscribe to my services without approval", value: false },
+  { label: "Yes, I must approve users before they can subscribe to my services", value: true },
 ];
 const schema = object({
   servicePolicy: boolean(),
 });
 const isDisabled = computed(() => {
-  return !formState.value.servicePolicy;
+  return false;
 });
 const onSubmit = async () => {
   isSubmitting.value = true;
