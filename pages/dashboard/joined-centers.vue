@@ -98,7 +98,8 @@ const setCompanyToView = (company: object) => {
 
     <br />
     <div class="text-center" v-if="getCompaniesAUserJoined.length === 0">
-      <p>You have not joined any facility</p>
+      <p>You have not joined any facility.</p>
+      <p>To join a facility, ask you facility to invite you or click on the invitation link if you already have one.</p>
       <br />
       <!-- <UButton
         color="cyan"
