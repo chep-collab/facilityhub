@@ -163,6 +163,7 @@
     </UCard>
 
     <UCard
+      v-if="getUserType === 'company'"
       :ui="{
         base: 'card px-[18px] pt-4 pb-[23px]',
         body: 'px-4 py-4',
@@ -201,12 +202,12 @@
           </label>
         </div>
         <!-- Submit Button -->
-        <div class="flex w-full mt-6 justify-end ">
+        <div class="flex w-full mt-6 justify-end">
           <BaseButton
             type="submit"
             :disabled="getFormDisabledStatus(selectedIds)"
             :loading="isAmenitiesSubmitting"
-            class="md:max-w-[33%] "
+            class="md:max-w-[33%]"
             :class="
               getFormDisabledStatus(selectedIds)
                 ? 'bg-grey-green cursor-not-allowed'
@@ -222,9 +223,7 @@
 
 <script setup lang="ts">
 import { object, string } from "yup";
-// the types should be a record
-
-type State = Record<string, string | number | boolean | null> | never[];
+import { type formState } from "~/types/component";
 
 const { getUserType } = useActiveUserStore();
 const fieldLabel = getUserType === "company" ? "Company" : "Personal";
@@ -271,9 +270,9 @@ const isPasswordSubmitDisabled = computed(() => {
   );
 });
 
-function getFormDisabledStatus(state: State) {
+function getFormDisabledStatus(state: formState) {
   if (Array.isArray(state)) {
-    return state.length === 0; // Disabled if the array is empty
+    return state.length === 0; 
   }
 
   const status = computed(() =>

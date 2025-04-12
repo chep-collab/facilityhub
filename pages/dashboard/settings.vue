@@ -8,14 +8,15 @@
           :items="tabsItemToShow"
           v-model="selectedTab"
           color="blue"
-          class="mb-"
         />
       </div>
     </div>
 
     <!--  -->
     <div class="w-[70%] py-6 mt-[100px] mx-auto">
-      <SettingsUserOrCompanyInformation />
+      <SettingsUserOrCompanyInformation v-if="selectedTab === 'user-data'" />
+      <SettingsProfilePolicies v-if="selectedTab === 'policies'" />
+      <SettingsAccountSettlement v-if="selectedTab === 'settlement-account'" />
     </div>
   </div>
 </template>
@@ -27,7 +28,7 @@ const companyTabsItems: TabsItem[] = [
   {
     label: "Company Information",
     icon: "i-heroicons-user",
-    value: "Company Information",
+    value: "user-data",
   },
   {
     label: "Policies",
@@ -45,7 +46,7 @@ const userTabsItems: TabsItem[] = [
   {
     label: "User Information",
     icon: "i-heroicons-user",
-    value: "user-information",
+    value: "user-data",
   },
 ];
 

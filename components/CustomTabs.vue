@@ -6,7 +6,7 @@
       class="flex items-center gap-2 rounded-b px-4 pt-2 pb-[14px] text-sm font-medium border-b-4 transition-colors duration-200"
       :class="[
         modelValue === item.value
-          ? `border-${color}-500 text-${color}-600 rounded-b-sm `
+          ? `border-[#5555FF] text-[#5555FF] rounded-b-sm `
           : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
       ]"
       @click="select(item.value)"
@@ -29,10 +29,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  color: {
-    type: String,
-    default: "#5555FF",
-  },
+  //   color: {
+  //     type: String,
+  //     default: "black",
+  //   },
 });
 
 const emit = defineEmits(["update:modelValue"]);

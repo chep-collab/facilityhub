@@ -2,6 +2,7 @@ import { handleErrorMessages } from "~/common/errorHandlers";
 import { useActiveUserStore } from "#imports";
 import { storeToRefs } from "#imports";
 import { useNuxtApp } from "#imports";
+import type { CompanyProfilePayload } from "~/types/component";
 // const toast = useToast();
 
 export const useCompanyServiceStore = defineStore({
@@ -83,16 +84,10 @@ export const useCompanyServiceStore = defineStore({
         return { data: error?.response?.data?.message, result: "error" };
       }
     },
-    async updateCompanyProfile({
-      fieldKey,
-      value,
-    }: {
-      fieldKey: string;
-      value: boolean;
-    }) {
+    async updateCompanyProfile(payload: CompanyProfilePayload) {
       try {
         await useNuxtApp().$axios.patch("/company/update", {
-          [fieldKey]: value,
+          ...payload
         });
         return { data: "Profile updated", result: "success" };
       } catch (error) {
