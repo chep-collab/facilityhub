@@ -80,7 +80,7 @@ const logout = () => {
         </div>
       </div>
 
-      <main class="p-5 flex-1 overflow-y-auto bg-white dark:bg-[#0D0D0D99]">
+      <main class="p-5 flex-1 relative overflow-y-auto bg-white dark:bg-[#0D0D0D99]">
         <slot />
       </main>
     </div>

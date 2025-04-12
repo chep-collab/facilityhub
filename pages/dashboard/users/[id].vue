@@ -16,7 +16,7 @@
     <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
       <UCard
         :ui="{
-          base: 'card px-[18px] pt-4 pb-[23px] ',
+          base: 'dashboard-card px-[18px] pt-4 pb-[23px] ',
           body: 'px-4 py-4',
         }"
         class=""
@@ -78,7 +78,7 @@
 
       <UCard
         :ui="{
-          base: 'h-full  card px-[18px] pt-4 pb-[23px]',
+          base: 'h-full  dashboard-card px-[18px] pt-4 pb-[23px]',
           body: 'px-4 py-4',
         }"
       >
@@ -261,9 +261,6 @@ function goBackToUsersPage() {
 </script>
 
 <style scoped>
-.card {
-  box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.15);
-}
 .bg-icon {
   background-color: #475367;
 }

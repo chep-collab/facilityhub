@@ -7,11 +7,11 @@ const route = useRoute();
 const activeUserStore = useActiveUserStore();
 const companyServiceStore = useCompanyServiceStore();
 const { userType, getUserDetails } = storeToRefs(activeUserStore);
-
+const settingsPath = "/dashboard/settings";
 // Emit closeSidebar event when a menu item is clicked
-const closeSidebarAndNavigate = (link: { to: string }) => {
+const closeSidebarAndNavigate = (path: string) => {
   emit("closeSidebar");
-  router.push(link.to);
+  router.push(path);
 };
 function resetStores() {
   activeUserStore.$reset();
@@ -35,22 +35,22 @@ const companyTabs = [
   {
     label: "Overview",
     icon: "i-heroicons-home",
-    to: "/dashboard",
+    path: "/dashboard",
   },
   {
     label: "Subscriptions",
     icon: "i-heroicons-banknotes",
-    to: "/dashboard/subscriptions",
+    path: "/dashboard/subscriptions",
   },
   {
     label: "Services",
     icon: "i-heroicons-credit-card",
-    to: "/dashboard/services",
+    path: "/dashboard/services",
   },
   {
     label: "Users",
     icon: "i-heroicons-user",
-    to: "/dashboard/users",
+    path: "/dashboard/users",
   },
 ];
 
@@ -58,17 +58,17 @@ const userTabs = [
   {
     label: "Home",
     icon: "i-heroicons-home",
-    to: "/dashboard",
+    path: "/dashboard",
   },
   {
     label: "My Subscriptions",
     icon: "i-heroicons-banknotes",
-    to: "/dashboard/subscriptions",
+    path: "/dashboard/subscriptions",
   },
   {
     label: "My Centers",
     icon: "i-heroicons-building-office-2",
-    to: "/dashboard/joined-centers",
+    path: "/dashboard/joined-centers",
   },
 ];
 
@@ -119,10 +119,10 @@ const emit = defineEmits(["closeSidebar"]);
           <li
             v-for="link in links"
             :key="link.label"
-            @click="closeSidebarAndNavigate(link)"
+            @click="closeSidebarAndNavigate(link.path)"
             :class="[
               'flex items-center space-x-2 cursor-pointer px-2 py-2 rounded-md transition-all duration-200',
-              route.path === link.to
+              route.path === link.path
                 ? 'bg-gray-300 bg-opacity-50 text-white dark:bg-gray-600 dark:bg-opacity-50'
                 : 'hover:bg-gray-300 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-40',
             ]"
@@ -134,10 +134,16 @@ const emit = defineEmits(["closeSidebar"]);
 
         <hr class="ml-4 mr-3 mt-5" />
         <p class="ml-5 mt-5">GENERAL</p>
-        <ul>
+        <ul class="mt-2" >
           <li
-            @click="settingsComingSoon"
-            class="flex items-center space-x-2 cursor-not-allowed opacity-50 px-3 py-2 rounded-md mt-1 transition-all duration-200"
+            @click="closeSidebarAndNavigate(settingsPath)"
+            :key="'settings'"
+            :class="[
+              'flex items-center space-x-2 cursor-pointer px-2 py-2 rounded-md transition-all duration-200',
+              route.path === '/dashboard/settings'
+                ? 'bg-gray-300 bg-opacity-50 text-white dark:bg-gray-600 dark:bg-opacity-50'
+                : 'hover:bg-gray-300 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-40',
+            ]"
           >
             <i class="i-heroicons-cog-6-tooth h-5 w-5 ml-2"></i>
             <span class="text-sm font-semibold">Settings</span>
