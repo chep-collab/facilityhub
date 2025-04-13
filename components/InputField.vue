@@ -6,6 +6,10 @@
     <template v-if="$slots.leading" #leading>
       <slot name="leading"></slot>
     </template>
+
+    <template v-if="$slots.trailing" #trailing>
+      <slot name="trailing" />
+    </template>
   </UInput>
 </template>
 

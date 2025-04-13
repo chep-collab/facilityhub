@@ -14,9 +14,11 @@
 
     <!--  -->
     <div class="w-[70%] py-6 mt-[100px] mx-auto">
-      <SettingsUserOrCompanyInformation v-if="selectedTab === 'user-data'" />
-      <SettingsProfilePolicies v-if="selectedTab === 'policies'" />
-      <SettingsAccountSettlement v-if="selectedTab === 'settlement-account'" />
+      <SettingsUserOrCompanyInformation v-show="selectedTab === 'user-data'" />
+      <SettingsProfilePolicies v-show="selectedTab === 'policies'" />
+      <SettingsAccountSettlement
+        v-show="selectedTab === 'settlement-account'"
+      />
     </div>
   </div>
 </template>

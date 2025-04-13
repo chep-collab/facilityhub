@@ -13,26 +13,41 @@
       </p>
 
       <div class="flex items-center mt-3 gap-3">
-        <div>
-          <img src="/userimg.png" alt="" />
-        </div>
+        <div class="flex items-center mt-3 gap-3">
+          <!-- Profile Image -->
+          <div
+            class="w-16 h-16 rounded-full overflow-hidden cursor-pointer border"
+            @click="triggerFileSelect"
+          >
+            <img
+              :src="previewImage || '/userimg.png'"
+              alt="Profile Picture"
+              class="w-full h-full object-cover"
+            />
+          </div>
 
-        <UButton
-          class="bg-transparent border text-black"
-          :ui="{ base: 'w-fit' }"
-          @click="$emit('edit')"
-        >
-          Change
-        </UButton>
+          <!-- Change Button -->
+          <UButton
+            class="bg-transparent border border-[#E5E5EF] text-black hover:text-white"
+            :ui="{ base: 'w-fit' }"
+            @click="triggerFileSelect"
+          >
+            Change
+          </UButton>
+
+          <!-- Hidden File Input -->
+          <input
+            type="file"
+            accept="image/*"
+            ref="fileInput"
+            class="hidden"
+            @change="handleFileChange"
+          />
+        </div>
       </div>
       <!--  -->
       <div class="form-container">
-        <UForm
-          :schema="userOrCompanyDataSchema"
-          class="flex flex-col mt-8 gap-6"
-          :state="userOrCompanyDataState"
-          @submit="onUserOrCompanyDataSubmit"
-        >
+        <form class="flex flex-col mt-8 gap-6">
           <div class="flex w-full gap-5">
             <!-- Name -->
             <div class="w-full">
@@ -41,8 +56,8 @@
                 <InputField
                   icon=""
                   type="text"
-                  :disabled="isUserDataSubmitting"
-                  v-model="userOrCompanyDataState.name"
+                  :value="userDetails?.name"
+                  disabled
                   :placeholder="`${fieldLabel} Name`"
                 >
                 </InputField>
@@ -54,29 +69,14 @@
               <UFormGroup label="Email" name="email">
                 <InputField
                   type="email"
-                  :disabled="isUserDataSubmitting"
-                  v-model="userOrCompanyDataState.email"
+                  disabled
+                  :value="userDetails?.email"
                   placeholder="e.g admin@example.com"
                 />
               </UFormGroup>
             </div>
           </div>
-
-          <!--  Button -->
-          <div class="flex md:w-1/3 self-end justify-between">
-            <BaseButton
-              type="submit"
-              :disabled="getFormDisabledStatus(userOrCompanyDataState)"
-              :loading="isUserDataSubmitting"
-              :class="
-                isUserOrCompanyDataDisabled
-                  ? 'bg-grey-green cursor-not-allowed'
-                  : 'bg-primary-green hover:bg-[#0D7F32]'
-              "
-              >Submit</BaseButton
-            >
-          </div>
-        </UForm>
+        </form>
       </div>
     </UCard>
 
@@ -89,7 +89,7 @@
       <p
         class="text-[18px] font-semibold text-grey-stepper pb-2 border-[#E5E5EF] border-b"
       >
-        Enter Password
+        Change Password
       </p>
 
       <div class="form-container">
@@ -107,11 +107,31 @@
               name="oldPassword"
             >
               <InputField
-                type="password"
                 :disabled="isPasswordSubmitting"
                 v-model="passwordState.oldPassword"
                 placeholder="Enter old password"
-              />
+                :type="showOldPassword ? 'text' : 'password'"
+                :ui="{ icon: { trailing: { pointer: '' } } }"
+              >
+                <template #trailing>
+                  <UButton
+                    color="neutral"
+                    variant="link"
+                    size="sm"
+                    :icon="
+                      showOldPassword
+                        ? 'i-heroicons-eye-slash'
+                        : 'i-heroicons-eye'
+                    "
+                    :aria-label="
+                      showOldPassword ? 'Hide password' : 'Show password'
+                    "
+                    :aria-pressed="showOldPassword"
+                    aria-controls="password"
+                    @click="showOldPassword = !showOldPassword"
+                  />
+                </template>
+              </InputField>
             </UFormGroup>
 
             <!-- New Password -->
@@ -121,11 +141,31 @@
               name="newPassword"
             >
               <InputField
-                type="password"
+                :type="showNewPassword ? 'text' : 'password'"
                 :disabled="isPasswordSubmitting"
                 v-model="passwordState.newPassword"
                 placeholder="Enter new password"
-              />
+                :ui="{ icon: { trailing: { pointer: '' } } }"
+              >
+                <template #trailing>
+                  <UButton
+                    color="neutral"
+                    variant="link"
+                    size="sm"
+                    :icon="
+                      showNewPassword
+                        ? 'i-heroicons-eye-slash'
+                        : 'i-heroicons-eye'
+                    "
+                    :aria-label="
+                      showNewPassword ? 'Hide password' : 'Show password'
+                    "
+                    :aria-pressed="showNewPassword"
+                    aria-controls="password"
+                    @click="showNewPassword = !showNewPassword"
+                  />
+                </template>
+              </InputField>
             </UFormGroup>
 
             <!-- Confirm Password -->
@@ -135,11 +175,31 @@
               name="confirmPassword"
             >
               <InputField
-                type="password"
+                :type="showConfirmPassword ? 'text' : 'password'"
                 :disabled="isPasswordSubmitting"
                 v-model="passwordState.confirmPassword"
                 placeholder="Confirm new password"
-              />
+                :ui="{ icon: { trailing: { pointer: '' } } }"
+              >
+                <template #trailing>
+                  <UButton
+                    color="neutral"
+                    variant="link"
+                    size="sm"
+                    :icon="
+                      showConfirmPassword
+                        ? 'i-heroicons-eye-slash'
+                        : 'i-heroicons-eye'
+                    "
+                    :aria-label="
+                      showConfirmPassword ? 'Hide password' : 'Show password'
+                    "
+                    :aria-pressed="showConfirmPassword"
+                    aria-controls="password"
+                    @click="showConfirmPassword = !showConfirmPassword"
+                  />
+                </template>
+              </InputField>
             </UFormGroup>
           </div>
 
@@ -147,7 +207,7 @@
           <div class="flex md:w-1/3 self-end justify-between">
             <BaseButton
               type="submit"
-              :disabled="getFormDisabledStatus(passwordState)"
+              :disabled="getFormDisabledStatus(passwordState) || !isFormValid"
               :loading="isPasswordSubmitting"
               :class="
                 isPasswordSubmitDisabled
@@ -175,10 +235,10 @@
         Facility Amenities
       </p>
 
-      <UForm @submit="submitAmenitiesForm" :state="amenities">
+      <UForm @submit="onSubmitAmenitiesForm" :state="amenities">
         <div class="grid grid-cols-2 mt-8 gap-8">
           <div
-            v-show="isAmenitiesLoading"
+            v-if="isAmenitiesLoading"
             :key="index"
             v-for="(_, index) in 8"
             class="w-full flex gap-2"
@@ -188,7 +248,7 @@
           </div>
 
           <label
-            v-show="!isAmenitiesLoading"
+            v-else
             v-for="item in amenities"
             :key="item.id"
             class="flex items-center w-full space-x-2 cursor-pointer"
@@ -205,7 +265,9 @@
         <div class="flex w-full mt-6 justify-end">
           <BaseButton
             type="submit"
-            :disabled="getFormDisabledStatus(selectedIds)"
+            :disabled="
+              getFormDisabledStatus(selectedIds) || isAmenitiesUnchanged
+            "
             :loading="isAmenitiesSubmitting"
             class="md:max-w-[33%]"
             :class="
@@ -224,43 +286,55 @@
 <script setup lang="ts">
 import { object, string } from "yup";
 import { type formState } from "~/types/component";
-
-const { getUserType } = useActiveUserStore();
+import { storeToRefs } from "pinia";
+const { getUserType, changeUserPassword } = useActiveUserStore();
+const companyServiceStore = useCompanyServiceStore();
+const { userDetails } = storeToRefs(useActiveUserStore());
+const { fetchMyCompanyAmenities, AddMyCompanyAmenities } = companyServiceStore;
 const fieldLabel = getUserType === "company" ? "Company" : "Personal";
 const isUserDataSubmitting = ref(false);
 const isPasswordSubmitting = ref(false);
-const isUserOrCompanyDataDisabled = computed(() => {
-  return (
-    !userOrCompanyDataState.value.name || !userOrCompanyDataState.value.email
-  );
-});
-const userOrCompanyDataState = ref({
-  name: "",
-  email: "",
-});
+
 const toast = useToast();
 const amenities = ref([]);
 const selectedIds = ref([]);
+const baseSelectedIds = ref([]);
 const isAmenitiesLoading = ref(true);
+const showOldPassword = ref(false);
+const showNewPassword = ref(false);
+const showConfirmPassword = ref(false);
 const isAmenitiesSubmitting = ref(false);
+const fileInput = ref(null);
+const previewImage = ref(null); // base64 or blob URL
 
 const passwordState = ref({
   oldPassword: "",
   newPassword: "",
   confirmPassword: "",
 });
-const userOrCompanyDataSchema = object({
-  name: string().required("Name is required"),
-  email: string().email("Email is invalid").required("Email is required"),
+
+const isAmenitiesUnchanged = computed(() => {
+  return (
+    baseSelectedIds.value?.length === selectedIds.value?.length &&
+    baseSelectedIds.value?.every((id) => selectedIds.value?.includes(id))
+  );
 });
+const confirmPasswordSchema = string().required("Confirm password is required");
+
 const passwordSchema = object({
-  oldPassword: string().required("Old password is required"),
+  oldPassword: string()
+    .required("Old password is required")
+    .min(8, "Password must be at least 8 characters"),
   newPassword: string()
     .required("New password is required")
-    .min(8, "Password must be at least 8 characters"),
-  confirmPassword: string()
-    .required("Confirm password is required")
-    .oneOf([passwordState.value.newPassword], "Passwords must match"),
+    .min(8, "Password must be at least 8 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/,
+      "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character"
+    ),
+  confirmPassword: confirmPasswordSchema,
+}).test("passwords-match", "Passwords must match", function (value) {
+  return value?.newPassword === value?.confirmPassword;
 });
 const isPasswordSubmitDisabled = computed(() => {
   return (
@@ -269,10 +343,59 @@ const isPasswordSubmitDisabled = computed(() => {
     !passwordState.value.confirmPassword
   );
 });
+// i want the submit btn disabled until the form has been interacted with ? or an update has been made  ?
+// the forms have been interacted with
+onMounted(async () => {
+  const amenitiesResponse = await companyServiceStore.fetchFacilityAmenities();
+  const result = amenitiesResponse.result;
 
+  if (result === "success") {
+    amenities.value = amenitiesResponse.data?.map((item: unknown) => ({
+      id: item?.id,
+      label: item?.name,
+    }));
+
+    const myCompanyAmenitiesResponse = await fetchMyCompanyAmenities();
+    const myCompanyAmenitiesResult = myCompanyAmenitiesResponse.result;
+    // the company amenities are fetched after by facility amenities are gotten
+    if (myCompanyAmenitiesResult === "success") {
+      const ids = myCompanyAmenitiesResponse.data?.map(
+        (item: unknown) => item?.id
+      );
+      // base ids to compare with the selected ids
+      baseSelectedIds.value = ids;
+      selectedIds.value = ids;
+    } else {
+      toast.add({
+        color: "red",
+        description: "Error getting company amenities",
+      });
+    }
+
+    isAmenitiesLoading.value = false;
+  } else {
+    toast.add({
+      color: "red",
+      description: "Error getting facility amenities",
+    });
+  }
+});
+
+const isFormValid = ref(false);
+
+watchEffect(async () => {
+  try {
+    await passwordSchema.validate(passwordState.value, { abortEarly: false });
+    isFormValid.value = true;
+  } catch {
+    isFormValid.value = false;
+  }
+
+  console.log("Form Valid:", isFormValid.value);
+});
 function getFormDisabledStatus(state: formState) {
   if (Array.isArray(state)) {
-    return state.length === 0; 
+    return state.length === 0;
   }
 
   const status = computed(() =>
@@ -283,32 +406,74 @@ function getFormDisabledStatus(state: formState) {
   return status.value;
 }
 
-function onUserOrCompanyDataSubmit() {
-  console.log("user data is submitted");
-
-  isUserDataSubmitting.value = true;
-  // Simulate an API call
-  setTimeout(() => {
-    isUserDataSubmitting.value = false;
-    // Emit the updated data to the parent component
-  }, 2000);
+function resetPasswordFormState() {
+  passwordState.value = {
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  };
 }
-function onPasswordSubmit() {
+
+async function onPasswordSubmit() {
   isPasswordSubmitting.value = true;
-  // Simulate an API call
+  const response = await changeUserPassword(
+    {
+      oldPassword: passwordState.value.oldPassword,
+      newPassword: passwordState.value.newPassword,
+    },
+    getUserType
+  );
+  if (response.result === "success") {
+    toast.add({
+      title: "Password Updated",
+      color: "green",
+      description: "Password updated successfully",
+    });
+    resetPasswordFormState();
+  } else {
+    toast.add({ color: "red", description: response.data });
+  }
   setTimeout(() => {
     isPasswordSubmitting.value = false;
-    // Emit the updated data to the parent component
   }, 2000);
 }
 
-function onSubmitAmenitiesForm() {
+async function onSubmitAmenitiesForm() {
   isAmenitiesSubmitting.value = true;
-  // Simulate an API call
+
+  const response = await AddMyCompanyAmenities({
+    amenityIds: selectedIds.value,
+  });
+  if (response.result === "success") {
+    toast.add({
+      title: "Amenities Updated",
+      color: "green",
+      description: "Amenities updated successfully",
+    });
+  } else {
+    toast.add({ color: "red", description: response.data });
+  }
+
   setTimeout(() => {
     isAmenitiesSubmitting.value = false;
-    // Emit the updated data to the parent component
   }, 2000);
+}
+
+function triggerFileSelect() {
+  fileInput.value?.click();
+}
+
+function handleFileChange(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      previewImage.value = reader.result;
+      // Optional: emit file for parent to upload
+      // emit('change', file)
+    };
+    reader.readAsDataURL(file);
+  }
 }
 </script>
 

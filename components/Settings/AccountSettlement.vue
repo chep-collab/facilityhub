@@ -11,74 +11,7 @@
       >
         Settlement Account
       </p>
-
-      <div class="form-container">
-        <UForm
-          :schema="settlementSchema"
-          class="flex flex-col mt-8 gap-6"
-          :state="settlementState"
-          @submit="onSettlementSubmit"
-        >
-          <!-- Grid Layout -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <!-- Country -->
-            <UFormGroup label="Country" name="country">
-              <InputField
-                class="text-black"
-                disabled
-                value="Nigeria"
-                type="text"
-              />
-            </UFormGroup>
-
-            <!-- Bank Name -->
-            <UFormGroup label="Bank Name" name="bankName">
-              <InputField
-                v-model="settlementState.bankCode"
-                type="text"
-                :disabled="isSettlementSubmitting"
-                placeholder="Enter Bank Name"
-              />
-            </UFormGroup>
-
-            <!-- Account Number -->
-            <UFormGroup label="Account Number" name="accountNumber">
-              <InputField
-                v-model="settlementState.accountNumber"
-                type="text"
-                :disabled="isSettlementSubmitting"
-                placeholder="Enter Account Number"
-              />
-            </UFormGroup>
-
-            <!-- Account Name -->
-            <UFormGroup label="Account Name" name="accountName">
-              <InputField
-                disabled
-                v-model="accountName"
-                type="text"
-                placeholder="Account Name"
-              />
-            </UFormGroup>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="flex md:w-1/3 self-end justify-between">
-            <BaseButton
-              type="submit"
-              :disabled="getFormDisabledStatus(settlementState)"
-              :loading="isSettlementSubmitting"
-              :class="
-                getFormDisabledStatus(settlementState)
-                  ? 'bg-grey-green cursor-not-allowed'
-                  : 'bg-primary-green hover:bg-[#0D7F32]'
-              "
-            >
-              Submit
-            </BaseButton>
-          </div>
-        </UForm>
-      </div>
+      <DynamicFormPayoutForm :is-visible="true" />
     </UCard>
   </div>
 </template>

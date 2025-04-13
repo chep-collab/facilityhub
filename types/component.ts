@@ -6,4 +6,4 @@ export type TabsItem = {
 export type formState =
   | Record<string, string | number | boolean | null>
   | never[];
-export type CompanyProfilePayload = Record<string, string | number | boolean>;
+export type baseEndpointPayload = Record<string, string | number | boolean>;
