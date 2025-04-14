@@ -73,8 +73,6 @@ const toast = useToast();
 const store = useActiveUserStore();
 const { fetchUserDetails } = store;
 const { userDetails } = storeToRefs(store);
-const { isUserProfilePictureCompulsory, isApplicationRequiredToUseFacility } =
-  userDetails.value;
 const companyServiceStore = useCompanyServiceStore();
 const policyOptions = [
   { label: "Yes", value: true },
@@ -87,8 +85,9 @@ const applicationPolicy = ref(
 
 const isCompanyPolicyUnchanged = computed(() => {
   return (
-    isUserProfilePictureCompulsory == profilePolicy.value &&
-    isApplicationRequiredToUseFacility == applicationPolicy.value
+    userDetails.value.isUserProfilePictureCompulsory == profilePolicy.value &&
+    userDetails.value.isApplicationRequiredToUseFacility ==
+      applicationPolicy.value
   );
 });
 function convertToBoolean(value: string): boolean {
