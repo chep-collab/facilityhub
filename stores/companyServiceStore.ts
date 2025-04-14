@@ -2,6 +2,7 @@ import { handleErrorMessages } from "~/common/errorHandlers";
 import { useActiveUserStore } from "#imports";
 import { storeToRefs } from "#imports";
 import { useNuxtApp } from "#imports";
+import type { baseEndpointPayload } from "~/types/component";
 // const toast = useToast();
 
 export const useCompanyServiceStore = defineStore({
@@ -58,6 +59,25 @@ export const useCompanyServiceStore = defineStore({
         this.fetchingServices = false;
       }
     },
+    async fetchMyCompanyAmenities() {
+      try {
+        const response = await useNuxtApp().$axios.get(`/company/amenities`);
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async AddMyCompanyAmenities(payload: { [key: string]: Number[] }) {
+      const { amenityIds } = payload;
+      try {
+        const response = await useNuxtApp().$axios.post(`/company/amenities`, {
+          amenityIds,
+        });
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
     async fetchFacilityAmenities() {
       const { userDetails } = storeToRefs(useActiveUserStore());
       const facilityTypeId = userDetails.value?.facility_types[0]?.id;
@@ -70,12 +90,14 @@ export const useCompanyServiceStore = defineStore({
         return { data: error?.response?.data?.message, result: "error" };
       }
     },
-    async addAmenitiesToCompany(ids: number[]) {
+    async changeCompanyPassword(payload: baseEndpointPayload) {
+      const { oldPassword, newPassword } = payload;
       try {
         const response = await useNuxtApp().$axios.post(
-          `/company/amenities`,
+          "/company/change-password",
           {
-            amenityIds: ids,
+            oldPassword,
+            newPassword,
           }
         );
         return { data: response?.data, result: "success" };
@@ -83,16 +105,21 @@ export const useCompanyServiceStore = defineStore({
         return { data: error?.response?.data?.message, result: "error" };
       }
     },
-    async updateCompanyProfile({
-      fieldKey,
-      value,
-    }: {
-      fieldKey: string;
-      value: boolean;
-    }) {
+
+    async addAmenitiesToCompany(ids: number[]) {
+      try {
+        const response = await useNuxtApp().$axios.post(`/company/amenities`, {
+          amenityIds: ids,
+        });
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async updateCompanyProfile(payload: baseEndpointPayload) {
       try {
         await useNuxtApp().$axios.patch("/company/update", {
-          [fieldKey]: value,
+          ...payload,
         });
         return { data: "Profile updated", result: "success" };
       } catch (error) {
@@ -200,7 +227,6 @@ export const useCompanyServiceStore = defineStore({
       }
     },
     async updateCompanyServiceStatus(serviceId: string, isActive: boolean) {
-      
       try {
         this.updatingCompanyServiceStatus = true;
         const response = await useNuxtApp().$axios.patch(
