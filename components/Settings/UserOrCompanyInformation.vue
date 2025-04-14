@@ -109,6 +109,7 @@
               <InputField
                 :disabled="isPasswordSubmitting"
                 v-model="passwordState.oldPassword"
+                autocomplete
                 placeholder="Enter old password"
                 :type="showOldPassword ? 'text' : 'password'"
                 :ui="{ icon: { trailing: { pointer: '' } } }"
@@ -144,6 +145,7 @@
                 :type="showNewPassword ? 'text' : 'password'"
                 :disabled="isPasswordSubmitting"
                 v-model="passwordState.newPassword"
+                autocomplete
                 placeholder="Enter new password"
                 :ui="{ icon: { trailing: { pointer: '' } } }"
               >
@@ -179,6 +181,7 @@
                 :disabled="isPasswordSubmitting"
                 v-model="passwordState.confirmPassword"
                 placeholder="Confirm new password"
+                autocomplete
                 :ui="{ icon: { trailing: { pointer: '' } } }"
               >
                 <template #trailing>
@@ -469,8 +472,6 @@ function handleFileChange(event) {
     const reader = new FileReader();
     reader.onload = () => {
       previewImage.value = reader.result;
-      // Optional: emit file for parent to upload
-      // emit('change', file)
     };
     reader.readAsDataURL(file);
   }

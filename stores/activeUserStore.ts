@@ -18,6 +18,13 @@ export const useActiveUserStore = defineStore({
     setUserDetails(value: {}) {
       this.userDetails = value;
     },
+    async fetchUserDetails(userType: string) {
+      const userDetailsResponse = await useNuxtApp().$axios.get(
+        `${userType}/me`
+      );
+      this.userDetails = userDetailsResponse.data;
+      console.log(userDetailsResponse.data, "userDetailsResponse.data");
+    },
     setAuthenticationState(value: boolean) {
       this.isAuthenticated = value;
     },
