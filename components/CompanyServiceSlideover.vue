@@ -17,7 +17,7 @@ const { fetchingCompanyDetails, companyDetails } = storeToRefs(companyStore);
 const selectedService = ref({});
 const isSubscriptionFormOpen = ref(false);
 
-const selectThisService = async (service: any) => {
+const selectThisService =  (service: any) => {
   selectedService.value = service;
   state.serviceId = service.id;
   isSubscriptionFormOpen.value = true;
