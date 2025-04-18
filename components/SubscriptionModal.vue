@@ -23,8 +23,9 @@ const emit = defineEmits(["close"]);
 const { selectedService, isOpen } = props;
 console.log(selectedService);
 const selectedDate = ref("");
+const week = ref(true);
 const adminBankInfo = ref(null);
-
+const isAccountNumberCopied = ref(false);
 const state = reactive({
   startDate: "",
   endDate: "",
@@ -32,50 +33,51 @@ const state = reactive({
 
 const subscribeToThisService = async () => {
   try {
-    const response = await subscriptionStore.subscribeToACompanyService(
-      selectedService.id,
-      state.startDate,
-      state.endDate
-    );
-    toast.add({
-      title: response.data.message || "Subscription successful",
-      color: "green",
-    });
-    emit("close");
-    router.push("/dashboard/subscriptions");
+    // const response = await subscriptionStore.subscribeToACompanyService(
+    //   selectedService.id,
+    //   state.startDate,
+    //   state.endDate
+    // );
+    // toast.add({
+    //   title: response.data.message || "Subscription successful",
+    //   color: "green",
+    // });
+    // emit("close");
+    router.push("/dashboard/upload-receipt");
   } catch (error: any) {
     if (error) {
       toast.add({
-        title: handleErrorMessages(error),
+        // title: handleErrorMessages(error),
         color: "red",
       });
     }
   }
 };
 watchEffect(() => {
-  const date = new Date().getDate().toLocaleString();
-  const todaysDate = moment().day(date);
-  console.log(todaysDate);
-
+  const today = moment().format("YYYY-MM-DD");
+  const currentYear = moment().year();
+  const currentWeek = moment().isoWeek();
+  const currentMonth = moment().month();
   if (selectedService.companyServicePrice?.period == "daily") {
-    state.startDate = selectedDate.value || date;
-    state.endDate = selectedDate.value || date;
+    state.startDate = selectedDate.value || today;
+    state.endDate = selectedDate.value || today;
   }
   if (selectedService.companyServicePrice?.period == "weekly") {
     const year = parseInt(selectedDate.value.substring(0, 4), 10);
     const week = parseInt(selectedDate.value.substring(6, 8), 10);
 
     // Calculate start date of the week
+    const date = new Date();
     const startDate = moment()
-      .year(year)
-      .isoWeek(week)
+      .year(year || currentYear)
+      .isoWeek(week || currentWeek)
       .startOf("isoWeek")
       .format("YYYY-MM-DD");
 
     // Calculate end date of the week
     const endDate = moment()
-      .year(year)
-      .isoWeek(week)
+      .year(year || currentYear)
+      .isoWeek(week || currentWeek)
       .endOf("isoWeek")
       .format("YYYY-MM-DD");
 
@@ -83,21 +85,16 @@ watchEffect(() => {
     state.endDate = endDate;
   }
   if (selectedService.companyServicePrice?.period == "monthly") {
-    // Extract year and month from the selectedMonth string (e.g., "2024-07")
-
-    const defaultYear = new Date().getFullYear();
-    const defaultMonth = new Date().getMonth();
     const [year, month] = selectedDate.value.split("-").map(Number);
-    // Get the first day of the selected month
     const firstDayOfMonth = moment()
-      .year(year || defaultYear)
-      .month(month - 1 || defaultMonth)
+      .year(year || currentYear)
+      .month(month - 1 || currentMonth)
       .startOf("month")
       .format("YYYY-MM-DD");
     // Get the last day of the selected month
     const lastDayOfMonth = moment()
-      .year(year || defaultYear)
-      .month(month - 1 || defaultMonth)
+      .year(year || currentYear)
+      .month(month - 1 || currentMonth)
       .endOf("month")
       .format("YYYY-MM-DD");
     state.startDate = firstDayOfMonth;
@@ -105,12 +102,17 @@ watchEffect(() => {
   }
 });
 
-console.log(state);
+// i want to be able to return to dashboard as i go ahead to confirm you have paid -  if i go back do i just choose the service i want then?
 function copyAccountNumber() {
+  console.log(navigator);
   navigator.clipboard
-    .writeText(adminBankInfo.value.accountNumber)
+    .writeText("copied bro")
     .then(() => {
       console.log("Account number copied!");
+      isAccountNumberCopied.value = true;
+      setTimeout(() => {
+        isAccountNumberCopied.value = false;
+      }, 1000);
     })
     .catch((err) => {
       console.error("Failed to copy:", err);
@@ -209,9 +211,13 @@ function copyAccountNumber() {
             <UButton
               size="xs"
               variant="soft"
-              icon="i-heroicons-clipboard"
+              :icon="
+                isAccountNumberCopied
+                  ? 'i-heroicons-check'
+                  : 'i-heroicons-clipboard'
+              "
               @click="copyAccountNumber"
-              label="Copy"
+              :label="isAccountNumberCopied ? 'Copied' : 'Copy'"
             />
           </div>
         </div>

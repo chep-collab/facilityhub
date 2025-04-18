@@ -204,7 +204,7 @@ function handleNextStep() {
   }
 }
 function handleSetupSuccess() {
-  router.push("/dashboard");
+  navigateTo("/dashboard");
 }
 function goBack() {
   currentStep.value--;
