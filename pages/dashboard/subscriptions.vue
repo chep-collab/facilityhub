@@ -11,7 +11,6 @@ const {
   getSubscriptionsStatusChangingStatus,
   uploadingSubscriptionReceipt,
 } = storeToRefs(subscriptionStore);
-
 const companyServiceStore = useCompanyServiceStore();
 const { getCompanyServices } = storeToRefs(companyServiceStore);
 
@@ -86,7 +85,7 @@ const companyMenus = (row) => [
         subscriptionIdToUpdate.value = row.id;
         isActivateModalOpen.value = true;
       },
-      disabled: row.status == 'active' ? true : false,
+      disabled: row.status == "active" ? true : false,
     },
     {
       label: "View receipt",
@@ -129,9 +128,7 @@ const items = getUserType === "company" ? companyMenus : userMenus;
 const subscriptionIdToUpdate = ref("");
 const onSubmitSubscriptionActivationRequest = async () => {
   try {
-    await subscriptionStore.activateSubscription(
-      subscriptionIdToUpdate.value
-    );
+    await subscriptionStore.activateSubscription(subscriptionIdToUpdate.value);
     isActivateModalOpen.value = false;
   } catch (error: any) {
     if (error) {
@@ -235,22 +232,37 @@ await subscriptionStore.fetchCompanySubscriptions();
           {{ row.user.email }}
         </template>
 
-        <template #service-data="{ row }">
+        <template #service-data="{ row, index }">
           <span>
             {{ row.actualSubscriptionName }}
           </span>
-          <p v-if="row.receipt" class="text-green-500">
-           Receipt Uploaded
+          <p v-if="row.receipt" class="text-green-500">Receipt Uploaded</p>
+          <p v-else class="text-red-500">Receipt Not Uploaded</p>
+          <p
+            v-if="
+              getUserType == 'company' &&
+              row.status == 'inactive' &&
+              row.receipt
+            "
+            class="text-orange-500"
+          >
+            Please review and activate
           </p>
-          <p v-else class="text-red-500">
-           Receipt Not Uploaded
+          <p
+            v-if="
+              getUserType == 'user' && row.status == 'inactive' && row.receipt
+            "
+            class="text-orange-500"
+          >
+            Awaiting activation
           </p>
-          <p v-if="getUserType == 'company' && (row.status == 'inactive') && row.receipt" class="text-orange-500">
-           Please review and activate
-          </p>
-          <p v-if="getUserType == 'user' && (row.status == 'inactive') && row.receipt" class="text-orange-500">
-           Awaiting activation
-          </p>
+
+          <div v-if="!row.receipt">
+            <SubscriptionsPaymentDetailsDialog
+              :key="index"
+              :facilityId="row.id"
+            />
+          </div>
         </template>
 
         <template #amount-data="{ row }">
@@ -262,7 +274,15 @@ await subscriptionStore.fetchCompanySubscriptions();
         </template>
 
         <template #status-data="{ row }">
-          <span :class="(row.status == 'active') ? 'text-green-500' : (row.status == 'inactive') ? 'text-orange-500' : 'text-red-500'">
+          <span
+            :class="
+              row.status == 'active'
+                ? 'text-green-500'
+                : row.status == 'inactive'
+                ? 'text-orange-500'
+                : 'text-red-500'
+            "
+          >
             {{ capitalizeWord(row.status) }}
           </span>
         </template>

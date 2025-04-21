@@ -393,8 +393,6 @@ watchEffect(async () => {
   } catch {
     isFormValid.value = false;
   }
-
-  console.log("Form Valid:", isFormValid.value);
 });
 function getFormDisabledStatus(state: formState) {
   if (Array.isArray(state)) {

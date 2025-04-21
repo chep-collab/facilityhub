@@ -10,6 +10,7 @@ export const useCompanyServiceStore = defineStore({
   state: () => {
     return {
       services: [] as any[],
+      settlementAccounts: [],
       fetchingServices: false,
       creatingService: false,
       subscriptionIdToUpdate: "",
@@ -90,6 +91,15 @@ export const useCompanyServiceStore = defineStore({
         return { data: error?.response?.data?.message, result: "error" };
       }
     },
+    async fetchCompanySettlementAccounts() {
+      try {
+        const response = await useNuxtApp().$axios.get(`/settlement-account`);
+        this.settlementAccounts = response.data;
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
     async changeCompanyPassword(payload: baseEndpointPayload) {
       const { oldPassword, newPassword } = payload;
       try {
@@ -155,6 +165,7 @@ export const useCompanyServiceStore = defineStore({
         this.creatingService = true;
         const serviceNamePayload = {
           name: name,
+          description: description,
         };
         const serviceResponse = await useNuxtApp().$axios.post(
           "/company-service",

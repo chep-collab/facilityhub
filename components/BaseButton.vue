@@ -1,6 +1,7 @@
 <template>
   <UButton
     v-bind="$attrs"
+    :size="$attrs.size"
     :class="$attrs.class"
     class="text-center py-[10px] justify-center w-full"
     color="primary"

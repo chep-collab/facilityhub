@@ -2,10 +2,10 @@
 import moment from "moment";
 import { handleErrorMessages } from "~/common/errorHandlers";
 import { formatDateAddDay } from "~/common/dataFormatter";
+import { object, string } from "yup";
 const subscriptionStore = useSubscriptionStore();
 const { getSubscriptionCreationStatus } = storeToRefs(subscriptionStore);
 const toast = useToast();
-const router = useRouter();
 
 const props = defineProps({
   selectedService: {
@@ -21,50 +21,79 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 
 const { selectedService, isOpen } = props;
-console.log(selectedService);
-const selectedDate = ref("");
-const week = ref(true);
-const adminBankInfo = ref(null);
-const isAccountNumberCopied = ref(false);
-const state = reactive({
+const subscriptionSchema = object({
+  selectedDate: string().required("Date is required"),
+});
+const subscriptionFormState = reactive({
+  selectedDate: "",
+});
+const dates = ref({
   startDate: "",
   endDate: "",
 });
-
 const subscribeToThisService = async () => {
+  const payload = {
+    serviceId: selectedService.id,
+    startDate: dates.value.startDate,
+    endDate: dates.value.endDate,
+  };
   try {
-    // const response = await subscriptionStore.subscribeToACompanyService(
-    //   selectedService.id,
-    //   state.startDate,
-    //   state.endDate
-    // );
-    // toast.add({
-    //   title: response.data.message || "Subscription successful",
-    //   color: "green",
-    // });
-    // emit("close");
-    router.push("/dashboard/upload-receipt");
+    const response = await subscriptionStore.subscribeToACompanyService(
+      payload
+    );
+    toast.add({
+      title: response.data.message || "Subscription successful",
+      color: "green",
+    });
+    navigateTo("/dashboard/subscriptions");
+    emit("close");
   } catch (error: any) {
     if (error) {
       toast.add({
-        // title: handleErrorMessages(error),
+        title: "Error",
+        description: error.response.data?.message,
         color: "red",
       });
     }
   }
 };
+
+const isFormValid = computed(() => {
+  return subscriptionFormState.selectedDate.trim() !== "";
+});
+
+const dateLabel = computed(() => {
+  const period = selectedService.companyServicePrice?.period;
+  return period == "daily"
+    ? "Select a Date"
+    : period == "weekly"
+    ? "Select a Week"
+    : "Select a Month";
+});
+
+const dateType = computed(() => {
+  const period = selectedService.companyServicePrice?.period;
+  return period === "daily" ? "date" : period === "weekly" ? "week" : "month";
+});
+
 watchEffect(() => {
   const today = moment().format("YYYY-MM-DD");
   const currentYear = moment().year();
   const currentWeek = moment().isoWeek();
   const currentMonth = moment().month();
   if (selectedService.companyServicePrice?.period == "daily") {
-    state.startDate = selectedDate.value || today;
-    state.endDate = selectedDate.value || today;
+    dates.value.startDate = subscriptionFormState.selectedDate || today;
+    dates.value.endDate = subscriptionFormState.selectedDate || today;
   }
   if (selectedService.companyServicePrice?.period == "weekly") {
-    const year = parseInt(selectedDate.value.substring(0, 4), 10);
-    const week = parseInt(selectedDate.value.substring(6, 8), 10);
+    const year = parseInt(
+      subscriptionFormState.selectedDate.substring(0, 4),
+      10
+    );
+    const week = parseInt(
+      subscriptionFormState.selectedDate.substring(6, 8),
+      10
+    );
 
     // Calculate start date of the week
     const date = new Date();
@@ -81,11 +110,13 @@ watchEffect(() => {
       .endOf("isoWeek")
       .format("YYYY-MM-DD");
 
-    state.startDate = startDate;
-    state.endDate = endDate;
+    dates.value.startDate = startDate;
+    dates.value.endDate = endDate;
   }
   if (selectedService.companyServicePrice?.period == "monthly") {
-    const [year, month] = selectedDate.value.split("-").map(Number);
+    const [year, month] = subscriptionFormState.selectedDate
+      .split("-")
+      .map(Number);
     const firstDayOfMonth = moment()
       .year(year || currentYear)
       .month(month - 1 || currentMonth)
@@ -97,27 +128,10 @@ watchEffect(() => {
       .month(month - 1 || currentMonth)
       .endOf("month")
       .format("YYYY-MM-DD");
-    state.startDate = firstDayOfMonth;
-    state.endDate = lastDayOfMonth;
+    dates.value.startDate = firstDayOfMonth;
+    dates.value.endDate = lastDayOfMonth;
   }
 });
-
-// i want to be able to return to dashboard as i go ahead to confirm you have paid -  if i go back do i just choose the service i want then?
-function copyAccountNumber() {
-  console.log(navigator);
-  navigator.clipboard
-    .writeText("copied bro")
-    .then(() => {
-      console.log("Account number copied!");
-      isAccountNumberCopied.value = true;
-      setTimeout(() => {
-        isAccountNumberCopied.value = false;
-      }, 1000);
-    })
-    .catch((err) => {
-      console.error("Failed to copy:", err);
-    });
-}
 </script>
 <template>
   <UModal v-model="isOpen">
@@ -129,106 +143,65 @@ function copyAccountNumber() {
     >
       <template #header>
         <div class="flex flex-row justify-between items-center">
-          Subscibe to {{ selectedService.name }}
+          Subscribe to {{ selectedService.name }}
 
           <UButton label="Close" variant="ghost" @click="$emit('close')" />
         </div>
       </template>
-      <form class="space-y-4" @submit.prevent="subscribeToThisService">
+      <UForm
+        :state="subscriptionFormState"
+        :schema="subscriptionSchema"
+        @submit="subscribeToThisService"
+        class="space-y-4"
+      >
         <li>
-          Subscription Type :
+          Subscription Type:
           {{ selectedService.companyServicePrice?.period }}
         </li>
         <li>
-          Subscription Price : N
+          Subscription Price: N
           {{ selectedService.companyServicePrice?.amount }}
         </li>
-        <div
-          v-if="selectedService.companyServicePrice?.period == 'daily'"
-          class="my-4 flex flex-col gap-4"
-        >
-          <label for="dateInput">Select a Date:</label>
-          <input
-            class="w-full p-4 border rounded-lg"
-            type="date"
-            id="dateInput"
-            name="dateInput"
-            v-model="selectedDate"
-          />
-        </div>
 
-        <div
-          v-if="selectedService.companyServicePrice?.period == 'monthly'"
-          class="my-4 flex flex-col gap-4"
-        >
-          <label for="monthInput">Select a Month:</label>
-          <input
-            class="w-full border p-4 rounded-lg"
-            type="month"
-            id="monthInput"
-            name="monthInput"
-            v-model="selectedDate"
-          />
-        </div>
+        <li>
+          Subscription Description:
+          <p class="indent-5" >{{ selectedService?.description }}</p>
+        </li>
 
-        <div
-          v-if="selectedService.companyServicePrice?.period == 'weekly'"
-          class="my-4 flex flex-col gap-4"
-        >
-          <label for="weekInput">Select a Week:</label>
-          <input
-            class="w-full p-4 border rounded-lg"
-            type="week"
-            id="weekInput"
-            name="weekInput"
-            v-model="selectedDate"
+        <UFormGroup :label="dateLabel" name="selectedDate" required>
+          <UInput
+            v-model="subscriptionFormState.selectedDate"
+            :type="dateType"
           />
-        </div>
+        </UFormGroup>
+
         <div class="flex flex-row justify-between">
           <div class="text-sm text-brown-200">
-            From: {{ formatDateAddDay(state.startDate) }}
+            From: {{ formatDateAddDay(dates.startDate) }}
           </div>
           <div class="text-sm text-brown-200">
-            To: {{ formatDateAddDay(state.endDate) }}
+            To: {{ formatDateAddDay(dates.endDate) }}
           </div>
         </div>
-        <div class="mt-6 space-y-2 border-t pt-4">
-          <h3 class="text-lg font-semibold">Admin Payment Info</h3>
+        <p class="font-medium px-4 text-left relative text-blue-700">
+          <UIcon name="i-heroicons-exclamation-circle" class="absolute left-0 top-[5px]"> </UIcon>
 
-          <p>
-            <span class="font-medium">Bank Name:</span>
-            {{ adminBankInfo?.bankName || "Opay Bank Limited" }}
-          </p>
+          After subscribing, make payment to any of the accounts below and
+          upload your receipt to have your subscription activated.
+        </p>
 
-          <p>
-            <span class="font-medium">Account Name:</span>
-            {{ adminBankInfo?.accountName || "Jays Facility" }}
-          </p>
-
-          <div class="flex items-center gap-2">
-            <span class="font-medium">Account Number:</span>
-            <span>{{ adminBankInfo?.accountNumber || 123445452 }}</span>
-            <UButton
-              size="xs"
-              variant="soft"
-              :icon="
-                isAccountNumberCopied
-                  ? 'i-heroicons-check'
-                  : 'i-heroicons-clipboard'
-              "
-              @click="copyAccountNumber"
-              :label="isAccountNumberCopied ? 'Copied' : 'Copy'"
-            />
-          </div>
-        </div>
+        <!-- Payment Details -->
+        <h3 class="mb-0 text-lg font-bold">Company Payment Details</h3>
+        <SubscriptionsFacilityPaymentDetails />
 
         <UButton
-          :loading="getSubscriptionCreationStatus"
-          label="Proceed"
           type="submit"
+          :loading="getSubscriptionCreationStatus"
+          label="Proceed After Payment"
           block
+          :disabled="!isFormValid"
         />
-      </form>
+      </UForm>
     </UCard>
   </UModal>
 </template>

@@ -68,8 +68,7 @@ const onSubmit = async () => {
   isSubmitting.value = true;
 
   const response = await companyServiceStore.updateCompanyProfile({
-    fieldKey: "isApplicationRequiredToUseFacility",
-    value: Boolean(formState.value.servicePolicy),
+    isApplicationRequiredToUseFacility: Boolean(formState.value.servicePolicy),
   });
   const result = response.result;
   if (result === "success") {
