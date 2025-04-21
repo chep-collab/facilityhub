@@ -85,17 +85,15 @@ export const useSubscriptionStore = defineStore({
       }
     },
 
-    async subscribeToACompanyService(
-      serviceId: string,
-      startDate: string,
-      endDate: string
-    ) {
+    async subscribeToACompanyService(payload: {
+      serviceId: string;
+      startDate: string;
+      endDate: string;
+    }) {
       try {
         this.subscribingToAService = true;
         const response = await useNuxtApp().$axios.post("/subscription/user", {
-          serviceId,
-          startDate,
-          endDate,
+          ...payload,
         });
         captureEvent(ALLOWED_EVENT_NAMES.SUBSCRIBED_TO_A_SERVICE, {});
         return response;

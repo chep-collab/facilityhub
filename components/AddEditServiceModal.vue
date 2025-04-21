@@ -30,7 +30,7 @@ const { mode, isOpen, initialServiceData } = props;
 
 const schema = object({
   name: string().required("Required"),
-  description: string().optional(),
+  description: string().required('Required'),
   amount: number().required("Required"),
   period: string().required("Required"),
 });
@@ -175,22 +175,19 @@ const toggleChangeImageStatus = () => {
               />
             </UCarousel>
           </div>
-          <UFormGroup label="Service Name" name="name">
+          <UFormGroup label="Service Name" required name="name">
             <UInput v-model="state.name" />
           </UFormGroup>
 
-          <UFormGroup label="Amount" name="amount">
+          <UFormGroup label="Amount" required name="amount">
             <UInput v-model="state.amount" type="number" />
           </UFormGroup>
 
-          <UFormGroup label="Period" name="period">
+          <UFormGroup label="Period" required name="period">
             <USelect v-model="state.period" :options="periods" />
           </UFormGroup>
 
-          <UFormGroup
-            label="Describe your service (optional)"
-            name="description"
-          >
+          <UFormGroup label="Describe your service" required name="description">
             <UTextarea v-model="state.description" type="text" />
           </UFormGroup>
 

@@ -9,10 +9,7 @@
       >
         <!--  Application Policy select -->
         <div>
-          <UFormGroup
-            label=""
-            name="servicePolicy"
-          >
+          <UFormGroup label="" name="servicePolicy">
             <SelectField
               v-model="formState.servicePolicy"
               :options="policyOptions"
@@ -52,8 +49,14 @@ const formState = ref({
 const emit = defineEmits(["setup-success"]);
 const companyServiceStore = useCompanyServiceStore();
 const policyOptions = [
-  { label: "No, Users can subscribe to my services without approval", value: false },
-  { label: "Yes, I must approve users before they can subscribe to my services", value: true },
+  {
+    label: "No, Users can subscribe to my services without approval",
+    value: false,
+  },
+  {
+    label: "Yes, I must approve users before they can subscribe to my services",
+    value: true,
+  },
 ];
 const schema = object({
   servicePolicy: boolean(),
@@ -65,8 +68,7 @@ const onSubmit = async () => {
   isSubmitting.value = true;
 
   const response = await companyServiceStore.updateCompanyProfile({
-    fieldKey: "isApplicationRequiredToUseFacility",
-    value: Boolean(formState.value.servicePolicy),
+    isApplicationRequiredToUseFacility: Boolean(formState.value.servicePolicy),
   });
   const result = response.result;
   if (result === "success") {
@@ -78,7 +80,10 @@ const onSubmit = async () => {
     isSubmitting.value = false;
     emit("setup-success");
   } else {
-    toast.error("Error getting facility amenities");
+    toast.add({
+      color: "red",
+      description: "Error getting facility amenities",
+    });
   }
 };
 </script>

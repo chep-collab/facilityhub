@@ -60,8 +60,7 @@ const onSubmit = async () => {
 
   try {
     const response = await companyServiceStore.updateCompanyProfile({
-      fieldKey: "isUserProfilePictureCompulsory",
-      value: Boolean(formState.value.profilePolicy),
+      isUserProfilePictureCompulsory: Boolean(formState.value.profilePolicy),
     });
     const result = response.result;
     if (result === "success") {

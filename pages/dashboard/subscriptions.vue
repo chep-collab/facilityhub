@@ -11,6 +11,7 @@ const {
   getSubscriptionsStatusChangingStatus,
   uploadingSubscriptionReceipt,
 } = storeToRefs(subscriptionStore);
+
 const showAlert1 = ref(true);
 const showAlert2 = ref(true);
 const showAlert3 = ref(true);
@@ -244,7 +245,7 @@ await subscriptionStore.fetchCompanySubscriptions();
           {{ row.user.email }}
         </template>
 
-        <template #service-data="{ row }">
+        <template #service-data="{ row, index }">
           <span>
             {{ row.actualSubscriptionName }}
           </span>
@@ -268,6 +269,13 @@ await subscriptionStore.fetchCompanySubscriptions();
           >
             Awaiting activation
           </p>
+
+          <div v-if="!row.receipt">
+            <SubscriptionsPaymentDetailsDialog
+              :key="index"
+              :facilityId="row.id"
+            />
+          </div>
         </template>
 
         <template #amount-data="{ row }">
