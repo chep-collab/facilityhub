@@ -11,6 +11,10 @@ const {
   getSubscriptionsStatusChangingStatus,
   uploadingSubscriptionReceipt,
 } = storeToRefs(subscriptionStore);
+
+const showAlert1 = ref(true);
+const showAlert2 = ref(true);
+const showAlert3 = ref(true);
 const companyServiceStore = useCompanyServiceStore();
 const { getCompanyServices } = storeToRefs(companyServiceStore);
 
@@ -170,7 +174,11 @@ await subscriptionStore.fetchCompanySubscriptions();
 <template>
   <div>
     <UAlert
-      v-if="getUserType === 'company' && getCompanyServices.length === 0"
+      v-if="
+        showAlert1 &&
+        getUserType === 'company' &&
+        getCompanyServices.length === 0
+      "
       class="my-4 mx-4 border border-orange-500"
       :close-button="{
         icon: 'i-heroicons-x-mark-20-solid',
@@ -178,10 +186,12 @@ await subscriptionStore.fetchCompanySubscriptions();
         variant: 'link',
         padded: false,
       }"
+      @close="showAlert1 = false"
       title="You need to create a service that users can subscribe to. Click 'Service' then 'Add Service' to add a new service."
     />
+
     <UAlert
-      v-if="getUserType === 'company'"
+      v-if="showAlert2 && getUserType === 'company'"
       class="my-4 mx-4 border border-blue-500"
       :close-button="{
         icon: 'i-heroicons-x-mark-20-solid',
@@ -189,10 +199,12 @@ await subscriptionStore.fetchCompanySubscriptions();
         variant: 'link',
         padded: false,
       }"
-      title="You can activate subscription when a users uploads a receipt."
+      @close="showAlert2 = false"
+      title="You can activate subscription when a user uploads a receipt."
     />
+
     <UAlert
-      v-else
+      v-if="showAlert3 && getUserType !== 'company'"
       class="my-4 mx-4 border border-blue-500"
       :close-button="{
         icon: 'i-heroicons-x-mark-20-solid',
@@ -200,7 +212,8 @@ await subscriptionStore.fetchCompanySubscriptions();
         variant: 'link',
         padded: false,
       }"
-      title="Don't forget to pay for your subscription and upload a receipt"
+      @close="showAlert3 = false"
+      title="Don't forget to pay for your subscription and upload a receipt."
     />
     <div>
       <div
