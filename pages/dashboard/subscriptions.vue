@@ -62,6 +62,8 @@ const schema = object({
 
 const q = ref("");
 
+console.log(getSubscriptions.value);
+
 const filteredRows = computed(() => {
   if (!q.value) {
     return getSubscriptions.value;
@@ -73,6 +75,8 @@ const filteredRows = computed(() => {
     });
   });
 });
+
+console.log(filteredRows.value);
 
 const isActivateModalOpen = ref(false);
 const isReceiptUploadModalOpen = ref(false);

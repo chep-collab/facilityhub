@@ -7,7 +7,7 @@ export const useSubscriptionStore = defineStore({
   id: "subscriptionStore",
   state: () => {
     return {
-      subscriptions: [] as any[],
+      subscriptions: {} as Record<string, any>,
       fetchingSubscriptions: false,
       creatingASubscription: false,
       changingSubscriptionStatus: false,
@@ -55,6 +55,7 @@ export const useSubscriptionStore = defineStore({
     async getCompanySubscriptions() {
       const response = await useNuxtApp().$axios.get("/subscription/users");
       captureEvent(ALLOWED_EVENT_NAMES.FETCHED_SUBSCRIPTIONS, {});
+      this.subscriptions = response.data.data
       return response;
     },
 
@@ -123,7 +124,7 @@ export const useSubscriptionStore = defineStore({
   },
   getters: {
     getSubscriptions: (state) => {
-      return state.subscriptions;
+      return state.subscriptions.data;
     },
     getSubscriptionsFetchingStatus: (state) => {
       return state.fetchingSubscriptions;
