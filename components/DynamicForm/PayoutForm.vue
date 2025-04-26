@@ -80,7 +80,7 @@
         <div class="flex justify-between mt-6">
           <BaseButton
             type="submit"
-            :disabled="isDisabled"
+            :disabled="isDisabled || formDisabled"
             :loading="isSubmitting"
             :class="
               isDisabled
@@ -112,6 +112,7 @@ type accountNumber = number | string;
 
 const props = defineProps<{
   isVisible: boolean;
+  formDisabled: boolean;
 }>();
 const emit = defineEmits(["next-step"]);
 const bankDetails = ref({});

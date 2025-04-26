@@ -42,8 +42,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       password: state.password,
     });
     const accessToken = response.data.accessToken;
-    state.email = undefined;
-    state.password = undefined;
     localStorage.setItem("accessToken", accessToken);
 
     userType.value = "company";

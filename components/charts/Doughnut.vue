@@ -13,7 +13,7 @@ const props = defineProps<{
   data2: number;
 }>();
 
-const totalNo = props.data1 + props.data2;
+const totalNo = computed(() => props.data1 + props.data2);
 
 ChartJS.register(DoughnutController, ArcElement, Tooltip, Legend);
 const chartData = {
@@ -48,8 +48,8 @@ const chartOptions = {
 <template>
   <div class="relative">
     <Doughnut :data="chartData" :options="chartOptions" />
-    <div class="absolute text-3xl font-bold top-[34%] right-[45%]">
-      {{ totalNo }}
+    <div class="absolute text-3xl font-bold top-[30%] right-[46%]">
+      {{ data1 }}
     </div>
   </div>
 </template>

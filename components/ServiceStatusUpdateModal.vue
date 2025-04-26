@@ -69,13 +69,14 @@ const onSubmitStatusChangeRequest = async () => {
               service?
             </div>
 
-            <UButton
+            <BaseButton
+            class="mt-4"
               :loading="getCompanyServiceStatusUpdateState"
               @click="onSubmitStatusChangeRequest"
               type="button"
             >
               Submit
-            </UButton>
+            </BaseButton>
           </div>
         </div>
       </UCard>
