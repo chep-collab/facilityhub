@@ -3,7 +3,8 @@ import moment from "moment";
 import { storeToRefs } from "pinia";
 
 const companyStore = useCompanyStore();
-const { getCompaniesAUserJoined } = storeToRefs(companyStore);
+const { getCompaniesAUserJoined, fetchingCompanies } =
+  storeToRefs(companyStore);
 companyStore.fetchCompanyJoinedByAUser();
 
 const isCompanyServicePopoverOpen = ref(false);
@@ -97,20 +98,32 @@ const setCompanyToView = (company: object) => {
     /> -->
 
     <br />
-    <div class="text-center" v-if="getCompaniesAUserJoined.length === 0">
-      <p>You have not joined any facility.</p>
-      <p>To join a facility, ask your facility to invite you or click on the invitation link if you already have one.</p>
-      <br />
-      <!-- <UButton
-        color="cyan"
-        variant="outline"
-        @click="router.push('/facilities')"
-      >
-        Browse facilities
-      </UButton> -->
+
+    <div v-if="fetchingCompanies" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
+    <!-- Skeleton cards using USkeleton component -->
+    <div v-for="i in 6" :key="i" class="bg-white dark:bg-gray-800 rounded-lg p-5 shadow-md">
+      <!-- Company logo skeleton -->
+      <USkeleton class="h-40 w-full mb-4" rounded="lg" />
+      
+      <!-- Company name skeleton -->
+      <USkeleton class="h-7 w-3/4 mb-3" />
+      
+      <!-- Company description skeletons -->
+      <USkeleton class="h-4 w-full mb-2" />
+      <USkeleton class="h-4 w-5/6 mb-2" />
+      <USkeleton class="h-4 w-4/6 mb-4" />
+      
+      <!-- Button skeletons -->
+      <div class="flex justify-between mt-5">
+        <USkeleton class="h-10 w-2/5" rounded="md" />
+        <USkeleton class="h-10 w-2/5" rounded="md" />
+      </div>
+
     </div>
+    </div>
+
     <div
-      v-else
+      v-else-if="!fetchingCompanies && getCompaniesAUserJoined.length > 0"
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center"
     >
       <CompanyCard
@@ -121,7 +134,25 @@ const setCompanyToView = (company: object) => {
         @joinThisCompany="setCompanyToJoin"
         @viewServices="setCompanyToView"
       />
+    
+
     </div>
+    <div class="text-center" v-else-if="getCompaniesAUserJoined.length === 0">
+      <p>You have not joined any facility.</p>
+      <p>
+        To join a facility, ask your facility to invite you or click on the
+        invitation link if you already have one.
+      </p>
+      <br />
+      <!-- <UButton
+        color="cyan"
+        variant="outline"
+        @click="router.push('/facilities')"
+      >
+        Browse facilities
+      </UButton> -->
+    </div>
+
     <CompanyServiceSlideover
       v-if="isCompanyServicePopoverOpen"
       :company="selectedCompany"

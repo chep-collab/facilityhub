@@ -267,16 +267,16 @@ const closeActivateDeactiveModal = () => {
           </div>
         </template>
         <div>
-          <div class="space-y-4">
+          <div class="flex flex-col gap-4">
             <div>Are you sure you want to delete this service?</div>
 
-            <UButton
+            <BaseButton
               :loading="getCompanyServiceDeletingState"
               @click="onSubmitDeleteRequest"
               type="button"
             >
               Submit
-            </UButton>
+            </BaseButton>
           </div>
         </div>
       </UCard>

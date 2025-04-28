@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <div class="absolute top-0 right-0 left-0 bg-white shadow-lg">
+    <div class="absolute top-0 right-0 left-0  shadow-lg">
       <div class="w-[70%] mx-auto mt-4 flex flex-col">
         <h1 class="text-grey-medium font-bold text-xl mb-4">Settings</h1>
 
@@ -13,7 +13,7 @@
     </div>
 
     <!--  -->
-    <div class="w-[70%] py-6 mt-[100px] mx-auto">
+    <div class="md:w-[70%] py-6 mt-[100px] mx-auto">
       <SettingsUserOrCompanyInformation v-show="selectedTab === 'user-data'" />
       <SettingsProfilePolicies v-show="selectedTab === 'policies'" />
       <SettingsAccountSettlement

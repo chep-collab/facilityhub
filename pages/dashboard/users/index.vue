@@ -64,7 +64,7 @@ await fetchWorkspaceUsers();
 
 function onSelect(row: any, e?: Event) {
   const { firstName, userId, lastName } = row;
-
+  setSelectedUserId(userId);
   navigateTo(
     `/dashboard/users/${firstName.toLowerCase()}_${lastName.toLowerCase()}`
   );

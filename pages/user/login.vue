@@ -34,12 +34,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       password: state.password,
     });
     const accessToken = response.data.accessToken;
-    state.email = undefined;
-    state.password = undefined;
-    localStorage.setItem("accessToken", accessToken);
-
+   localStorage.setItem("accessToken", accessToken);
     userType.value = "user";
-
     const userDetailsResponse = await useNuxtApp().$axios.get("/user/me");
     userDetails.value = userDetailsResponse.data;
     activeUserStore.setAuthenticationState(true);

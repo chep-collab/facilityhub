@@ -11,7 +11,7 @@
       >
         Settlement Account
       </p>
-      <DynamicFormPayoutForm :is-visible="true" />
+      <DynamicFormPayoutForm formDisabled :is-visible="true" />
     </UCard>
   </div>
 </template>

@@ -211,13 +211,13 @@ const toggleChangeImageStatus = () => {
             </UButton>
           </div>
 
-          <UButton
+          <BaseButton
             :loading="getCreatingCompanyServicesLoadingState"
             :disabled="getCreatingCompanyServicesLoadingState"
             type="submit"
           >
             {{ mode == "add" ? "Add Service" : "Update Service" }}
-          </UButton>
+          </BaseButton>
         </UForm>
       </div>
     </UCard>

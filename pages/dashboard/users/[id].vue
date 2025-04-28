@@ -89,18 +89,21 @@
         </p>
         <div class="w-full flex flex-col items-center justify-center">
           <div class="w-[200px] mt-4 h-[200px] justify-center flex">
-            <Doughnutchart :data1="13" :data2="2" />
+            <Doughnutchart
+              :data1="userSubscriptions.data.length"
+              :data2="expiredSubscriptionsLength"
+            />
           </div>
           <div class="w-full pt-6 flex flex-col gap-2">
             <div class="flex gap-1 items-center">
               <i class="i-heroicons-banknotes bg-icon w-5 h-5"></i>
               <p class="text-grey-border">Total Subscriptions:</p>
-              13 <i> (past & active) </i>
+              {{ userSubscriptions.data.length }} <i> (past & active) </i>
             </div>
             <div class="flex gap-1 items-center">
               <i class="i-heroicons-pencil-square bg-icon w-5 h-5"></i>
               <p class="text-grey-border">Active Subscriptions:</p>
-              2
+              {{ userSubscriptions.data.length - expiredSubscriptionsLength }}
             </div>
           </div>
         </div>
@@ -218,7 +221,12 @@ const [firstName, lastName] = capitalNames;
 const userDetails = ref<{ data: any; result: string } | null>(null);
 const { getUserDetailsUnderCompany, getCompanyUserSubscriptions } =
   useWorkspaceUserStore();
-const userSubscriptions = ref([]);
+const userSubscriptions = ref({});
+const expiredSubscriptionsLength = computed(
+  () =>
+    userSubscriptions?.value?.data?.filter((item) => item.status === "inactive")
+      .length
+);
 const { data: response } = await useAsyncData("user-details", async () => {
   const response = getUserDetailsUnderCompany();
   return response;
