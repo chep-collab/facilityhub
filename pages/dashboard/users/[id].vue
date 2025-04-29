@@ -54,7 +54,10 @@
           <div class="flex items-center gap-1">
             <i class="i-heroicons-calendar bg-icon w-5 h-5"></i>
             <p class="text-grey-border">
-              Date Joined : <span class="text-icon">{{}} </span>
+              Date Joined :
+              <span class="text-icon"
+                >{{ formatDate(userDetails?.joinedAt || "-") }}
+              </span>
             </p>
           </div>
         </div>
@@ -184,7 +187,7 @@
 
 <script setup lang="ts">
 import Doughnutchart from "~/components/charts/Doughnut.vue";
-
+import { formatDate } from "~/common/dataFormatter";
 const router = useRouter();
 const columns = [
   {

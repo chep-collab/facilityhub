@@ -2,13 +2,17 @@
 const idOfCopiedNumber = ref(0);
 const isAccountNumberCopied = ref(false);
 const companyServiceStore = useCompanyServiceStore();
-const { settlementAccounts } = storeToRefs(companyServiceStore);
+const { settlementAccount } = storeToRefs(companyServiceStore);
 const accountsLoading = ref(false);
+
+const props =defineProps<{
+  companyId:string
+}>()
 
 onMounted(async () => {
   try {
     accountsLoading.value = true;
-    await companyServiceStore.fetchCompanySettlementAccounts();
+    await companyServiceStore.fetchCompanySettlementAccount(props.companyId);
   } catch (err) {
     console.log("Error Loading accounts");
   } finally {
@@ -34,11 +38,9 @@ function copyAccountNumber(acctNo: string, id: number) {
 
 <template>
   <div class="overflow-y-auto">
-    <div class="flex flex-col gap-6" v-if="settlementAccounts.length > 0">
+    <div class="flex flex-col gap-6" v-if="settlementAccount">
       <div
-        v-for="(item, index) in settlementAccounts"
-        :key="index"
-        class="space-y-2  border-t pt-4"
+            class="space-y-2  border-t pt-4"
       >
         <h3 class="text-lg font-semibold"></h3>
         <p>

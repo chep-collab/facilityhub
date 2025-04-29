@@ -10,7 +10,7 @@ export const useCompanyServiceStore = defineStore({
   state: () => {
     return {
       services: [] as any[],
-      settlementAccounts: [],
+      settlementAccount: null,
       fetchingServices: false,
       creatingService: false,
       subscriptionIdToUpdate: "",
@@ -91,10 +91,10 @@ export const useCompanyServiceStore = defineStore({
         return { data: error?.response?.data?.message, result: "error" };
       }
     },
-    async fetchCompanySettlementAccounts() {
+    async fetchCompanySettlementAccount(id:number) {
       try {
-        const response = await useNuxtApp().$axios.get(`/settlement-account`);
-        this.settlementAccounts = response.data;
+        const response = await useNuxtApp().$axios.get(`/settlement-account/company/${id}`);
+        this.settlementAccount = response.data;
         return { data: response?.data, result: "success" };
       } catch (error) {
         return { data: error?.response?.data?.message, result: "error" };
