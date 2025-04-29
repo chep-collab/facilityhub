@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <UCard class="w-[45%] sm:w-[45%] lg:max-w-[250px] py-4 px-1">
+    <UCard class="w-full py-4 px-1">
         <p class="h-8 text-[#475367] text-3xl font-semibold mb-6">{{ value }}</p>
         <p class="h-8 text-[#475367] text-lg font-medium">{{ title }}</p>
     </UCard>

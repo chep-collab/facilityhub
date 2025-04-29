@@ -24,7 +24,7 @@
               ✕
             </button>
           </div>
-          <SubscriptionsFacilityPaymentDetails />
+          <SubscriptionsFacilityPaymentDetails :companyId="companyId"  />
         </div>
       </template>
     </UPopover>
@@ -32,10 +32,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
-  facilityId: {
-    type: String,
-    required: true,
-  },
-});
+const props = defineProps<{
+  companyId:string
+}>()
 </script>
