@@ -277,7 +277,7 @@ await subscriptionStore.fetchCompanySubscriptions();
           <div v-if="!row.receipt && getUserType !== 'company'">
             <SubscriptionsPaymentDetailsDialog
               :key="index"
-              :companyId="row.id"
+              :companyId="row.company.id"
             />
           </div>
         </template>
