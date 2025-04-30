@@ -2,12 +2,12 @@
 const idOfCopiedNumber = ref(0);
 const isAccountNumberCopied = ref(false);
 const companyServiceStore = useCompanyServiceStore();
-const { settlementAccount } = storeToRefs(companyServiceStore);
+const { settlementAccounts } = storeToRefs(companyServiceStore);
 const accountsLoading = ref(false);
 
-const props =defineProps<{
-  companyId:string
-}>()
+const props = defineProps<{
+  companyId: string;
+}>();
 
 onMounted(async () => {
   try {
@@ -38,22 +38,24 @@ function copyAccountNumber(acctNo: string, id: number) {
 
 <template>
   <div class="overflow-y-auto">
-    <div class="flex flex-col gap-6" v-if="settlementAccount">
+    <div class="flex flex-col gap-6" v-if="settlementAccounts.length > 0">
       <div
-            class="space-y-2  border-t pt-4"
+        :key="index"
+        v-for="(item, index) in settlementAccounts"
+        class="space-y-2 border-t pt-4"
       >
         <h3 class="text-lg font-semibold"></h3>
         <p>
           <span class="font-medium">Bank Name:</span>
-          {{ item?.bankName || "Opay Bank Limited" }}
+          {{ item?.bankName }}
         </p>
         <p>
           <span class="font-medium">Account Name:</span>
-          {{ item?.accountHolderName || "Jays Facility" }}
+          {{ item?.accountHolderName }}
         </p>
         <div class="flex items-center gap-2">
           <span class="font-medium">Account Number:</span>
-          <span>{{ item?.accountNumber || 123445452 }}</span>
+          <span>{{ item?.accountNumber }}</span>
           <UButton
             size="xs"
             variant="soft"

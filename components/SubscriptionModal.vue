@@ -45,8 +45,8 @@ const subscribeToThisService = async () => {
       title: response.data.message || "Subscription successful",
       color: "green",
     });
+
     navigateTo("/dashboard/subscriptions");
-    emit("close");
   } catch (error: any) {
     if (error) {
       toast.add({
@@ -165,7 +165,7 @@ watchEffect(() => {
 
         <li>
           Subscription Description:
-          <p class="indent-5" >{{ selectedService?.description }}</p>
+          <p class="indent-5">{{ selectedService?.description }}</p>
         </li>
 
         <UFormGroup :label="dateLabel" name="selectedDate" required>
@@ -184,7 +184,11 @@ watchEffect(() => {
           </div>
         </div>
         <p class="font-medium px-4 text-left relative text-blue-700">
-          <UIcon name="i-heroicons-exclamation-circle" class="absolute left-0 top-[5px]"> </UIcon>
+          <UIcon
+            name="i-heroicons-exclamation-circle"
+            class="absolute left-0 top-[5px]"
+          >
+          </UIcon>
 
           After subscribing, make payment to any of the accounts below and
           upload your receipt to have your subscription activated.
