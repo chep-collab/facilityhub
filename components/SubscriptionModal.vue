@@ -157,17 +157,34 @@ watchEffect(() => {
       >
         <li>
           Subscription Type:
-          {{ selectedService.companyServicePrice?.period }}
+          <span class="font-medium">{{ selectedService.companyServicePrice?.period }}</span>
         </li>
         <li>
           Subscription Price: N
-          {{ selectedService.companyServicePrice?.amount }}
+          <span class="font-medium">{{ selectedService.companyServicePrice?.amount }}</span>
         </li>
 
         <li>
           Subscription Description:
-          <p class="indent-5">{{ selectedService?.description }}</p>
+          <span class="font-medium">{{ selectedService?.description }}</span>
         </li>
+
+        <p class="font-medium px-4 text-left relative text-blue-700">
+          <UIcon
+            name="i-heroicons-exclamation-circle"
+            class="absolute left-0 top-[5px]"
+          >
+          </UIcon>
+
+          <span class="text-xs">
+            After subscribing, make payment to any of the accounts below and
+            upload your receipt to have your subscription activated.
+          </span>
+        </p>
+
+        <!-- Payment Details -->
+        <h3 class="mb-0 text-base font-medium">Company Payment Details</h3>
+        <SubscriptionsFacilityPaymentDetails :company-id="companyId" />
 
         <UFormGroup :label="dateLabel" name="selectedDate" required>
           <UInput
@@ -184,25 +201,11 @@ watchEffect(() => {
             To: {{ formatDateAddDay(dates.endDate) }}
           </div>
         </div>
-        <p class="font-medium px-4 text-left relative text-blue-700">
-          <UIcon
-            name="i-heroicons-exclamation-circle"
-            class="absolute left-0 top-[5px]"
-          >
-          </UIcon>
-
-          After subscribing, make payment to any of the accounts below and
-          upload your receipt to have your subscription activated.
-        </p>
-
-        <!-- Payment Details -->
-        <h3 class="mb-0 text-lg font-bold">Company Payment Details</h3>
-        <SubscriptionsFacilityPaymentDetails :company-id="companyId" />
 
         <UButton
           type="submit"
           :loading="getSubscriptionCreationStatus"
-          label="Proceed After Payment"
+          label="Subscribe"
           block
           :disabled="!isFormValid"
         />
