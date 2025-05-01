@@ -1,6 +1,13 @@
+import type { baseEndpointPayload } from "~/types/component";
+
+type userStoreState = {
+  userType: string;
+  userDetails: {};
+  isAuthenticated: boolean;
+};
 export const useActiveUserStore = defineStore({
   id: "activeUserStore",
-  state: () => {
+  state: (): userStoreState => {
     return {
       userType: "",
       userDetails: {},
@@ -8,12 +15,33 @@ export const useActiveUserStore = defineStore({
     };
   },
   actions: {
-    fetchUserDetails(type: string) {
-      // fetch from the backend
-      //set the user's details
+    setUserDetails(value: {}) {
+      this.userDetails = value;
+    },
+    async fetchUserDetails(userType: string) {
+      const userDetailsResponse = await useNuxtApp().$axios.get(
+        `${userType}/me`
+      );
+      this.userDetails = userDetailsResponse.data;
+      console.log(userDetailsResponse.data, "userDetailsResponse.data");
     },
     setAuthenticationState(value: boolean) {
       this.isAuthenticated = value;
+    },
+    async changeUserPassword(payload: baseEndpointPayload, userType: string) {
+      const { oldPassword, newPassword } = payload;
+      try {
+        const response = await useNuxtApp().$axios.post(
+          `/${userType}/change-password`,
+          {
+            oldPassword,
+            newPassword,
+          }
+        );
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
     },
   },
   getters: {

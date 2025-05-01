@@ -3,10 +3,6 @@
 const companyStore = useCompanyStore();
 const { getCompanies } = storeToRefs(companyStore);
 const router = useRouter();
-definePageMeta({
-  layout: "dashboard-layout",
-  middleware: ['invitation']
-});
 companyStore.fetchCompanyJoinedByAUser();
 const alreadyJoined = ref(false); 
 
@@ -96,7 +92,6 @@ const acceptInvitation = async () => {
       Join {{ invitingCompanyName }}
     </h1>
     <p class="text-gray-700 mb-2">
-        alreadyJoined {{ alreadyJoined }} <br>
       <span class="font-medium">Facility type:</span> {{ facilityType }}
     </p>
     <p class="text-gray-700 mb-4">

@@ -30,7 +30,7 @@ const { mode, isOpen, initialServiceData } = props;
 
 const schema = object({
   name: string().required("Required"),
-  description: string().optional(),
+  description: string().required('Required'),
   amount: number().required("Required"),
   period: string().required("Required"),
 });
@@ -59,13 +59,13 @@ const handleFileUpload = (file: any) => {
 async function createNewCompanyService(event: any) {
   try {
     const payload = event.data;
-    await companyServiceStore.createNewService(
-      payload.name,
-      payload.description,
-      payload.amount,
-      payload.period,
-      payload.avatar
-    );
+    await companyServiceStore.createNewService({
+      name: payload.name,
+      description: payload.description,
+      amount: payload.amount,
+      period: payload.period,
+      avatar: payload.avatar,
+    });
     state.name = undefined;
     state.description = undefined;
     state.amount = undefined;
@@ -175,19 +175,19 @@ const toggleChangeImageStatus = () => {
               />
             </UCarousel>
           </div>
-          <UFormGroup label="Service Name" name="name">
+          <UFormGroup label="Service Name" required name="name">
             <UInput v-model="state.name" />
           </UFormGroup>
-          
-          <UFormGroup label="Amount" name="amount">
+
+          <UFormGroup label="Amount" required name="amount">
             <UInput v-model="state.amount" type="number" />
           </UFormGroup>
-          
-          <UFormGroup label="Period" name="period">
+
+          <UFormGroup label="Period" required name="period">
             <USelect v-model="state.period" :options="periods" />
           </UFormGroup>
-          
-          <UFormGroup label="Describe your service (optional)" name="description">
+
+          <UFormGroup label="Describe your service" required name="description">
             <UTextarea v-model="state.description" type="text" />
           </UFormGroup>
 
@@ -211,13 +211,13 @@ const toggleChangeImageStatus = () => {
             </UButton>
           </div>
 
-          <UButton
+          <BaseButton
             :loading="getCreatingCompanyServicesLoadingState"
             :disabled="getCreatingCompanyServicesLoadingState"
             type="submit"
           >
             {{ mode == "add" ? "Add Service" : "Update Service" }}
-          </UButton>
+          </BaseButton>
         </UForm>
       </div>
     </UCard>

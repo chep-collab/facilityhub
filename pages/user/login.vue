@@ -34,12 +34,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       password: state.password,
     });
     const accessToken = response.data.accessToken;
-    state.email = undefined;
-    state.password = undefined;
-    localStorage.setItem("accessToken", accessToken);
-
+   localStorage.setItem("accessToken", accessToken);
     userType.value = "user";
-
     const userDetailsResponse = await useNuxtApp().$axios.get("/user/me");
     userDetails.value = userDetailsResponse.data;
     activeUserStore.setAuthenticationState(true);
@@ -49,6 +45,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       email: userDetails.value.email,
       full_name: `${userDetails.value.firstName} ${userDetails.value.lastName}`,
     });
+    const userTypeInApp = useState("user-type");
+    userTypeInApp.value = "user";
     router.push("/dashboard");
   } catch (error: any) {
     if (error) {
@@ -64,9 +62,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <UCard class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
+  <UCard
+    class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12"
+  >
     <template #header>
-      <h2 class="text-2xl font-semibold text-center text-gray-900">Facility User Login</h2>
+      <h2 class="text-2xl font-semibold text-center text-gray-900">
+        Facility User Login
+      </h2>
     </template>
     <div>
       <UForm
@@ -76,14 +78,27 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         @submit="onSubmit"
       >
         <UFormGroup label="Email" name="email">
-          <UInput v-model="state.email" class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+          <UInput
+            v-model="state.email"
+            class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
         </UFormGroup>
 
         <UFormGroup label="Password" name="password">
-          <UInput v-model="state.password" type="password" class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
+          <UInput
+            v-model="state.password"
+            type="password"
+            class="w-full px-0 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
         </UFormGroup>
 
-        <UButton :loading="pending" :disabled="pending" type="submit" block class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
+        <UButton
+          :loading="pending"
+          :disabled="pending"
+          type="submit"
+          block
+          class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
           {{ pending ? "Loading" : "Submit" }}
         </UButton>
       </UForm>
@@ -91,12 +106,22 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     <template #footer>
       <div class="flex justify-between mt-6">
-        <ULink to="/user/signup" class="text-green-500 hover:text-green-700">Signup</ULink>
-        <ULink to="/user/forgot-password" class="text-green-500 hover:text-green-700">Forgot Password</ULink>
+        <ULink to="/user/signup" class="text-green-500 hover:text-green-700"
+          >Signup</ULink
+        >
+        <ULink
+          to="/user/forgot-password"
+          class="text-green-500 hover:text-green-700"
+          >Forgot Password</ULink
+        >
       </div>
     </template>
   </UCard>
 
   <br />
-  <ULink to="/" class="text-green-500 hover:text-green-700 mx-auto block text-center">Home</ULink>
+  <ULink
+    to="/"
+    class="text-green-500 hover:text-green-700 mx-auto block text-center"
+    >Home</ULink
+  >
 </template>

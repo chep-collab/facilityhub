@@ -14,7 +14,7 @@
                 <p class="text-lg lg:text-xl text-gray-600 text-center md:text-left">
                     Facility Hub is a comprehensive platform for workspace owners and users. Workspace owners can list and manage their available services, invite users to join and subscribe to their services, and manage subscriptions in one app.
                     <br> <br>
-                    Users benefit from a streamlined subscription experience and access to personalized dashboards, making it easy to find and book spaces
+                    Users benefit from a streamlined subscription experience and access to personalized dashboards, making it easy to book spaces
                     that suit their needs. </p>
             </div>
 

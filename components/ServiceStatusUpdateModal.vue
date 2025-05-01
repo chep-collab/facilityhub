@@ -9,15 +9,29 @@ const props = defineProps({
     required: true,
   },
 });
+const toast = useToast();
 const emit = defineEmits(["close"]);
 const { selectedService, isOpen } = props;
 const companyServiceStore = useCompanyServiceStore();
 const { getCompanyServiceStatusUpdateState } = storeToRefs(companyServiceStore);
 const onSubmitStatusChangeRequest = async () => {
-  await companyServiceStore.updateCompanyServiceStatus(
+  const response = await companyServiceStore.updateCompanyServiceStatus(
     selectedService.id,
     !selectedService.isActive
   );
+  if (response.result === "success") {
+    toast.add({
+      title: "Status Update",
+      description: "Sevice status updated successfully!",
+      color: "green",
+    });
+  } else if (response.result === "error") {
+    toast.add({
+      title: " Error",
+      description: response.data,
+      color: "red",
+    });
+  }
   emit("close");
 };
 </script>
@@ -55,13 +69,14 @@ const onSubmitStatusChangeRequest = async () => {
               service?
             </div>
 
-            <UButton
+            <BaseButton
+            class="mt-4"
               :loading="getCompanyServiceStatusUpdateState"
               @click="onSubmitStatusChangeRequest"
               type="button"
             >
               Submit
-            </UButton>
+            </BaseButton>
           </div>
         </div>
       </UCard>

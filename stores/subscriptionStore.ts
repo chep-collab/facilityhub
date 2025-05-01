@@ -7,7 +7,7 @@ export const useSubscriptionStore = defineStore({
   id: "subscriptionStore",
   state: () => {
     return {
-      subscriptions: [] as any[],
+      subscriptions: null,
       fetchingSubscriptions: false,
       creatingASubscription: false,
       changingSubscriptionStatus: false,
@@ -55,11 +55,14 @@ export const useSubscriptionStore = defineStore({
     async getCompanySubscriptions() {
       const response = await useNuxtApp().$axios.get("/subscription/users");
       captureEvent(ALLOWED_EVENT_NAMES.FETCHED_SUBSCRIPTIONS, {});
+      this.subscriptions = response.data;
       return response;
     },
 
-    async getAUsersSubscriptions(status?: "active" | "inactive") {
-      const response = await useNuxtApp().$axios.get(`/subscription${status ? `?status=${status}` : ''}`);
+    async getAUsersSubscriptions(status?: "active" | "inactive" | "expired") {
+      const response = await useNuxtApp().$axios.get(
+        `/subscription${status ? `?status=${status}` : ""}`
+      );
       captureEvent(ALLOWED_EVENT_NAMES.FETCHED_SUBSCRIPTIONS, {});
       return response;
     },
@@ -83,17 +86,15 @@ export const useSubscriptionStore = defineStore({
       }
     },
 
-    async subscribeToACompanyService(
-      serviceId: string,
-      startDate: string,
-      endDate: string
-    ) {
+    async subscribeToACompanyService(payload: {
+      serviceId: string;
+      startDate: string;
+      endDate: string;
+    }) {
       try {
         this.subscribingToAService = true;
-        const response = await useNuxtApp().$axios.post("/subscription", {
-          serviceId,
-          startDate,
-          endDate,
+        const response = await useNuxtApp().$axios.post("/subscription/user", {
+          ...payload,
         });
         captureEvent(ALLOWED_EVENT_NAMES.SUBSCRIBED_TO_A_SERVICE, {});
         return response;
@@ -103,13 +104,13 @@ export const useSubscriptionStore = defineStore({
         this.subscribingToAService = false;
       }
     },
-    async activateSubscription(subscriptionId: string, newStatus: boolean) {
+    async activateSubscription(subscriptionId: string) {
       try {
         this.changingSubscriptionStatus = true;
         const response = await useNuxtApp().$axios.patch(
           `/subscription/${subscriptionId}`,
           {
-            isActive: newStatus,
+            status: "active",
           }
         );
         captureEvent(ALLOWED_EVENT_NAMES.ACTIVATED_A_SUBSCRIPTION, {});
@@ -123,6 +124,9 @@ export const useSubscriptionStore = defineStore({
   },
   getters: {
     getSubscriptions: (state) => {
+      if (state?.subscriptions?.data) {
+        return state.subscriptions?.data;
+      }
       return state.subscriptions;
     },
     getSubscriptionsFetchingStatus: (state) => {

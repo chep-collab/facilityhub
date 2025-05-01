@@ -1,48 +1,61 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   const activeUserStore = useActiveUserStore();
   const toast = useToast();
-  const router = useRouter();
-  const runtimeConfig = useRuntimeConfig(); // Referencing the runtime configuration
-  const activateComingSoon = runtimeConfig.public.activateComingSoon; //targets the variable here
+  const runtimeConfig = useRuntimeConfig();
+  const activateComingSoon = runtimeConfig.public.activateComingSoon;
 
+  const nuxtapp = useNuxtApp();
+  const companyStore = useCompanyServiceStore();
+  const { getCompanyOnboardingStatus } = companyStore;
 
-   // This check if Coming Soon is active, then it will redirect to coming soon page 
-   if (activateComingSoon === "yes" && ((to.name as string).includes("login") || (to.name as string).includes("signup"))) {
-    return navigateTo({ name: "coming-soon" });  
+  if (
+    activateComingSoon === "yes" &&
+    ((to.name as string).includes("login") ||
+      (to.name as string).includes("signup"))
+  ) {
+    return navigateTo({ name: "coming-soon" });
   }
-
 
   const { getAuthenticationState } = storeToRefs(activeUserStore);
   const destinationName = to.name as string;
+
   if (
     destinationName.includes("dashboard") &&
     getAuthenticationState.value === false
   ) {
-    toast.add({
-      title: "Please login",
-      color: "amber",
-    });
+    if (toast) {
+      toast?.add({
+        title: "Please login",
+        color: "amber",
+      });
+    }
+
     if (activeUserStore.getUserType == "company") {
-      router.push({ name: "company-login" });
+      return navigateTo({ name: "company-login" });
     } else {
-      router.push({ name: "user-login" });
+      return navigateTo({ name: "user-login" });
     }
   }
 
-  // note: the if statement below  might need to be modified to seperate between
-  // going to user login page or company login page
-  // for e.g, we might want an authenticated user who clicks on the admin login page to view it
-  // and we might want an authenticated company who clicks on the user login page to view it
-
-  // A simpler approach might be to user a single login form for both user and admin
-  // (Note: the dashboard view takes shapes depending on the user type that is logged in)
-  // If you decide to do the above, then the if statement below will not require modification.
-
-  // Please rememeber to clear out or modify the comment based on what you do.
   if (
-    destinationName.includes("login") &&
-    getAuthenticationState.value === true
+    !from.name?.toString().includes("dashboard") &&
+    activeUserStore.getUserType === "company" &&
+    destinationName.includes("dashboard") &&
+    getAuthenticationState.value
   ) {
-    router.push({ name: "dashboard" });
+    try {
+      const response = await getCompanyOnboardingStatus();
+      const onboardingStatus = response.data;
+
+      const steps = onboardingStatus?.steps;
+      if (steps && !Object.values(steps).every((step: any) => step.completed)) {
+        return navigateTo({ name: "onboarding" });
+      }
+    } catch (error) {
+      return navigateTo({ name: "company-login" });
+    }
+  }
+  if (destinationName.includes("login") && getAuthenticationState.value) {
+    return navigateTo({ name: "dashboard" });
   }
 });

@@ -1,20 +1,24 @@
 import { handleErrorMessages } from "~/common/errorHandlers";
-const toast = useToast();
-const {
-  posthog: { captureEvent, ALLOWED_EVENT_NAMES },
-} = usePosthog();
+import { useActiveUserStore } from "#imports";
+import { storeToRefs } from "#imports";
+import { useNuxtApp } from "#imports";
+import type { baseEndpointPayload } from "~/types/component";
+// const toast = useToast();
 
 export const useCompanyServiceStore = defineStore({
   id: "companyServiceStore",
   state: () => {
     return {
       services: [] as any[],
+      settlementAccounts: [],
       fetchingServices: false,
       creatingService: false,
       subscriptionIdToUpdate: "",
       isActivateModalOpen: false,
       updatingCompanyServiceStatus: false,
       deletingCompanyServiceStatus: false,
+      facilityAmenities: [] as {}[],
+      onboardingStatus: {} as any,
     };
   },
   actions: {
@@ -38,38 +42,134 @@ export const useCompanyServiceStore = defineStore({
             avatarUrl: service.avatarUrl || "",
           });
         }
+        const {
+          posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+        } = usePosthog();
+
         captureEvent(ALLOWED_EVENT_NAMES.FETCH_COMPANY_SERVICES, {});
         this.services = res;
       } catch (error: any) {
         if (error) {
-          const toast = useToast();
-          toast.add({
-            title: handleErrorMessages(error),
-            color: "red",
-          });
+          // const toast = useToast();
+          // toast.add({
+          //   title: handleErrorMessages(error),
+          //   color: "red",
+          // });
         }
       } finally {
         this.fetchingServices = false;
       }
     },
-    async createNewService(
-      name: string,
-      description: string,
-      amount: number,
-      period: string,
-      avatar: File
-    ) {
+    async fetchMyCompanyAmenities() {
+      try {
+        const response = await useNuxtApp().$axios.get(`/company/amenities`);
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async AddMyCompanyAmenities(payload: { [key: string]: Number[] }) {
+      const { amenityIds } = payload;
+      try {
+        const response = await useNuxtApp().$axios.post(`/company/amenities`, {
+          amenityIds,
+        });
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async fetchFacilityAmenities() {
+      const { userDetails } = storeToRefs(useActiveUserStore());
+      const facilityTypeId = userDetails.value?.facility_types[0]?.id;
+      try {
+        const response = await useNuxtApp().$axios.get(
+          `/facility-types/${facilityTypeId}/amenities`
+        );
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async fetchCompanySettlementAccount(id:string) {
+      try {
+        const response = await useNuxtApp().$axios.get(`/settlement-account/company/${id}`);
+        this.settlementAccounts = response.data;
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async changeCompanyPassword(payload: baseEndpointPayload) {
+      const { oldPassword, newPassword } = payload;
+      try {
+        const response = await useNuxtApp().$axios.post(
+          "/company/change-password",
+          {
+            oldPassword,
+            newPassword,
+          }
+        );
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+
+    async addAmenitiesToCompany(ids: number[]) {
+      try {
+        const response = await useNuxtApp().$axios.post(`/company/amenities`, {
+          amenityIds: ids,
+        });
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async updateCompanyProfile(payload: baseEndpointPayload) {
+      try {
+        await useNuxtApp().$axios.patch("/company/update", {
+          ...payload,
+        });
+        return { data: "Profile updated", result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async getCompanyOnboardingStatus() {
+      try {
+        const response = await useNuxtApp().$axios.get(
+          "/company/onboarding-statuses"
+        );
+        this.onboardingStatus = response?.data;
+
+        return { data: response?.data, result: "success" };
+      } catch (error) {
+        return { data: error?.response?.data?.message, result: "error" };
+      }
+    },
+    async createNewService({
+      name,
+      amount,
+      period,
+      description,
+      avatar,
+    }: {
+      name: string;
+      amount: number;
+      period: string;
+      description?: string;
+      avatar?: File;
+    }) {
       try {
         this.creatingService = true;
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("description", description);
-        if (avatar) {
-          formData.append("avatar", avatar, avatar.name);
-        }
+        const serviceNamePayload = {
+          name: name,
+          description: description,
+        };
         const serviceResponse = await useNuxtApp().$axios.post(
           "/company-service",
-          formData
+          serviceNamePayload
         );
 
         const priceResponse = await useNuxtApp().$axios.post(
@@ -80,11 +180,16 @@ export const useCompanyServiceStore = defineStore({
             period,
           }
         );
+        const {
+          posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+        } = usePosthog();
         captureEvent(ALLOWED_EVENT_NAMES.COMPANY_CREATE_SERVICE, {
           ...serviceResponse.data,
           ...priceResponse.data,
         });
+
         await this.fetchCompanyServices();
+        return { data: "Service created", result: "success" };
       } catch (error: any) {
         throw error;
       } finally {
@@ -120,6 +225,10 @@ export const useCompanyServiceStore = defineStore({
             period,
           }
         );
+        const {
+          posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+        } = usePosthog();
+
         captureEvent(ALLOWED_EVENT_NAMES.COMPANY_UPDATE_SERVICE, {});
         await this.fetchCompanyServices();
       } catch (error: any) {
@@ -131,20 +240,29 @@ export const useCompanyServiceStore = defineStore({
     async updateCompanyServiceStatus(serviceId: string, isActive: boolean) {
       try {
         this.updatingCompanyServiceStatus = true;
-        await useNuxtApp().$axios.patch(`/company-service/${serviceId}`, {
-          isActive: `${isActive}`,
-        });
+        const response = await useNuxtApp().$axios.patch(
+          `/company-service/${serviceId}`,
+          {
+            isActive: `${isActive}`,
+          }
+        );
+        const {
+          posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+        } = usePosthog();
+
         captureEvent(ALLOWED_EVENT_NAMES.COMPANY_UPDATE_SERVICE_STATUS, {
           status: isActive,
         });
-        await this.fetchCompanyServices();
+        this.fetchCompanyServices();
+        return { data: response.data, result: "success" };
       } catch (error: any) {
         if (error) {
-          toast.add({
-            title: handleErrorMessages(error),
-            color: "red",
-          });
+          // toast.add({
+          //   title: handleErrorMessages(error),
+          //   color: "red",
+          // });
         }
+        return { data: error.response?.data?.message, result: "error" };
       } finally {
         this.updatingCompanyServiceStatus = false;
       }
@@ -155,10 +273,15 @@ export const useCompanyServiceStore = defineStore({
         const response = await useNuxtApp().$axios.delete(
           `/company-service/${serviceId}`
         );
-        toast.add({
-          title: response.data.message || "service removed",
-          color: "green",
-        });
+
+        // toast.add({
+        //   title: response.data.message || "service removed",
+        //   color: "green",
+        // });
+        const {
+          posthog: { captureEvent, ALLOWED_EVENT_NAMES },
+        } = usePosthog();
+
         captureEvent(ALLOWED_EVENT_NAMES.COMPANY_DELETE_SERVICE, {});
         await this.fetchCompanyServices();
       } catch (error: any) {

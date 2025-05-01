@@ -11,7 +11,9 @@ definePageMeta({
 });
 
 const activeUserStore = useActiveUserStore();
+
 const { userType, userDetails } = storeToRefs(activeUserStore);
+const { setUserDetails } = useActiveUserStore();
 
 const router = useRouter();
 const toast = useToast();
@@ -24,14 +26,14 @@ const schema = object({
 });
 
 const pending = ref(false);
-
+const userTypeInApp = useState("user-type", () => "");
 type Schema = InferType<typeof schema>;
 
 const state = reactive({
   email: undefined,
   password: undefined,
 });
-
+const companyServiceStore = useCompanyServiceStore();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     pending.value = true;
@@ -40,14 +42,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       password: state.password,
     });
     const accessToken = response.data.accessToken;
-    state.email = undefined;
-    state.password = undefined;
     localStorage.setItem("accessToken", accessToken);
 
     userType.value = "company";
-
     const userDetailsResponse = await useNuxtApp().$axios.get("/company/me");
     userDetails.value = userDetailsResponse.data;
+    setUserDetails(userDetails.value);
     activeUserStore.setAuthenticationState(true);
     const { posthog } = usePosthog();
     posthog.identifyUser({
@@ -55,7 +55,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       email: userDetails.value.email,
       full_name: `${userDetails.value.name}`,
     });
-    router.push("/dashboard");
+    userTypeInApp.value = "company";
+    navigateTo("/dashboard");
   } catch (error: any) {
     if (error) {
       toast.add({
@@ -71,11 +72,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
 <template>
   <UAlert
-    :actions="[{ variant: 'outline', label: 'Click here to login', click: () => navigateTo('/user/login') }]"
+    :actions="[
+      {
+        variant: 'outline',
+        label: 'Click here to login',
+        click: () => navigateTo('/user/login'),
+      },
+    ]"
     title="Are you a facility user?"
     class="w-full max-w-md mx-auto p-4 rounded-xl bg-white mt-12"
   />
-  <UCard class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12">
+  <UCard
+    class="w-full max-w-md mx-auto p-8 rounded-xl shadow-lg bg-white mt-12"
+  >
     <template #header>
       <h2 class="text-2xl font-semibold text-center text-gray-900">
         Facility Admin Login
@@ -83,7 +92,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     </template>
 
     <div>
-      <UForm :schema="schema" :state="state" class="space-y-6" @submit="onSubmit">
+      <UForm
+        :schema="schema"
+        :state="state"
+        class="space-y-6"
+        @submit="onSubmit"
+      >
         <UFormGroup label="Email" name="email">
           <UInput
             v-model="state.email"
@@ -116,7 +130,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <ULink to="/company/signup" class="text-green-500 hover:text-green-700">
           Signup
         </ULink>
-        <ULink to="/company/forgot-password" class="text-green-500 hover:text-green-700">
+        <ULink
+          to="/company/forgot-password"
+          class="text-green-500 hover:text-green-700"
+        >
           Forgot Password
         </ULink>
       </div>

@@ -17,7 +17,7 @@ const { fetchingCompanyDetails, companyDetails } = storeToRefs(companyStore);
 const selectedService = ref({});
 const isSubscriptionFormOpen = ref(false);
 
-const selectThisService = async (service: any) => {
+const selectThisService =  (service: any) => {
   selectedService.value = service;
   state.serviceId = service.id;
   isSubscriptionFormOpen.value = true;
@@ -110,6 +110,7 @@ await companyStore.fetchCompanyDetail(company.id);
           </div>
         </UCard>
         <SubscriptionModal
+        :companyId="company.id"
           v-if="isSubscriptionFormOpen"
           :selected-service="selectedService"
           :is-open="isSubscriptionFormOpen"
