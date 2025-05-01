@@ -17,6 +17,17 @@
         </UFormGroup>
       </div>
 
+      <!-- Service Description -->
+      <div>
+        <UFormGroup label="Describe your service" name="serviceDescription">
+          <UTextarea
+            type="text"
+            v-model="formState.description"
+            placeholder=""
+          />
+        </UFormGroup>
+      </div>
+
       <!-- Period -->
       <div>
         <UFormGroup label="Billing Period" name="period">
@@ -73,6 +84,7 @@ const formState = ref({
   serviceName: "",
   price: 0,
   period: "",
+  description: ""
 });
 
 const periodOptions = ["Monthly", "Weekly", "Daily"];
@@ -80,11 +92,12 @@ const schema = object({
   serviceName: string().min(
     3,
     "Service name must be at least 3 characters long"
-  ),
+  ).required(),
   price: number().positive("Price must be a positive number"),
   period: string()
     .oneOf(["Monthly", "Weekly", "Daily"], "Invalid period")
     .required("Period is required"),
+  description: string().min(3).required()
 });
 const isDisabled = computed(() => {
   return (
@@ -101,6 +114,7 @@ async function onSubmit() {
       name: formState.value.serviceName,
       amount: formState.value.price,
       period: formState.value.period.toLowerCase(),
+      description: formState.value.description
     });
     toast.add({
       title: "Form Submitted",
