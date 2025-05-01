@@ -91,7 +91,7 @@ export const useCompanyServiceStore = defineStore({
         return { data: error?.response?.data?.message, result: "error" };
       }
     },
-    async fetchCompanySettlementAccount(id:number) {
+    async fetchCompanySettlementAccount(id:string) {
       try {
         const response = await useNuxtApp().$axios.get(`/settlement-account/company/${id}`);
         this.settlementAccounts = response.data;

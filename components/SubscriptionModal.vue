@@ -7,16 +7,17 @@ const subscriptionStore = useSubscriptionStore();
 const { getSubscriptionCreationStatus } = storeToRefs(subscriptionStore);
 const toast = useToast();
 
-const props = defineProps({
+const props = defineProps<{
   selectedService: {
-    type: Object,
-    required: true,
-  },
+    type: Object;
+    required: true;
+  };
   isOpen: {
-    type: Boolean,
-    required: true,
-  },
-});
+    type: Boolean;
+    required: true;
+  };
+  companyId: string;
+}>();
 
 const emit = defineEmits(["close"]);
 
@@ -196,7 +197,7 @@ watchEffect(() => {
 
         <!-- Payment Details -->
         <h3 class="mb-0 text-lg font-bold">Company Payment Details</h3>
-        <SubscriptionsFacilityPaymentDetails />
+        <SubscriptionsFacilityPaymentDetails :company-id="companyId" />
 
         <UButton
           type="submit"
