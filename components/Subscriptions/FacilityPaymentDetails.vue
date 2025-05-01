@@ -44,23 +44,22 @@ function copyAccountNumber(acctNo: string, id: number) {
 
 <template>
   <div class="overflow-y-auto">
-    <div class="flex flex-col gap-6" v-if="settlementAccounts.length > 0">
+    <div class="flex flex-col gap-6 mb-4" v-if="settlementAccounts.length > 0">
       <div
         :key="index"
         v-for="(item, index) in settlementAccounts"
-        class="space-y-2 border-t pt-4"
+        class="space-y-1 border-t pt-2 text-sm"
       >
-        <h3 class="text-lg font-semibold"></h3>
         <p>
-          <span class="font-medium">Bank Name:</span>
+          <span class="font-base">Bank Name:</span>
           {{ item?.bankName }}
         </p>
         <p>
-          <span class="font-medium">Account Name:</span>
+          <span class="font-base">Account Name:</span>
           {{ item?.accountHolderName }}
         </p>
         <div class="flex items-center gap-2">
-          <span class="font-medium">Account Number:</span>
+          <span class="font-base">Account Number:</span>
           <span>{{ item?.accountNumber }}</span>
           <UButton
             size="xs"
@@ -81,6 +80,6 @@ function copyAccountNumber(acctNo: string, id: number) {
       </div>
     </div>
 
-    <div v-else class="min-h-[300px]">Loading Admin Account Details ...</div>
+    <div v-else class="min-h-[300px]">Subscription payment details not found</div>
   </div>
 </template>
