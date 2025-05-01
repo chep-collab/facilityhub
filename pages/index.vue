@@ -67,7 +67,7 @@
         <!-- <li><a href="#home" class="hover:text-grey-400">Home</a></li> -->
         <li><a href="#about" class="hover:text-grey-400">About</a></li>
         <li><a href="#features" class="hover:text-grey-400">Features</a></li>
-        <li><a href="#contact" class="hover:text-grey-400">Contact</a></li>
+        <li><a href="https://wa.me/2348152435800" class="hover:text-grey-400">Contact</a></li>
         <li>
           <button
             class="bg-[#006B00] text-white w-full py-2 rounded"
