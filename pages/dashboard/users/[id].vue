@@ -159,7 +159,7 @@
         <span
           :class="row.status === 'active' ? 'text-primary-green' : 'text-error'"
         >
-          {{ row.status === "inactive" ? "Expired" : row.status }}
+          {{ row.status === "inactive" ? "Inactive" : row.status }}
         </span>
       </template>
       <template #start-data="{ row }">
