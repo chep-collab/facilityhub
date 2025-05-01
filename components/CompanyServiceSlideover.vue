@@ -110,6 +110,7 @@ await companyStore.fetchCompanyDetail(company.id);
           </div>
         </UCard>
         <SubscriptionModal
+        :companyId="company.id"
           v-if="isSubscriptionFormOpen"
           :selected-service="selectedService"
           :is-open="isSubscriptionFormOpen"

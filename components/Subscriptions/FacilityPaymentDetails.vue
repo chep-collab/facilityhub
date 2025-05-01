@@ -4,18 +4,24 @@ const isAccountNumberCopied = ref(false);
 const companyServiceStore = useCompanyServiceStore();
 const { settlementAccounts } = storeToRefs(companyServiceStore);
 const accountsLoading = ref(false);
-
+const toast = useToast();
 const props = defineProps<{
   companyId: string;
 }>();
 
 onMounted(async () => {
-  try {
-    accountsLoading.value = true;
-    await companyServiceStore.fetchCompanySettlementAccount(props.companyId);
-  } catch (err) {
+  accountsLoading.value = true;
+  const response = await companyServiceStore.fetchCompanySettlementAccount(
+    props.companyId
+  );
+
+  if (response.result !== "success") {
+    toast.add({
+      color: "red",
+      description: response.data,
+      title: "Error",
+    });
     console.log("Error Loading accounts");
-  } finally {
     accountsLoading.value = false;
   }
 });
