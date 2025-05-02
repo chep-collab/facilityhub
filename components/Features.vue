@@ -1,5 +1,5 @@
 <template>
-  <section class="bg-white p-8 lg:p-20 w-full">
+  <section id="features" class="bg-white p-8 lg:p-20 w-full">
     <div class="mb-8">
       <h2 class="text-3xl font-bold text-center">
         All Your Facility Needs in a Unified Solution

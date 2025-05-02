@@ -32,7 +32,9 @@
             <SelectField
               :options="bankOptions"
               option-attribute="name"
-              :disabled="isSubmitting || isResolveAccountLoading"
+              :disabled="
+                isSubmitting || isResolveAccountLoading || formDisabled
+              "
               v-model="formState.bankCode"
               placeholder="E.g Zenith Bank PLC"
             />
@@ -45,7 +47,9 @@
             <UFormGroup label="Account Number" name="accountNumber">
               <InputField
                 type="text"
-                :disabled="isSubmitting || isResolveAccountLoading"
+                :disabled="
+                  isSubmitting || isResolveAccountLoading || formDisabled
+                "
                 v-model="formState.accountNumber"
                 placeholder="e.g 0123345345"
               />
@@ -141,16 +145,18 @@ const isDisabled = computed(() => {
 });
 
 onMounted(async () => {
-  const banksListResponse = await useNuxtApp().$axios.get(
-    "/settlement-account/list-banks"
-  );
-  bankOptions.value = banksListResponse.data;
-  const bankDetailsCut = banksListResponse.data.map((bank: unknown) => ({
-    name: bank?.name,
-    value: bank?.code,
-  }));
+  if (!props.formDisabled) {
+    const banksListResponse = await useNuxtApp().$axios.get(
+      "/settlement-account/list-banks"
+    );
+    bankOptions.value = banksListResponse.data;
+    const bankDetailsCut = banksListResponse.data.map((bank: unknown) => ({
+      name: bank?.name,
+      value: bank?.code,
+    }));
 
-  bankOptions.value = bankDetailsCut;
+    bankOptions.value = bankDetailsCut;
+  }
 });
 
 watchEffect(async () => {
