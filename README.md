@@ -1,75 +1,31 @@
-# Nuxt 3 Minimal Starter
+# FacilityHub 🏢
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A modern facility management dashboard built with **Nuxt 3**, **TypeScript**, and **Tailwind CSS**. FacilityHub helps organizations streamline operations, manage assets, and monitor facility health—all in one intuitive interface.
 
-## Setup
+---
 
-Make sure to install the dependencies:
+## 🚀 Features
 
-```bash
-# npm
-npm install
+- 📋 Task and asset tracking
+- 🧩 Modular component architecture
+- 🌐 Dynamic routing with Nuxt 3
+- 🎨 Responsive UI with Tailwind CSS
+- 🔐 Role-based access (planned)
+- 📊 Dashboard analytics (planned)
 
-# pnpm
-pnpm install
+---
 
-# yarn
-yarn install
+## 🛠 Tech Stack
 
-# bun
-bun install
-```
+| Technology     | Purpose                        |
+|----------------|--------------------------------|
+| Nuxt 3         | Frontend framework             |
+| TypeScript     | Type safety and scalability    |
+| Tailwind CSS   | Utility-first styling          |
+| Pinia          | State management               |
+| VueUse         | Composables and utilities      |
 
-## Development Server
+---
 
-Start the development server on `http://localhost:3000`:
+## 📦 Project Structure
 
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
